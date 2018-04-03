@@ -17,7 +17,7 @@ parse.add_argument('--dataset')
 opt = parse.parse_args()
 opt.im_fold = '/nfs/bigbox/hieule/penguin_data/CROPPED/' + opt.dataset +'/'#+'/nfs/bigbox/hieule/p1000/testing/CROZ/'
 opt.step = 64
-opt.size = 386
+opt.size = 256
 opt.patch_fold_A = opt.im_fold+'PATCHES/'+str(opt.step)+'_'+ str(opt.size)+ '/A/'
 opt.patch_fold_B = opt.im_fold+'PATCHES/'+str(opt.step)+'_'+ str(opt.size)+'/B/'
 A_fold = opt.im_fold + 'A/'
