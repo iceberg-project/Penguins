@@ -1,7 +1,6 @@
 
-<img src='Test/lssd1005.jpg' width=200 height = 250> <img src='out/lssd1005.jpg'  width=200 height =250> 
+<img src='A.png' width=400 height = 500> <img src='B.png'  width=400 height =590> 
 <br><br><br>
 
 
 
-Penguin Guano Classification
