@@ -10,14 +10,14 @@ import matplotlib.image as mpimg
 from descartes import PolygonPatch
 from osgeo import gdal,osr
 
-def BoundingBoxShape(bb,padding=0):
+def FindBoundingBoxWithPadding(bb,padding=(0,0)):
     #bb = [minx,miny,maxx,maxy]
     bb_shape = []
     c = []
-    bb[0] = bb[0] - padding
-    bb[1] = bb[1] - padding
-    bb[2] = bb[2] + padding
-    bb[3] = bb[3] + padding
+    bb[0] = bb[0] - padding[0]
+    bb[1] = bb[1] - padding[1]
+    bb[2] = bb[2] + padding[0]
+    bb[3] = bb[3] + padding[1]
     c.append([bb[0],bb[1]])
     c.append([bb[0],bb[3]])
     c.append([bb[2],bb[3]])
@@ -59,6 +59,6 @@ def TransformShape(oshape,coordTrans,padding = 0):
     bb = [minx,miny,maxx,maxy]
 
 
-    bbshape = BoundingBoxShape(bb,padding)
+    bbshape = FindBoundingBoxWithPadding(bb,(padding,padding))
     return newshape,bbshape
 
