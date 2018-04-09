@@ -21,7 +21,7 @@ import pandas as pd
 from shutil import copyfile
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 opt = parser.parse_args()
-opt.padding = 2000
+opt.padding = 500
 
 files = ['/gpfs/projects/LynchGroup/PAUL_IDs_Test.xlsx','/gpfs/projects/LynchGroup/CROZ_IDs_Test.xlsx',
             '/gpfs/projects/LynchGroup/CatalogIDs_training_shapefiles.xlsx']
