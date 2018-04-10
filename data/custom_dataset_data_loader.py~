@@ -17,7 +17,7 @@ def CreateDataset(opt):
         from data.tif_dataset import TifDataset
         dataset = TifDataset(opt)
     elif opt.dataset_mode == 'mb':
-        from data.mb_dataset import MBDataset
+        from data.MB_dataset import MBDataset
         dataset = MBDataset(opt)
     elif opt.dataset_mode == 'png':
         from data.png_dataset import PngDataset

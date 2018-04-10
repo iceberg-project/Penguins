@@ -32,10 +32,7 @@ class PngDataset(BaseDataset):
         self.nim = len(self.imname)
 
     def __len__(self):
-        if self.opt.test:
-            return self.nim
-        else:
-            return 50000
+        return 50000
         #return self.nim*20
     def name(self):
         return 'PNGDATASET'

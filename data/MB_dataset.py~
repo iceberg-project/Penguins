@@ -26,19 +26,16 @@ class PngDataset(BaseDataset):
         
         for root,_,fnames in sorted(os.walk(self.B_dir)):
             for fname in fnames:
-                if fname.endswith('.png'):
+                if fname.endswith('.png') and 'M1BS' in fname:
                     path = os.path.join(root,fname)
                     self.imname_pos.append(fname)
         self.nim = len(self.imname)
 
     def __len__(self):
-        if self.opt.test:
-            return self.nim
-        else:
-            return 50000
+        return 50000
         #return self.nim*20
     def name(self):
-        return 'PNGDATASET'
+        return 'MB_DATASET'
     
     def getpatch(self,idx,i,j):
         A_img = self.tifimg[:,i*256:(i+1)*256,j*256:(j+1)*256]
@@ -57,18 +54,21 @@ class PngDataset(BaseDataset):
             imname = self.imname_pos[r_index]
             A_img = np.asarray(Image.open(os.path.join(self.A_dir,imname)))
             B_img = np.asarray(Image.open(os.path.join(self.B_dir,imname)))
+            P_img = np.asarray(Image.open(os.path.join(self.A_dir,imname.replace('M1BS','P1BS'))))
         else:
             
             r_index = index % len(self.imname)
             imname = self.imname[r_index]
             A_img = np.asarray(Image.open(os.path.join(self.A_dir,imname)))
+            P_img = np.asarray(Image.open(os.path.join(self.A_dir,imname.replace('M1BS','P1BS'))))
             
             if imname in self.imname_pos:
                 B_img = np.asarray(Image.open(os.path.join(self.B_dir,imname)))
             else:
                 t = A_img.shape
                 B_img = np.zeros((A_img.shape[0],A_img.shape[1]))
-        
+        print(P_img.shape)
+        #C_img contains the dilated version of the segmentation GT>
         C_img = np.copy(B_img).astype(np.uint8)
         C_img = cv2.dilate(C_img, np.ones((30,30)))
         C_img[C_img>0] = 255
@@ -86,4 +86,4 @@ class PngDataset(BaseDataset):
         C_img = torch.from_numpy(C_img).float().div(255)
         A_img = A_img - 0.5
         A_img = A_img * 2
-        return  {'A': A_img, 'B': B_img,'C':C_img,'imname':imname}
+        return  {'A': A_img, 'B': B_img,'C':C_img}
