@@ -58,7 +58,6 @@ for id in range(0,3):
             name = name.replace('.tif','') 
             gt_prj = ReadProjection(shape_dir+gta+'.prj')
             gt = fiona.open(shape_dir+gta+'.shp')
-            
             name= name.replace('-M','-*****')
             name= name.replace('-P','-*****')
             for BAND in ['-M']:
@@ -69,7 +68,10 @@ for id in range(0,3):
                     MBandImg = rasterio.open(TIFim)
                     im_prj = osgeo.osr.SpatialReference()
                     im_prj.ImportFromWkt(MBandImg.crs.wkt)
+                    print im_prj
                     coordTrans = osr.CoordinateTransformation(gt_prj,im_prj)
+                    print gt_prj
+                    print coordTrans
                     transformed_gt,bb = TransformShape(gt,coordTrans,padding = opt.padding)
 
                     crop_image, ct = rasterio.mask.mask(MBandImg,[po['geometry'] for po in bb],crop=True)

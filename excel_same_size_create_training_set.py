@@ -103,7 +103,9 @@ for id in range(0,3):
                                 })
                 with rasterio.open(opt.ctifdir+imname_M+'.tif',"w",**out_meta) as dest:
                     dest.write(crop_image_pband)
+
                 dest = rasterio.open( opt.ctifdir+imname_P+'.tif')
+                #PURPOSEDLY READ THIS P-BAND IMAGE SINCE THEY SHOULD BE AT THE SAME SIZE AS M-BAND NOW. MIGHT THIS LEAD TO A DISASTER LATER?
                 masked_image, mt = rasterio.mask.mask(dest,[feature["geometry"] for feature in transformed_gt])
                 mask = masked_image.mean(axis=0)
                 mask[mask>0]=255
