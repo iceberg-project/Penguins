@@ -7,9 +7,6 @@ def create_model(opt):
         from .cycle_gan_model import CycleGANModel
         model = CycleGANModel()
 
-    elif opt.model == 'single_unet_mb':
-        from .single_unet_mb import UnetModel
-        model = UnetModel()
     elif opt.model == 'single_unet_4c':
         from .single_unet_4c import UnetModel
         model = UnetModel()

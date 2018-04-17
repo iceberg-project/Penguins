@@ -15,7 +15,10 @@ from vis import visAB,visABC
 parse = argparse.ArgumentParser()
 parse.add_argument('--dataset')
 opt = parse.parse_args()
-opt.im_fold = '/nfs/bigbox/hieule/penguin_data/CROPPED/' + opt.dataset +'/'#+'/nfs/bigbox/hieule/p1000/testing/CROZ/'
+opt.root = '/nfs/bigbox/hieule/penguin_data/MB_Same_Size/Train/Train_all/CROPPED/'
+#opt.im_fold = '/nfs/bigbox/hieule/penguin_data/CROPPED/' + opt.dataset +'/'#+'/nfs/bigbox/hieule/p1000/testing/CROZ/'
+#opt.im_fold = '/nfs/bigbox/hieule/penguin_data//CROPPED/' + opt.dataset +'/'#+'/nfs/bigbox/hieule/p1000/testing/CROZ/'
+opt.im_fold = opt.root + opt.dataset + '/'
 opt.step = 64
 opt.size = 386
 opt.patch_fold_A = opt.im_fold+'PATCHES/'+str(opt.step)+'_'+ str(opt.size)+ '/A/'
@@ -31,7 +34,7 @@ imnamelist=[]
 
 for root,_,fnames in sorted(os.walk(A_fold)):
     for fname in fnames:
-        if fname.endswith('.png') and "M1BS" in fname:
+        if fname.endswith('.png'):
             path = os.path.join(root,fname)
             path_mask = os.path.join(B_fold,fname)
             imlist.append((path,path_mask,fname))

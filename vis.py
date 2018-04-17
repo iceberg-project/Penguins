@@ -8,7 +8,7 @@ import rasterio
 from rasterio import mask, features, warp
 
 def show_heatmap_on_image(img,mask):
-    
+    mask = -mask    
     #mask = np.float32(mask)/np.max(mask)
     #mask[mask<0] = 0
 
@@ -84,7 +84,7 @@ def visAB(root,name):
     vis = root + '/vis/'+name+'/'
     visdir(A,B,vis)
 def visABC(root,name):
-    print('Visualizing:' + name)
+    print('VISABC Visualizing:' + name)
     A = root + '/A/'
     B = root + '/B/'
     res = root + '/res/' + name +'/'
@@ -94,7 +94,7 @@ def visABC(root,name):
 
 def visTIF(root,name):
 
-    print('Visualizing:' + name)
+    print('VISTIF Visualizing:' + name)
     A = root + '/A/'
     B = root + '/B/'
     tif = root + '/tif/'
@@ -115,15 +115,18 @@ def visTIF(root,name):
                 imnamelist.append(fname)
     print imnamelist
     for pathA,pathB,pathmask,fname in imlist:
+        print fname
         GT = misc.imread(pathB+'.png')
         mask = misc.imread(pathmask+'.png')
         tifim = rasterio.open(pathA+'.tif')
         outmeta = tifim.meta.copy()
         outmeta.update({"count":outmeta["count"]+2})
         X = tifim.read()
+
         mask = np.expand_dims(mask,axis=0)
         GT = np.expand_dims(GT,axis=0)
         X = np.concatenate((X,GT,mask),axis =0)
         with rasterio.open(tifres+fname+'.tif',"w",**outmeta) as dest:
             dest.write(X) 
 
+        print X.shape
