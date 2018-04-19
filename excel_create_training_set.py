@@ -21,7 +21,7 @@ import pandas as pd
 from shutil import copyfile
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 opt = parser.parse_args()
-opt.padding = 500
+opt.padding = 1000
 
 files = ['/gpfs/projects/LynchGroup/PAUL_IDs_Test.xlsx','/gpfs/projects/LynchGroup/CROZ_IDs_Test.xlsx',
             '/gpfs/projects/LynchGroup/CatalogIDs_training_shapefiles.xlsx']
@@ -68,10 +68,7 @@ for id in range(0,3):
                     MBandImg = rasterio.open(TIFim)
                     im_prj = osgeo.osr.SpatialReference()
                     im_prj.ImportFromWkt(MBandImg.crs.wkt)
-                    print im_prj
                     coordTrans = osr.CoordinateTransformation(gt_prj,im_prj)
-                    print gt_prj
-                    print coordTrans
                     transformed_gt,bb = TransformShape(gt,coordTrans,padding = opt.padding)
 
                     crop_image, ct = rasterio.mask.mask(MBandImg,[po['geometry'] for po in bb],crop=True)

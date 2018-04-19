@@ -15,7 +15,7 @@ from vis import visAB,visABC
 parse = argparse.ArgumentParser()
 parse.add_argument('--dataset')
 opt = parse.parse_args()
-opt.root = '/nfs/bigbox/hieule/penguin_data/MB_Same_Size/Train/Train_all/CROPPED/'
+opt.root = '/nfs/bigbox/hieule/penguin_data/p1000/'
 #opt.im_fold = '/nfs/bigbox/hieule/penguin_data/CROPPED/' + opt.dataset +'/'#+'/nfs/bigbox/hieule/p1000/testing/CROZ/'
 #opt.im_fold = '/nfs/bigbox/hieule/penguin_data//CROPPED/' + opt.dataset +'/'#+'/nfs/bigbox/hieule/p1000/testing/CROZ/'
 opt.im_fold = opt.root + opt.dataset + '/'
@@ -41,8 +41,8 @@ for root,_,fnames in sorted(os.walk(A_fold)):
             imnamelist.append(fname)
 for im_path,mask_path,imname in  imlist:
     png = misc.imread(im_path,mode='RGB')
-    print mask_path
+    print(mask_path)
     mask = misc.imread(mask_path)
-    print mask.shape
+    print(mask.shape)
     w,h,z = png.shape
-    savepatch_train(png,mask,w,h,opt.step,opt.size,opt.patch_fold_A+'/'+imname,opt.patch_fold_B+'/'+imname)
+    savepatch_train(png,mask,w,h,opt.step,opt.size,opt.patch_fold_A+'/'+imname,opt.patch_fold_B+'/'+imname+'/')
