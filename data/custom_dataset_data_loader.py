@@ -19,6 +19,9 @@ def CreateDataset(opt):
     elif opt.dataset_mode == 'mb':
         from data.mb_dataset import MBDataset
         dataset = MBDataset(opt)
+    elif opt.dataset_mode == 'png_withlist':
+        from data.png_dataset_withlist import PngDataset
+        dataset = PngDataset(opt)
     elif opt.dataset_mode == 'png':
         from data.png_dataset import PngDataset
         dataset = PngDataset(opt)

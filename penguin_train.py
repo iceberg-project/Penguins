@@ -36,7 +36,7 @@ for epoch in range(opt.epoch_count,opt.niter+opt.niter_decay+1):
         if i% 5 ==0:
             visualizer.display_current_results(model.get_current_visuals(), epoch, False)
             errors = model.get_current_errors()
-            visualizer.print_current_errors(epoch, epoch_iter, errors,10)
+#            visualizer.print_current_errors(epoch, epoch_iter, errors,10)
     print('End of epoch %d / %d \t Time Taken: %d sec' %
                         (epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time))
     if epoch % 5 ==0:

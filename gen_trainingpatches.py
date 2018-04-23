@@ -18,7 +18,8 @@ opt = parse.parse_args()
 opt.root = '/nfs/bigbox/hieule/penguin_data/p1000/'
 #opt.im_fold = '/nfs/bigbox/hieule/penguin_data/CROPPED/' + opt.dataset +'/'#+'/nfs/bigbox/hieule/p1000/testing/CROZ/'
 #opt.im_fold = '/nfs/bigbox/hieule/penguin_data//CROPPED/' + opt.dataset +'/'#+'/nfs/bigbox/hieule/p1000/testing/CROZ/'
-opt.im_fold = opt.root + opt.dataset + '/'
+#opt.im_fold = opt.root + opt.dataset + '/'
+opt.im_fold = opt.root
 opt.step = 64
 opt.size = 386
 opt.patch_fold_A = opt.im_fold+'PATCHES/'+str(opt.step)+'_'+ str(opt.size)+ '/A/'
@@ -34,7 +35,7 @@ imnamelist=[]
 
 for root,_,fnames in sorted(os.walk(A_fold)):
     for fname in fnames:
-        if fname.endswith('.png'):
+        if fname.endswith('.png') and 'M1BS' in fname:
             path = os.path.join(root,fname)
             path_mask = os.path.join(B_fold,fname)
             imlist.append((path,path_mask,fname))
@@ -45,4 +46,4 @@ for im_path,mask_path,imname in  imlist:
     mask = misc.imread(mask_path)
     print(mask.shape)
     w,h,z = png.shape
-    savepatch_train(png,mask,w,h,opt.step,opt.size,opt.patch_fold_A+'/'+imname,opt.patch_fold_B+'/'+imname+'/')
+    savepatch_train(png,mask,w,h,opt.step,opt.size,opt.patch_fold_A+'/'+imname[:-4]+'#',opt.patch_fold_B+'/'+imname[:-4]+'#')

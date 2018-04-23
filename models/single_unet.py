@@ -56,8 +56,8 @@ class UnetModel(BaseModel):
 
 
     def backward_G(self):
-        self.loss_G = self.criterionL1(self.output, self.GT) 
-        #self.loss_G = self.criterionMSE(self.output, self.GT) 
+        #self.loss_G = self.criterionL1(self.output, self.GT) 
+        self.loss_G = self.criterionMSE(self.output, self.GT) 
         self.loss_G.backward()
 
     def optimize_parameters(self):
@@ -94,7 +94,8 @@ class UnetModel(BaseModel):
         
         out = util.tensor2im(self.output.data)
         GT = util.tensor2im(self.GT.data)
-        return OrderedDict([('inp', inp), ('out', out),('GT',GT)])
+        alll = np.hstack((inp,GT,out))
+        return OrderedDict([('input-GT-out'+str(self.gpu_ids[0]),alll)])
 
     def save(self, label):
         self.save_network(self.netG, 'G', label, self.gpu_ids)
