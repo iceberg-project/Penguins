@@ -223,6 +223,7 @@ def savepatch_train(png,mask,w,h,step,size,imbasename,patchbasename):
 
 
 def patches2png(patch_fold,imname,w,h,step,size):
+    imname=imname[:-4]+'#'
     png = np.zeros((w,h))
     ws = np.zeros((w,h))
     

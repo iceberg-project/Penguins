@@ -15,7 +15,7 @@ class UnetModel(BaseModel):
     def initialize(self, opt):
         BaseModel.initialize(self, opt)
         self.isTrain = opt.isTrain
-
+        self.opt = opt
         # load/define networks
         self.netG = networks.define_G(opt.input_nc, 1, 64,
                                       'unet_256', opt.norm, not opt.no_dropout, opt.init_type, self.gpu_ids)
@@ -90,12 +90,20 @@ class UnetModel(BaseModel):
 
 
     def get_current_visuals(self):
-        inp = util.tensor2im(self.input.data)
         
-        out = util.tensor2im(self.output.data)
-        GT = util.tensor2im(self.GT.data)
-        alll = np.hstack((inp,GT,out))
-        return OrderedDict([('input-GT-out'+str(self.gpu_ids[0]),alll)])
+        allll = []
+        for i in range(0,5):
+            inp = util.tensor2im(self.input.data[i:i+1,:,:,:])
+            out = util.tensor2im(self.output.data[i:i+1,:,:,:])
+            GT = util.tensor2im(self.GT.data[i:i+1,:,:,:])
+            alll = np.hstack((inp,GT,out))
+            allll.append(alll)
+        X =  np.vstack((allll[0],allll[1]))
+        for i in range(2,5):
+            X = np.vstack((X,allll[i]))
+            
+        
+        return OrderedDict([self.opt.name,' input-GT-out'+str(self.gpu_ids[0]),X)])
 
     def save(self, label):
         self.save_network(self.netG, 'G', label, self.gpu_ids)

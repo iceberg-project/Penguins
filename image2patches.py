@@ -20,10 +20,10 @@ opt = TestOptions().parse()
 opt.checkpoints_dir = '/nfs/bigbox/hieule/penguin_data/checkpoints/'
 opt.name = 'train_on_p300'
 opt.name = 'MSEnc3_p2000_train_bias0.5_bs128'
-opt.which_epoch = 200
+opt.which_epoch = 150
 opt.input_nc =3
 opt.model = 'single_unet'
-opt.step = 64
+opt.step = 128
 opt.size = 256
 opt.no_dropout = True
 model = create_model(opt)
@@ -77,11 +77,11 @@ def do_the_thing_please(opt):
     visTIF(opt.im_fold,opt.name+'e'+str(opt.which_epoch))
 
 #opt.im_fold ='/nfs/bigbox/hieule/penguin_data/CROPPED/p500/'
-opt.im_fold ='/nfs/bigbox/hieule/penguin_data/CROPPED/p500_test/'
+opt.im_fold ='/nfs/bigbox/hieule/penguin_data/p1000/'
 do_the_thing_please(opt)
-opt.im_fold ='/nfs/bigbox/hieule/penguin_data/CROPPED/p500_train/'
-do_the_thing_please(opt)
-opt.im_fold_temp ='/nfs/bigbox/hieule/penguin_data/Test/*TEST*/CROPPED/p300/'
-for t in ["PAUL","CROZ"]:
-    opt.im_fold = opt.im_fold_temp.replace("*TEST*",t)
-    do_the_thing_please(opt)
+#opt.im_fold ='/nfs/bigbox/hieule/penguin_data/CROPPED/p500_train/'
+#do_the_thing_please(opt)
+#opt.im_fold_temp ='/nfs/bigbox/hieule/penguin_data/Test/*TEST*/CROPPED/p300/'
+#for t in ["PAUL","CROZ"]:
+#    opt.im_fold = opt.im_fold_temp.replace("*TEST*",t)
+#    do_the_thing_please(opt)

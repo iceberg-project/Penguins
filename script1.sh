@@ -1,14 +1,15 @@
 #!/bin/bash
 temp=$1
 gpu=$2
-counter=0
+counter=1
+dl=${3:-9999}
+
 while [ $counter -le 5 ]
 do
     echo $counter
     list=/nfs/bigbox/hieule/penguin_data/p1000/${temp}${counter}
     root='/nfs/bigbox/hieule/penguin_data/p1000/PATCHES/64_386/'
     #root='/nfs/bigbox/hieule/p1000/trainPATCHES/'
-    dl=9999
     nc=3
     bias=0.2
     bs=128

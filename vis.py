@@ -8,7 +8,7 @@ import rasterio
 from rasterio import mask, features, warp
 
 def show_heatmap_on_image(img,mask):
-    mask = -mask    
+#    mask = -mask    
     #mask = np.float32(mask)/np.max(mask)
     #mask[mask<0] = 0
 
