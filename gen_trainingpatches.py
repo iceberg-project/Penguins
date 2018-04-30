@@ -20,7 +20,7 @@ opt.root = '/nfs/bigbox/hieule/penguin_data/p1000/'
 #opt.im_fold = '/nfs/bigbox/hieule/penguin_data//CROPPED/' + opt.dataset +'/'#+'/nfs/bigbox/hieule/p1000/testing/CROZ/'
 #opt.im_fold = opt.root + opt.dataset + '/'
 opt.im_fold = opt.root
-opt.step = 128 #128 for testing, 64 for training
+opt.step = 64 #128 for testing, 64 for training
 opt.size = 256 #256 for testing, 386 for training
 opt.patch_fold_A = opt.im_fold+'PATCHES/'+str(opt.step)+'_'+ str(opt.size)+ '/A/'
 opt.patch_fold_B = opt.im_fold+'PATCHES/'+str(opt.step)+'_'+ str(opt.size)+'/B/'
@@ -33,6 +33,13 @@ sdmkdir(opt.patch_fold_B)
 imlist=[]
 imnamelist=[]
 
+opt.traininglist = '/nfs/bigbox/hieule/penguin_data/p1000/test1'
+if os.path.isfile(opt.traininglist):
+    file = open(opt.traininglist,"r")
+    a= file.read()
+    traininglist =  a.split("$")
+    del traininglist[-1]
+    print traininglist
 for root,_,fnames in sorted(os.walk(A_fold)):
     for fname in fnames:
         if fname.endswith('.png') and 'M1BS' in fname:

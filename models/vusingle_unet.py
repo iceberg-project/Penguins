@@ -44,12 +44,14 @@ class UnetModel(BaseModel):
         AtoB = self.opt.which_direction == 'AtoB'
         input_A = input['A' if AtoB else 'B']
         input_B = input['B' if AtoB else 'A']
+        input_C = input['C']
         if len(self.gpu_ids) > 0:
             input_A = input_A.cuda(self.gpu_ids[0], async=True)
             input_B = input_B.cuda(self.gpu_ids[0], async=True)
+            input_C = input_C.cuda(self.gpu_ids[0], async=True)
         self.input = Variable(input_A)
         self.GT  = Variable(input_B)
-
+        self.cmask = Variable(input_C) #only compute loss on these pixels
     def forward(self):
         self.output = self.netG(self.input)
 
@@ -57,7 +59,11 @@ class UnetModel(BaseModel):
 
     def backward_G(self):
         #self.loss_G = self.criterionL1(self.output, self.GT) 
-        self.loss_G = self.criterionMSE(self.output, self.GT) 
+        #self.loss_G = self.criterionMSE(self.output, self.GT) 
+       # indx = self.cmask ==1
+        
+        #self.loss_G = self.criterionMSE(self.output[indx],self.GT[indx])
+        self.loss_G = self.criterionMSE(self.output.mul(self.cmask),self.GT.mul(self.cmask)) 
         self.loss_G.backward()
 
     def optimize_parameters(self):

@@ -32,10 +32,10 @@ class PngDataset(BaseDataset):
         self.nim = len(self.imname)
 
     def __len__(self):
-        if self.opt.test:
+        if not self.opt.isTrain:
             return self.nim
         else:
-            return 50000
+            return 10000
         #return self.nim*20
     def name(self):
         return 'PNGDATASET'
@@ -52,26 +52,65 @@ class PngDataset(BaseDataset):
     def get_number_of_patches(self,idx):
         return self.nx,self.ny
     def __getitem__(self,index):
+        C_img = []       
+        if self.opt.randomSize:
+            self.opt.loadSize = np.random.randint(257,300,1)[0]
         if random.random() < self.opt.biased_sampling:
             r_index = index % len(self.imname_pos)
             imname = self.imname_pos[r_index]
-            A_img = np.asarray(Image.open(os.path.join(self.A_dir,imname)))
-            B_img = np.asarray(Image.open(os.path.join(self.B_dir,imname)))
+            A_img = Image.open(os.path.join(self.A_dir,imname))
+            B_img = Image.open(os.path.join(self.B_dir,imname))
         else:
             
             r_index = index % len(self.imname)
             imname = self.imname[r_index]
-            A_img = np.asarray(Image.open(os.path.join(self.A_dir,imname)))
+            A_img = Image.open(os.path.join(self.A_dir,imname))
             
             if imname in self.imname_pos:
-                B_img = np.asarray(Image.open(os.path.join(self.B_dir,imname)))
+                B_img = Image.open(os.path.join(self.B_dir,imname))
             else:
-                t = A_img.shape
-                B_img = np.zeros((A_img.shape[0],A_img.shape[1]))
+                t = A_img.size
+                B_img = Image.fromarray(np.zeros((A_img.size[0],A_img.size[1])))
+        ow = A_img.size[0]
+        oh = A_img.size[1]
+        w = np.float(A_img.size[0])
+        h = np.float(A_img.size[1])
+        if self.opt.keep_ratio:
+            if w>h:
+                ratio = np.float(self.opt.loadSize)/np.float(h)
+                neww = np.int(w*ratio)
+                newh = self.opt.loadSize
+            else:
+                ratio = np.float(self.opt.loadSize)/np.float(w)
+                neww = self.opt.loadSize
+                newh = np.int(h*ratio)
+        else:
+            neww = self.opt.loadSize
+            newh = self.opt.loadSize
         
-        C_img = np.copy(B_img).astype(np.uint8)
-        C_img = cv2.dilate(C_img, np.ones((30,30)))
-        C_img[C_img>0] = 255
+        if self.opt.tsize:
+            neww = self.opt.tw
+            newh = self.opt.th
+        
+        A_img = A_img.resize((neww, newh),Image.NEAREST)
+        B_img = B_img.resize((neww, newh),Image.NEAREST)
+        
+        #C_img = np.copy(B_img).astype(np.uint8)
+        #C_img = cv2.dilate(C_img, np.ones((30,30)))
+        #C_img[C_img>0] = 255
+        A_img = np.asarray(A_img)
+        B_img = np.asarray(B_img)
+        A_img = A_img[:,:,0:3]
+#        C_img = np.copy(B_img).astype(np.uint8)
+
+#        C_img = cv2.dilate(C_img, np.ones((30,30)))
+#        C_img[C_img>0] = 255
+        C_img = np.copy(B_img)
+        C_img[C_img!=0] = 255 
+
+        B_img.setflags(write=1)
+        B_img[B_img==2] = 255
+        B_img[B_img!=255] = 0
         A_img = np.transpose(A_img,(2,0,1))
         B_img = np.expand_dims(B_img, axis=0)
         C_img = np.expand_dims(C_img, axis=0)

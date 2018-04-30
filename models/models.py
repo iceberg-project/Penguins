@@ -13,6 +13,9 @@ def create_model(opt):
     elif opt.model == 'single_unet_4c':
         from .single_unet_4c import UnetModel
         model = UnetModel()
+    elif opt.model == 'vusingle_unet':
+        from .vusingle_unet import UnetModel
+        model = UnetModel()
     elif opt.model == 'single_unet':
         from .single_unet import UnetModel
         model = UnetModel()

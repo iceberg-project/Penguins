@@ -32,15 +32,6 @@ opt.no_dropout = True
 #'MSEnc3_train10.5_0_bias0.2_bs128',
 #'MSEnc3_train10.25_0_bias0.2_bs128'
 #        ]
-def read_list(f):
-    if os.path.isfile(f):
-        file = open(f,"r")
-        a= file.read()
-        traininglist =  a.split("$")
-        del traininglist[-1]
-        return traininglist
-    return []
-
 def do_the_thing_please(opt):
     opt.patch_fold_res = opt.im_fold + 'PATCHES/res/' + opt.name+ '/'
     opt.im_res = opt.im_fold + 'res/' + opt.name +'e'+str(opt.which_epoch)+'/'
@@ -82,7 +73,6 @@ def do_the_thing_please(opt):
             misc.toimage(temp[k,:,:,0],mode='L').save(os.path.join(opt.patch_fold_res,data['imname'][k]))
     imlist=[]
     imnamelist=[]
-    traininglist = read_list(opt.traininglist)
     for root,_,fnames in sorted(os.walk(A_fold)):
         for fname in fnames:
             if fname.endswith('.png') and "M1BS" in fname and fname[:-4] in traininglist:
@@ -112,12 +102,17 @@ def list2file(li,fi):
         file.write("\n")
     file.close()
 
-for epoch in [2]:
-    opt.which_epoch = epoch 
-    for i in [1,2,3,4]:
-        opt.traininglist = '/nfs/bigbox/hieule/penguin_data/p1000/split/test_' + str(i)
-        traininglist = read_list(opt.traininglist)
-        opt.name =  'MSEnc3_train0.8_'+str(i)+'_bias-1_bs128'
+opt.traininglist = '/nfs/bigbox/hieule/penguin_data/p1000/split/test_0'
+if os.path.isfile(opt.traininglist):
+    file = open(opt.traininglist,"r")
+    a= file.read()
+    traininglist =  a.split("$")
+    del traininglist[-1]
+    print traininglist
+for epoch in [2,4,6,8]:
+    opt.which_epoch = epoch
+    for n in name:
+        opt.name = n
         model = create_model(opt)
         opt.im_fold = '/nfs/bigbox/hieule/penguin_data/p1000/'
         do_the_thing_please(opt)

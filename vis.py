@@ -34,7 +34,7 @@ def show_plainmask_on_image(im,mask):
     im[:,:,1] = im[:,:,1] + mask*100
     im[im>255] = 255
     return im.astype(np.uint8)
-def visdir(imdir,maskdir,visdir):
+def visdir(imdir,maskdir,visdir,pimlist=[]):
     sdmkdir(visdir)    
     imlist=[]
     imnamelist=[]
@@ -43,32 +43,39 @@ def visdir(imdir,maskdir,visdir):
         print root,fnames
         for fname in fnames:
             if fname.endswith('.png'):
-                pathA = os.path.join(imdir,fname)
-                pathB = os.path.join(maskdir,fname)
-                imlist.append((pathA,pathB,fname))
-                imnamelist.append(fname)
+                if not pimlist or fname[:-4] in pimlist:
+                    pathA = os.path.join(imdir,fname)
+                    pathB = os.path.join(maskdir,fname)
+                    imlist.append((pathA,pathB,fname))
+                    imnamelist.append(fname)
     for pathA,pathB,fname in imlist:
         A = misc.imread(pathA)
         B = misc.imread(pathB)
         vim = show_heatmap_on_image(A,B)
         #vim = show_plainmask_on_image(A,B)
         misc.imsave(os.path.join(visdir,fname),np.append(A,vim,axis=1))
-def visdir2(imdir,GT,maskdir,visdir):
+def visdir2(imdir,GT,maskdir,visdir,pimlist=[]):
     sdmkdir(visdir)    
     imlist=[]
     imnamelist=[]
     for root,_,fnames in sorted(os.walk(maskdir)):
         for fname in fnames:
             if fname.endswith('.png'):
-                pathA = os.path.join(imdir,fname)
-                pathGT = os.path.join(GT,fname)
-                pathmask = os.path.join(maskdir,fname)
-                imlist.append((pathA,pathGT,pathmask,fname))
-                imnamelist.append(fname)
+                if not pimlist or fname[:-4] in pimlist:
+                    pathA = os.path.join(imdir,fname)
+                    pathGT = os.path.join(GT,fname)
+                    pathmask = os.path.join(maskdir,fname)
+                    imlist.append((pathA,pathGT,pathmask,fname))
+                    imnamelist.append(fname)
+
+    sz = 1000 
     for pathA,pathB,pathmask,fname in imlist:
         A = misc.imread(pathA).astype(np.uint8)
         GT = misc.imread(pathB)
         mask = misc.imread(pathmask)
+        A = misc.imresize(A,(sz,sz))
+        GT = misc.imresize(GT,(sz,sz))
+        mask = misc.imresize(mask,(sz,sz))
         fpr, tpr, thresholds = metrics.roc_curve(GT.ravel(), mask.ravel(), pos_label=255)
         auc =  metrics.auc(fpr, tpr)
         GTv = show_plainmask_on_image(A,GT)
@@ -77,20 +84,46 @@ def visdir2(imdir,GT,maskdir,visdir):
         maskv = draw(maskv,auc)
         misc.imsave(os.path.join(visdir,fname),np.hstack((A,maskv,GTv)))#np.append(np.append(A,GTv,axis=1),maskv,axis=1))
         #misc.imsave(os.path.join(visdir,fname),A)#np.append(np.append(A,GTv,axis=1),maskv,axis=1))
-def visAB(root,name):
+def visAB(root,name,imlist= []):
     
     A = root + '/A/'
     B = root + '/res/' + name +'/'
     vis = root + '/vis/'+name+'/'
-    visdir(A,B,vis)
-def visABC(root,name):
+    visdir(A,B,vis,imlist)
+def visABC(root,name,imlist=[]):
     print('VISABC Visualizing:' + name)
     A = root + '/A/'
     B = root + '/B/'
     res = root + '/res/' + name +'/'
     vis = root + '/vis_all/'+name+'/'
-    visdir2(A,B,res,vis)
+    visdir2(A,B,res,vis,imlist)
+def AUC(root,name,pimlist = []):
 
+    A = root + '/A/'
+    B = root + '/B/'
+    res = root + '/res/' + name +'/'
+    imlist=[]
+    imnamelist=[]
+    for root,_,fnames in sorted(os.walk(res)):
+        for fname in fnames:
+            if fname.endswith('.png'):
+                if not pimlist or fname[:-4] in pimlist:
+                    pathA = os.path.join(A,fname)
+                    pathGT = os.path.join(B,fname)
+                    pathmask = os.path.join(res,fname)
+                    imlist.append((pathA,pathGT,pathmask,fname))
+                    imnamelist.append(fname)
+
+    AUC =[]    
+    for pathA,pathB,pathmask,fname in imlist:
+        GT = misc.imread(pathB)
+        mask = misc.imread(pathmask)
+        fpr, tpr, thresholds = metrics.roc_curve(GT.ravel(), mask.ravel(), pos_label=255)
+        auc =  metrics.auc(fpr, tpr)
+        #maskv = show_plainmask_on_image(A,mask)
+        AUC.append((fname,auc))
+
+    return AUC
 
 def visTIF(root,name):
 
