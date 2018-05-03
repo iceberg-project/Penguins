@@ -4,8 +4,8 @@ from scipy import misc
 import os 
 from m_util import sdmkdir,to_rgb3b
 from sklearn import metrics
-import rasterio
-from rasterio import mask, features, warp
+#import rasterio
+#from rasterio import mask, features, warp
 
 def show_heatmap_on_image(img,mask):
 #    mask = -mask    
@@ -43,7 +43,7 @@ def visdir(imdir,maskdir,visdir,pimlist=[]):
         print root,fnames
         for fname in fnames:
             if fname.endswith('.png'):
-                if not pimlist or fname[:-4] in pimlist:
+                if len(pimlist) == 0 or fname[:-4] in pimlist:
                     pathA = os.path.join(imdir,fname)
                     pathB = os.path.join(maskdir,fname)
                     imlist.append((pathA,pathB,fname))
@@ -67,7 +67,7 @@ def visdir2(imdir,GT,maskdir,visdir,pimlist=[]):
                     pathmask = os.path.join(maskdir,fname)
                     imlist.append((pathA,pathGT,pathmask,fname))
                     imnamelist.append(fname)
-
+    print imlist
     sz = 1000 
     for pathA,pathB,pathmask,fname in imlist:
         A = misc.imread(pathA).astype(np.uint8)
@@ -124,7 +124,7 @@ def AUC(root,name,pimlist = []):
         AUC.append((fname,auc))
 
     return AUC
-
+'''
 def visTIF(root,name):
 
     print('VISTIF Visualizing:' + name)
@@ -163,3 +163,4 @@ def visTIF(root,name):
             dest.write(X) 
 
         print X.shape
+'''

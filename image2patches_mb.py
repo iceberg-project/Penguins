@@ -13,14 +13,7 @@ from scipy import misc
 from m_util import *
 from vis import *
 opt = TestOptions().parse()
-#opt = argparse.ArgumentParser().parse_args()
-#opt.im_fold='/gpfs/projects/LynchGroup/Train_all/CROPPED/p1000/'
-#opt.im_fold = '/nfs/bigbox/hieule/penguin_data/CROPPED/p300/'
-#opt.im_fold ='/nfs/bigbox/hieule/penguin_data/Test/CROZ/CROPPED/p300/'
 opt.checkpoints_dir = '/nfs/bigbox/hieule/penguin_data/checkpoints_new/'
-opt.name = 'train_on_p300'
-opt.name = 'MSEnc3_p2000_train_bias0.5_bs128'
-#opt.name ='MSE_mb_p500_train_bias0.5_bs128'
 opt.input_nc =3
 opt.model = 'single_unet'
 opt.step = 64
@@ -32,14 +25,6 @@ opt.no_dropout = True
 #'MSEnc3_train10.5_0_bias0.2_bs128',
 #'MSEnc3_train10.25_0_bias0.2_bs128'
 #        ]
-def read_list(f):
-    if os.path.isfile(f):
-        file = open(f,"r")
-        a= file.read()
-        traininglist =  a.split("$")
-        del traininglist[-1]
-        return traininglist
-    return []
 
 def do_the_thing_please(opt):
     opt.patch_fold_res = opt.im_fold + 'PATCHES/res/' + opt.name+ '/'
@@ -58,7 +43,7 @@ def do_the_thing_please(opt):
     imnamelist=[]
     
     
-    opt.dataset_mode ='png_withlist'
+    opt.dataset_mode ='png'
     opt.nThreads = 2
     opt.fineSize = 256
     opt.loadSize = 256
@@ -73,7 +58,6 @@ def do_the_thing_please(opt):
     dataset = data_loader.load_data()
     print(len(dataset))
     
-
     for i,data in enumerate(dataset):
         print data['A'].shape
         temp = model.get_prediction(data)['raw_out']
@@ -85,7 +69,7 @@ def do_the_thing_please(opt):
     traininglist = read_list(opt.traininglist)
     for root,_,fnames in sorted(os.walk(A_fold)):
         for fname in fnames:
-            if fname.endswith('.png') and "M1BS" in fname and fname[:-4] in traininglist:
+            if fname.endswith('.png') and "M1BS" in fname:
                 path = os.path.join(root,fname)
                 path_mask = os.path.join(B_fold,fname)
                 imlist.append((path,path_mask,fname))
@@ -97,12 +81,12 @@ def do_the_thing_please(opt):
         misc.toimage(mask.astype(np.uint8),mode='L').save(os.path.join(opt.im_res,imname))
 
 name = [
-'MSEnc3_train0.8_0_bias-1_bs128',
-'MSEnc3_train_0_0.5_0_bias-1_bs128',
-'MSEnc3_train_0_0.75_0_bias-1_bs128',
+#'MSEnc3_train0.8_0_bias-1_bs128',
+#'MSEnc3_train_0_0.5_0_bias-1_bs128',
+#'MSEnc3_train_0_0.75_0_bias-1_bs128',
 'MSEnc3_train_0_0.25_0_bias-1_bs128'
 ]
-
+'''
 def list2file(li,fi):
     file = open(fi,"w")
     for i in li:
@@ -112,9 +96,9 @@ def list2file(li,fi):
         file.write("\n")
     file.close()
 
-for epoch in [2]:
+for epoch in [10]:
     opt.which_epoch = epoch 
-    for i in [1,2,3,4]:
+    for i in [1,2,3,4,5]:
         opt.traininglist = '/nfs/bigbox/hieule/penguin_data/p1000/split/test_' + str(i)
         traininglist = read_list(opt.traininglist)
         opt.name =  'MSEnc3_train0.8_'+str(i)+'_bias-1_bs128'
@@ -125,10 +109,16 @@ for epoch in [2]:
         auc = AUC(opt.im_fold,opt.name+'e'+str(opt.which_epoch),pimlist = traininglist )
         list2file(auc,'./AUC/'+opt.name+'_e'+str(epoch)+'.txt')
     #    visAB(opt.im_fold,opt.name+'e'+str(opt.which_epoch),imlist = traininglist)
+'''
 
 #opt.im_fold ='/nfs/bigbox/hieule/penguin_data/CROPPED/p500_train/'
 #do_the_thing_please(opt)
-#opt.im_fold_temp ='/nfs/bigbox/hieule/penguin_data/Test/*TEST*/CROPPED/p300/'
-#for t in ["PAUL","CROZ"]:
-#    opt.im_fold = opt.im_fold_temp.replace("*TEST*",t)
-#    do_the_thing_please(opt)
+opt.name =  'MSEnc3_train_0_0.25_0_bias-1_bs128'
+opt.which_epoch = 10
+model = create_model(opt)
+
+opt.im_fold_temp ='/nfs/bigbox/hieule/penguin_data/Test/*TEST*/CROPPED/p300/'
+for t in ["PAUL","CROZ"]:
+    opt.im_fold = opt.im_fold_temp.replace("*TEST*",t)
+    do_the_thing_please(opt)
+    visABC(opt.im_fold,opt.name+'e'+str(opt.which_epoch) )

@@ -9,6 +9,10 @@ from pdb import set_trace as st
 import random
 import numpy as np
 import time
+import sys
+sys.path.insert(0,'..')
+from m_util import *
+
 class PngDataset(BaseDataset):
     def __init__(self, opt):
         self.opt = opt
@@ -18,27 +22,28 @@ class PngDataset(BaseDataset):
         self.B_dir = opt.dataroot + '/B/'
         self.imname = []
         self.imname_pos = []
-        self.traininglist  = []
-        print opt.traininglist
-        if os.path.isfile(opt.traininglist):
-            file = open(opt.traininglist,"r")
-            a= file.read()
-            self.traininglist =  a.split("$")
-            del self.traininglist[-1]
-            print self.traininglist
+        self.todolist  = []
+        print opt.todolist
+        if os.path.isfile(opt.todolist):
+            self.todolist = read_list(opt.todolist)
+            print(self.todolist)
+
+        else:
+            print('No todolist has found, process all files')
+            self.todolist = []
 
         for root,_,fnames in sorted(os.walk(self.A_dir)):
             for fname in fnames:
                 if fname.endswith('.png'):
                     temp = fname.split("#")
-                    if temp[0] in self.traininglist:
+                    if temp[0] in self.todolist or len(self.todolist) == 0:
                         self.imname.append(fname)
         
         for root,_,fnames in sorted(os.walk(self.B_dir)):
             for fname in fnames:
                 if fname.endswith('.png'):
                     temp = fname.split("#")
-                    if temp[0] in self.traininglist:
+                    if temp[0] in self.todolist or len(self.todolist) == 0:
                         self.imname_pos.append(fname)
         self.nim = len(self.imname)
 
@@ -67,18 +72,16 @@ class PngDataset(BaseDataset):
     def __getitem__(self,index):
         C_img = []
         if self.opt.randomSize:
-            self.opt.loadSize = np.random.randint(257,300,1)[0]
+            self.opt.loadSize = np.random.randint(self.opt.fineSize+1,500,1)[0]
         if random.random() < self.opt.biased_sampling:
             r_index = index % len(self.imname_pos)
             imname = self.imname_pos[r_index]
             A_img = Image.open(os.path.join(self.A_dir,imname))
             B_img = Image.open(os.path.join(self.B_dir,imname))
         else:
-            
             r_index = index % len(self.imname)
             imname = self.imname[r_index]
             A_img = Image.open(os.path.join(self.A_dir,imname))
-            
             if imname in self.imname_pos:
                 B_img = Image.open(os.path.join(self.B_dir,imname))
             else:
@@ -104,7 +107,6 @@ class PngDataset(BaseDataset):
         if self.opt.tsize:
             neww = self.opt.tw
             newh = self.opt.th
-        
         A_img = A_img.resize((neww, newh),Image.NEAREST)
         B_img = B_img.resize((neww, newh),Image.NEAREST)
         #C_img = np.copy(B_img).astype(np.uint8)
@@ -133,5 +135,4 @@ class PngDataset(BaseDataset):
             idx = torch.LongTensor(idx)
             A_img = A_img.index_select(2, idx)
             B_img = B_img.index_select(2, idx)
-         #   C_img = C_img.index_select(2,idx)
         return  {'A': A_img, 'B': B_img,'C':C_img,'imname':imname}

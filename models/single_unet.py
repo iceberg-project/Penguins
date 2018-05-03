@@ -16,9 +16,11 @@ class UnetModel(BaseModel):
         BaseModel.initialize(self, opt)
         self.isTrain = opt.isTrain
         self.opt = opt
+        print(self.opt.dropout_w)
+        
         # load/define networks
         self.netG = networks.define_G(opt.input_nc, 1, 64,
-                                      'unet_256', opt.norm, not opt.no_dropout, opt.init_type, self.gpu_ids)
+                                      'unet_256', opt.norm, not opt.no_dropout, opt.init_type, self.gpu_ids,dropout_w = self.opt.dropout_w)
         self.criterionL1 = torch.nn.L1Loss()        
         self.criterionMSE= torch.nn.MSELoss()        
         if self.isTrain:
@@ -35,9 +37,9 @@ class UnetModel(BaseModel):
                 self.schedulers.append(networks.get_scheduler(optimizer, opt))
         else:
             self.load_network(self.netG, 'G', opt.which_epoch)
-#        print('---------- Networks initialized -------------')
-#        networks.print_network(self.netG)
-#        print('-----------------------------------------------')
+        print('---------- Networks initialized -------------')
+        networks.print_network(self.netG)
+        print('-----------------------------------------------')
         
 
     def set_input(self, input):
@@ -68,8 +70,7 @@ class UnetModel(BaseModel):
         self.optimizer_G.step()
 
     def get_current_errors(self):
-        return OrderedDict([('G_Loss', self.loss_G.data[0]),('X',0)
-                            ])
+        return OrderedDict([('G_Loss_SQRT', np.sqrt(self.loss_G.data[0])),('0', 0)])
     def get_prediction_tensor(self,input_A):
         if len(self.gpu_ids) > 0:
             input_A = input_A.cuda(self.gpu_ids[0], async=True)

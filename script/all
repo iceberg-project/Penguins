@@ -1,0 +1,2393 @@
+0
+python /nfs/bigbox/hieule/Penguins_CODE/penguin_train.py --dropout 0.2 --randomSize --keep_ratio --batchSize 128 --biased_sampling -1 --traininglist /nfs/bigbox/hieule/penguin_data/p1000/split/train_0_all --gpu_ids 1 --model single_unet --input_nc 3 --name MSEnc3_train_all_0_bias-1_bs128_do0.2 --root /nfs/bigbox/hieule/penguin_data/p1000/PATCHES/64_386/ --dataroot /nfs/bigbox/hieule/penguin_data/p1000/PATCHES/64_386/ --dataset_mode png_withlist --fineSize 256 --display_port 9999 --checkpoints /nfs/bigbox/hieule/penguin_data/checkpoints_new/
+/nfs/bigbox/hieule/penguin_data/checkpoints_new/MSEnc3_train_all_0_bias-1_bs128_do0.2
+create web directory /nfs/bigbox/hieule/penguin_data/checkpoints_new/MSEnc3_train_all_0_bias-1_bs128_do0.2/web...
+CustomDatasetDataLoader
+/nfs/bigbox/hieule/penguin_data/p1000/split/train_0_all
+['orthoQB02_10DEC161334434-M1BS-101001000CB8F300_u08rfAEAC', 'WV02_20160115040140_103001005065A200_16JAN15040140-M1BS-500638401020_01_P003_u08rf3031', 'WV03_20160121015319_104001001762AC00_16JAN21015319-M1BS-500638671020_01_P001_u08rf3031', 'WV03_20160202130111_1040010017D54900_16FEB02130111-M1BS-500638661010_01_P001_u08rf3031', 'orthoWV02_11FEB030615365-M1BS-1030010008C6A700_u08rf3031', 'orthoWV02_11FEB111306175-M1BS-10300100080D2800_u08rfAEAC', 'orthoWV02_11FEB251253222-M1BS-1030010009092C00_u08rfAEAC', 'WV03_20170106053006_10400100272BF900_17JAN06053006-M1BS-057089629010_01_P001_u08rf3031', 'WV02_20151204195602_103001004F9A8500_15DEC04195602-M1BS-500637515080_01_P006_u08rf3031', 'WV02_20160119013349_1030010050B0C500_16JAN19013349-M1BS-500637522050_01_P001_u08rf3031', 'WV02_20160101055824_103001004E1BFF00_16JAN01055824-M1BS-500637502050_01_P007_u08rf3031', 'WV02_20160115054221_103001004F69B500_16JAN15054221-M1BS-500637521040_01_P004_u08rf3031', 'orthoQB02_11JAN121245196-M1BS-101001000CD66D00_u08rfAEAC', 'WV03_20160118055744_1040010017491D00_16JAN18055744-M1BS-500638671060_01_P001_u08rf3031', 'WV02_20160101055831_103001004FC8BC00_16JAN01055831-M1BS-500637524030_01_P001_u08rf3031', 'WV02_20160203054101_1030010051854A00_16FEB03054101-M1BS-500637516020_01_P001_u08rf3031']
+dataset [PNGDATASET] was created
+Total: 19059 || Pos: 2421
+single_unet
+initialization method [normal]
+---------- Networks initialized -------------
+UnetGenerator (
+  (model): UnetSkipConnectionBlock (
+    (model): Sequential (
+      (0): Conv2d(3, 64, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+      (1): UnetSkipConnectionBlock (
+        (model): Sequential (
+          (0): LeakyReLU (0.2, inplace)
+          (1): Conv2d(64, 128, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+          (2): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False)
+          (3): UnetSkipConnectionBlock (
+            (model): Sequential (
+              (0): LeakyReLU (0.2, inplace)
+              (1): Conv2d(128, 256, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+              (2): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False)
+              (3): UnetSkipConnectionBlock (
+                (model): Sequential (
+                  (0): LeakyReLU (0.2, inplace)
+                  (1): Conv2d(256, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                  (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                  (3): UnetSkipConnectionBlock (
+                    (model): Sequential (
+                      (0): LeakyReLU (0.2, inplace)
+                      (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                      (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                      (3): UnetSkipConnectionBlock (
+                        (model): Sequential (
+                          (0): LeakyReLU (0.2, inplace)
+                          (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                          (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                          (3): UnetSkipConnectionBlock (
+                            (model): Sequential (
+                              (0): LeakyReLU (0.2, inplace)
+                              (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                              (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                              (3): UnetSkipConnectionBlock (
+                                (model): Sequential (
+                                  (0): LeakyReLU (0.2, inplace)
+                                  (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                                  (2): ReLU (inplace)
+                                  (3): ConvTranspose2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                                  (4): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                                )
+                              )
+                              (4): ReLU (inplace)
+                              (5): ConvTranspose2d(1024, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                              (6): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                              (7): Dropout (p = 0.2)
+                            )
+                          )
+                          (4): ReLU (inplace)
+                          (5): ConvTranspose2d(1024, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                          (6): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                          (7): Dropout (p = 0.2)
+                        )
+                      )
+                      (4): ReLU (inplace)
+                      (5): ConvTranspose2d(1024, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                      (6): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                      (7): Dropout (p = 0.2)
+                    )
+                  )
+                  (4): ReLU (inplace)
+                  (5): ConvTranspose2d(1024, 256, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                  (6): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False)
+                )
+              )
+              (4): ReLU (inplace)
+              (5): ConvTranspose2d(512, 128, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+              (6): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False)
+            )
+          )
+          (4): ReLU (inplace)
+          (5): ConvTranspose2d(256, 64, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+          (6): InstanceNorm2d(64, eps=1e-05, momentum=0.1, affine=False)
+        )
+      )
+      (2): ReLU (inplace)
+      (3): ConvTranspose2d(128, 1, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+      (4): Tanh ()
+    )
+  )
+)
+Total number of parameters: 54405505
+-----------------------------------------------
+model [UnetModel] was created
+epoch:1
+Total: 19059 || Pos: 2421
+(epoch: 1, iters: 128, time: 2.040) G_Loss_SQRT: 0.968 0: 0.000 
+(epoch: 1, iters: 1408, time: 1.549) G_Loss_SQRT: 0.651 0: 0.000 
+(epoch: 1, iters: 2688, time: 1.570) G_Loss_SQRT: 0.470 0: 0.000 
+(epoch: 1, iters: 3968, time: 1.568) G_Loss_SQRT: 0.371 0: 0.000 
+(epoch: 1, iters: 5248, time: 1.579) G_Loss_SQRT: 0.300 0: 0.000 
+(epoch: 1, iters: 6528, time: 1.586) G_Loss_SQRT: 0.261 0: 0.000 
+(epoch: 1, iters: 7808, time: 1.590) G_Loss_SQRT: 0.221 0: 0.000 
+(epoch: 1, iters: 9088, time: 1.593) G_Loss_SQRT: 0.221 0: 0.000 
+(epoch: 1, iters: 10368, time: 1.571) G_Loss_SQRT: 0.204 0: 0.000 
+(epoch: 1, iters: 11648, time: 1.579) G_Loss_SQRT: 0.191 0: 0.000 
+(epoch: 1, iters: 12928, time: 1.578) G_Loss_SQRT: 0.190 0: 0.000 
+(epoch: 1, iters: 14208, time: 1.578) G_Loss_SQRT: 0.140 0: 0.000 
+(epoch: 1, iters: 15488, time: 1.582) G_Loss_SQRT: 0.169 0: 0.000 
+(epoch: 1, iters: 16768, time: 1.579) G_Loss_SQRT: 0.140 0: 0.000 
+(epoch: 1, iters: 18048, time: 1.577) G_Loss_SQRT: 0.131 0: 0.000 
+(epoch: 1, iters: 19328, time: 1.574) G_Loss_SQRT: 0.148 0: 0.000 
+(epoch: 1, iters: 20608, time: 1.597) G_Loss_SQRT: 0.160 0: 0.000 
+(epoch: 1, iters: 21888, time: 1.583) G_Loss_SQRT: 0.119 0: 0.000 
+(epoch: 1, iters: 23168, time: 1.578) G_Loss_SQRT: 0.141 0: 0.000 
+(epoch: 1, iters: 24448, time: 1.572) G_Loss_SQRT: 0.127 0: 0.000 
+(epoch: 1, iters: 25728, time: 1.572) G_Loss_SQRT: 0.162 0: 0.000 
+(epoch: 1, iters: 27008, time: 1.576) G_Loss_SQRT: 0.101 0: 0.000 
+(epoch: 1, iters: 28288, time: 1.573) G_Loss_SQRT: 0.107 0: 0.000 
+(epoch: 1, iters: 29568, time: 1.579) G_Loss_SQRT: 0.126 0: 0.000 
+End of epoch 1 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 1, iters 30080
+End of epoch 1 / 10 	 Time Taken: 240 sec
+learning rate = 0.0002000
+epoch:2
+Total: 19059 || Pos: 2421
+(epoch: 2, iters: 128, time: 1.061) G_Loss_SQRT: 0.118 0: 0.000 
+(epoch: 2, iters: 1408, time: 1.586) G_Loss_SQRT: 0.094 0: 0.000 
+(epoch: 2, iters: 2688, time: 1.583) G_Loss_SQRT: 0.090 0: 0.000 
+(epoch: 2, iters: 3968, time: 1.581) G_Loss_SQRT: 0.094 0: 0.000 
+(epoch: 2, iters: 5248, time: 1.576) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 2, iters: 6528, time: 1.577) G_Loss_SQRT: 0.110 0: 0.000 
+(epoch: 2, iters: 7808, time: 1.574) G_Loss_SQRT: 0.138 0: 0.000 
+(epoch: 2, iters: 9088, time: 1.583) G_Loss_SQRT: 0.134 0: 0.000 
+(epoch: 2, iters: 10368, time: 1.579) G_Loss_SQRT: 0.121 0: 0.000 
+(epoch: 2, iters: 11648, time: 1.588) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 2, iters: 12928, time: 1.654) G_Loss_SQRT: 0.129 0: 0.000 
+(epoch: 2, iters: 14208, time: 1.576) G_Loss_SQRT: 0.123 0: 0.000 
+(epoch: 2, iters: 15488, time: 1.570) G_Loss_SQRT: 0.117 0: 0.000 
+(epoch: 2, iters: 16768, time: 1.575) G_Loss_SQRT: 0.127 0: 0.000 
+(epoch: 2, iters: 18048, time: 1.784) G_Loss_SQRT: 0.090 0: 0.000 
+(epoch: 2, iters: 19328, time: 1.772) G_Loss_SQRT: 0.097 0: 0.000 
+(epoch: 2, iters: 20608, time: 1.786) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 2, iters: 21888, time: 1.785) G_Loss_SQRT: 0.108 0: 0.000 
+(epoch: 2, iters: 23168, time: 1.775) G_Loss_SQRT: 0.128 0: 0.000 
+(epoch: 2, iters: 24448, time: 1.792) G_Loss_SQRT: 0.106 0: 0.000 
+(epoch: 2, iters: 25728, time: 1.571) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 2, iters: 27008, time: 1.576) G_Loss_SQRT: 0.141 0: 0.000 
+(epoch: 2, iters: 28288, time: 1.566) G_Loss_SQRT: 0.114 0: 0.000 
+(epoch: 2, iters: 29568, time: 1.576) G_Loss_SQRT: 0.083 0: 0.000 
+End of epoch 2 / 10 	 Time Taken: 247 sec
+saving the model at the end of epoch 2, iters 60160
+End of epoch 2 / 10 	 Time Taken: 249 sec
+learning rate = 0.0002000
+epoch:3
+Total: 19059 || Pos: 2421
+(epoch: 3, iters: 128, time: 1.074) G_Loss_SQRT: 0.137 0: 0.000 
+(epoch: 3, iters: 1408, time: 1.550) G_Loss_SQRT: 0.121 0: 0.000 
+(epoch: 3, iters: 2688, time: 1.577) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 3, iters: 3968, time: 1.596) G_Loss_SQRT: 0.111 0: 0.000 
+(epoch: 3, iters: 5248, time: 1.595) G_Loss_SQRT: 0.117 0: 0.000 
+(epoch: 3, iters: 6528, time: 1.580) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 3, iters: 7808, time: 1.573) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 3, iters: 9088, time: 1.576) G_Loss_SQRT: 0.142 0: 0.000 
+(epoch: 3, iters: 10368, time: 1.578) G_Loss_SQRT: 0.134 0: 0.000 
+(epoch: 3, iters: 11648, time: 1.580) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 3, iters: 12928, time: 1.583) G_Loss_SQRT: 0.094 0: 0.000 
+(epoch: 3, iters: 14208, time: 1.588) G_Loss_SQRT: 0.106 0: 0.000 
+(epoch: 3, iters: 15488, time: 1.568) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 3, iters: 16768, time: 1.576) G_Loss_SQRT: 0.091 0: 0.000 
+(epoch: 3, iters: 18048, time: 1.568) G_Loss_SQRT: 0.114 0: 0.000 
+(epoch: 3, iters: 19328, time: 1.580) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 3, iters: 20608, time: 1.576) G_Loss_SQRT: 0.110 0: 0.000 
+(epoch: 3, iters: 21888, time: 1.579) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 3, iters: 23168, time: 1.590) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 3, iters: 24448, time: 1.569) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 3, iters: 25728, time: 1.570) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 3, iters: 27008, time: 1.574) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 3, iters: 28288, time: 1.580) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 3, iters: 29568, time: 1.585) G_Loss_SQRT: 0.130 0: 0.000 
+End of epoch 3 / 10 	 Time Taken: 237 sec
+saving the model at the end of epoch 3, iters 90240
+End of epoch 3 / 10 	 Time Taken: 240 sec
+learning rate = 0.0002000
+epoch:4
+Total: 19059 || Pos: 2421
+(epoch: 4, iters: 128, time: 1.062) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 4, iters: 1408, time: 1.578) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 4, iters: 2688, time: 1.575) G_Loss_SQRT: 0.053 0: 0.000 
+(epoch: 4, iters: 3968, time: 1.586) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 4, iters: 5248, time: 1.571) G_Loss_SQRT: 0.108 0: 0.000 
+(epoch: 4, iters: 6528, time: 1.570) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 4, iters: 7808, time: 1.578) G_Loss_SQRT: 0.108 0: 0.000 
+(epoch: 4, iters: 9088, time: 1.576) G_Loss_SQRT: 0.086 0: 0.000 
+(epoch: 4, iters: 10368, time: 1.585) G_Loss_SQRT: 0.063 0: 0.000 
+(epoch: 4, iters: 11648, time: 1.576) G_Loss_SQRT: 0.135 0: 0.000 
+(epoch: 4, iters: 12928, time: 1.580) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 4, iters: 14208, time: 1.562) G_Loss_SQRT: 0.106 0: 0.000 
+(epoch: 4, iters: 15488, time: 1.569) G_Loss_SQRT: 0.068 0: 0.000 
+(epoch: 4, iters: 16768, time: 1.575) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 4, iters: 18048, time: 1.582) G_Loss_SQRT: 0.076 0: 0.000 
+(epoch: 4, iters: 19328, time: 1.578) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 4, iters: 20608, time: 1.579) G_Loss_SQRT: 0.080 0: 0.000 
+(epoch: 4, iters: 21888, time: 1.579) G_Loss_SQRT: 0.068 0: 0.000 
+(epoch: 4, iters: 23168, time: 1.571) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 4, iters: 24448, time: 1.571) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 4, iters: 25728, time: 1.586) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 4, iters: 27008, time: 1.569) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 4, iters: 28288, time: 1.559) G_Loss_SQRT: 0.093 0: 0.000 
+(epoch: 4, iters: 29568, time: 1.580) G_Loss_SQRT: 0.085 0: 0.000 
+End of epoch 4 / 10 	 Time Taken: 237 sec
+saving the model at the end of epoch 4, iters 120320
+End of epoch 4 / 10 	 Time Taken: 240 sec
+learning rate = 0.0002000
+epoch:5
+Total: 19059 || Pos: 2421
+(epoch: 5, iters: 128, time: 1.072) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 5, iters: 1408, time: 1.577) G_Loss_SQRT: 0.121 0: 0.000 
+(epoch: 5, iters: 2688, time: 1.568) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 5, iters: 3968, time: 1.583) G_Loss_SQRT: 0.113 0: 0.000 
+(epoch: 5, iters: 5248, time: 1.578) G_Loss_SQRT: 0.078 0: 0.000 
+(epoch: 5, iters: 6528, time: 1.570) G_Loss_SQRT: 0.068 0: 0.000 
+(epoch: 5, iters: 7808, time: 1.577) G_Loss_SQRT: 0.112 0: 0.000 
+(epoch: 5, iters: 9088, time: 1.576) G_Loss_SQRT: 0.130 0: 0.000 
+(epoch: 5, iters: 10368, time: 1.569) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 5, iters: 11648, time: 1.561) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 5, iters: 12928, time: 1.576) G_Loss_SQRT: 0.115 0: 0.000 
+(epoch: 5, iters: 14208, time: 1.574) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 5, iters: 15488, time: 1.578) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 5, iters: 16768, time: 1.577) G_Loss_SQRT: 0.130 0: 0.000 
+(epoch: 5, iters: 18048, time: 1.577) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 5, iters: 19328, time: 1.563) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 5, iters: 20608, time: 1.576) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 5, iters: 21888, time: 1.569) G_Loss_SQRT: 0.093 0: 0.000 
+(epoch: 5, iters: 23168, time: 1.581) G_Loss_SQRT: 0.080 0: 0.000 
+(epoch: 5, iters: 24448, time: 1.573) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 5, iters: 25728, time: 1.584) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 5, iters: 27008, time: 1.575) G_Loss_SQRT: 0.123 0: 0.000 
+(epoch: 5, iters: 28288, time: 1.575) G_Loss_SQRT: 0.108 0: 0.000 
+(epoch: 5, iters: 29568, time: 1.583) G_Loss_SQRT: 0.078 0: 0.000 
+End of epoch 5 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 5, iters 150400
+End of epoch 5 / 10 	 Time Taken: 241 sec
+learning rate = 0.0001667
+epoch:6
+Total: 19059 || Pos: 2421
+(epoch: 6, iters: 128, time: 1.059) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 6, iters: 1408, time: 1.579) G_Loss_SQRT: 0.073 0: 0.000 
+(epoch: 6, iters: 2688, time: 1.578) G_Loss_SQRT: 0.076 0: 0.000 
+(epoch: 6, iters: 3968, time: 1.581) G_Loss_SQRT: 0.051 0: 0.000 
+(epoch: 6, iters: 5248, time: 1.578) G_Loss_SQRT: 0.070 0: 0.000 
+(epoch: 6, iters: 6528, time: 1.582) G_Loss_SQRT: 0.094 0: 0.000 
+(epoch: 6, iters: 7808, time: 1.578) G_Loss_SQRT: 0.067 0: 0.000 
+(epoch: 6, iters: 9088, time: 1.587) G_Loss_SQRT: 0.094 0: 0.000 
+(epoch: 6, iters: 10368, time: 1.578) G_Loss_SQRT: 0.111 0: 0.000 
+(epoch: 6, iters: 11648, time: 1.574) G_Loss_SQRT: 0.086 0: 0.000 
+(epoch: 6, iters: 12928, time: 1.583) G_Loss_SQRT: 0.103 0: 0.000 
+(epoch: 6, iters: 14208, time: 1.586) G_Loss_SQRT: 0.080 0: 0.000 
+(epoch: 6, iters: 15488, time: 1.577) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 6, iters: 16768, time: 1.580) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 6, iters: 18048, time: 1.588) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 6, iters: 19328, time: 1.575) G_Loss_SQRT: 0.069 0: 0.000 
+(epoch: 6, iters: 20608, time: 1.585) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 6, iters: 21888, time: 1.579) G_Loss_SQRT: 0.055 0: 0.000 
+(epoch: 6, iters: 23168, time: 1.579) G_Loss_SQRT: 0.080 0: 0.000 
+(epoch: 6, iters: 24448, time: 1.571) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 6, iters: 25728, time: 1.581) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 6, iters: 27008, time: 1.581) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 6, iters: 28288, time: 1.569) G_Loss_SQRT: 0.116 0: 0.000 
+(epoch: 6, iters: 29568, time: 1.588) G_Loss_SQRT: 0.112 0: 0.000 
+End of epoch 6 / 10 	 Time Taken: 237 sec
+saving the model at the end of epoch 6, iters 180480
+End of epoch 6 / 10 	 Time Taken: 240 sec
+learning rate = 0.0001333
+epoch:7
+Total: 19059 || Pos: 2421
+(epoch: 7, iters: 128, time: 1.045) G_Loss_SQRT: 0.105 0: 0.000 
+(epoch: 7, iters: 1408, time: 1.568) G_Loss_SQRT: 0.072 0: 0.000 
+(epoch: 7, iters: 2688, time: 1.575) G_Loss_SQRT: 0.057 0: 0.000 
+(epoch: 7, iters: 3968, time: 1.580) G_Loss_SQRT: 0.067 0: 0.000 
+(epoch: 7, iters: 5248, time: 1.581) G_Loss_SQRT: 0.106 0: 0.000 
+(epoch: 7, iters: 6528, time: 1.580) G_Loss_SQRT: 0.100 0: 0.000 
+(epoch: 7, iters: 7808, time: 1.578) G_Loss_SQRT: 0.090 0: 0.000 
+(epoch: 7, iters: 9088, time: 1.573) G_Loss_SQRT: 0.068 0: 0.000 
+(epoch: 7, iters: 10368, time: 1.581) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 7, iters: 11648, time: 1.572) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 7, iters: 12928, time: 1.591) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 7, iters: 14208, time: 1.580) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 7, iters: 15488, time: 1.573) G_Loss_SQRT: 0.069 0: 0.000 
+(epoch: 7, iters: 16768, time: 1.589) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 7, iters: 18048, time: 1.584) G_Loss_SQRT: 0.058 0: 0.000 
+(epoch: 7, iters: 19328, time: 1.580) G_Loss_SQRT: 0.067 0: 0.000 
+(epoch: 7, iters: 20608, time: 1.580) G_Loss_SQRT: 0.056 0: 0.000 
+(epoch: 7, iters: 21888, time: 1.575) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 7, iters: 23168, time: 1.579) G_Loss_SQRT: 0.074 0: 0.000 
+(epoch: 7, iters: 24448, time: 1.588) G_Loss_SQRT: 0.069 0: 0.000 
+(epoch: 7, iters: 25728, time: 1.578) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 7, iters: 27008, time: 1.573) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 7, iters: 28288, time: 1.573) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 7, iters: 29568, time: 1.583) G_Loss_SQRT: 0.051 0: 0.000 
+End of epoch 7 / 10 	 Time Taken: 237 sec
+saving the model at the end of epoch 7, iters 210560
+End of epoch 7 / 10 	 Time Taken: 240 sec
+learning rate = 0.0001000
+epoch:8
+Total: 19059 || Pos: 2421
+(epoch: 8, iters: 128, time: 1.048) G_Loss_SQRT: 0.072 0: 0.000 
+(epoch: 8, iters: 1408, time: 1.566) G_Loss_SQRT: 0.058 0: 0.000 
+(epoch: 8, iters: 2688, time: 1.582) G_Loss_SQRT: 0.069 0: 0.000 
+(epoch: 8, iters: 3968, time: 1.580) G_Loss_SQRT: 0.073 0: 0.000 
+(epoch: 8, iters: 5248, time: 1.576) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 8, iters: 6528, time: 1.555) G_Loss_SQRT: 0.052 0: 0.000 
+(epoch: 8, iters: 7808, time: 1.571) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 8, iters: 9088, time: 1.583) G_Loss_SQRT: 0.062 0: 0.000 
+(epoch: 8, iters: 10368, time: 1.579) G_Loss_SQRT: 0.062 0: 0.000 
+(epoch: 8, iters: 11648, time: 1.578) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 8, iters: 12928, time: 1.584) G_Loss_SQRT: 0.058 0: 0.000 
+(epoch: 8, iters: 14208, time: 1.570) G_Loss_SQRT: 0.072 0: 0.000 
+(epoch: 8, iters: 15488, time: 1.572) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 8, iters: 16768, time: 1.561) G_Loss_SQRT: 0.044 0: 0.000 
+(epoch: 8, iters: 18048, time: 1.572) G_Loss_SQRT: 0.046 0: 0.000 
+(epoch: 8, iters: 19328, time: 1.579) G_Loss_SQRT: 0.069 0: 0.000 
+(epoch: 8, iters: 20608, time: 1.575) G_Loss_SQRT: 0.065 0: 0.000 
+(epoch: 8, iters: 21888, time: 1.570) G_Loss_SQRT: 0.076 0: 0.000 
+(epoch: 8, iters: 23168, time: 1.575) G_Loss_SQRT: 0.059 0: 0.000 
+(epoch: 8, iters: 24448, time: 1.588) G_Loss_SQRT: 0.058 0: 0.000 
+(epoch: 8, iters: 25728, time: 1.576) G_Loss_SQRT: 0.060 0: 0.000 
+(epoch: 8, iters: 27008, time: 1.574) G_Loss_SQRT: 0.049 0: 0.000 
+(epoch: 8, iters: 28288, time: 1.561) G_Loss_SQRT: 0.071 0: 0.000 
+(epoch: 8, iters: 29568, time: 1.576) G_Loss_SQRT: 0.059 0: 0.000 
+End of epoch 8 / 10 	 Time Taken: 237 sec
+saving the model at the end of epoch 8, iters 240640
+End of epoch 8 / 10 	 Time Taken: 240 sec
+learning rate = 0.0000667
+epoch:9
+Total: 19059 || Pos: 2421
+(epoch: 9, iters: 128, time: 1.064) G_Loss_SQRT: 0.064 0: 0.000 
+(epoch: 9, iters: 1408, time: 1.580) G_Loss_SQRT: 0.072 0: 0.000 
+(epoch: 9, iters: 2688, time: 1.570) G_Loss_SQRT: 0.069 0: 0.000 
+(epoch: 9, iters: 3968, time: 1.579) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 9, iters: 5248, time: 1.577) G_Loss_SQRT: 0.073 0: 0.000 
+(epoch: 9, iters: 6528, time: 1.571) G_Loss_SQRT: 0.093 0: 0.000 
+(epoch: 9, iters: 7808, time: 1.574) G_Loss_SQRT: 0.053 0: 0.000 
+(epoch: 9, iters: 9088, time: 1.590) G_Loss_SQRT: 0.049 0: 0.000 
+(epoch: 9, iters: 10368, time: 1.584) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 9, iters: 11648, time: 1.565) G_Loss_SQRT: 0.057 0: 0.000 
+(epoch: 9, iters: 12928, time: 1.577) G_Loss_SQRT: 0.070 0: 0.000 
+(epoch: 9, iters: 14208, time: 1.576) G_Loss_SQRT: 0.071 0: 0.000 
+(epoch: 9, iters: 15488, time: 1.576) G_Loss_SQRT: 0.080 0: 0.000 
+(epoch: 9, iters: 16768, time: 1.572) G_Loss_SQRT: 0.053 0: 0.000 
+(epoch: 9, iters: 18048, time: 1.580) G_Loss_SQRT: 0.070 0: 0.000 
+(epoch: 9, iters: 19328, time: 1.585) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 9, iters: 20608, time: 1.579) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 9, iters: 21888, time: 1.596) G_Loss_SQRT: 0.060 0: 0.000 
+(epoch: 9, iters: 23168, time: 1.580) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 9, iters: 24448, time: 1.582) G_Loss_SQRT: 0.057 0: 0.000 
+(epoch: 9, iters: 25728, time: 1.577) G_Loss_SQRT: 0.094 0: 0.000 
+(epoch: 9, iters: 27008, time: 1.578) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 9, iters: 28288, time: 1.576) G_Loss_SQRT: 0.041 0: 0.000 
+(epoch: 9, iters: 29568, time: 1.577) G_Loss_SQRT: 0.059 0: 0.000 
+End of epoch 9 / 10 	 Time Taken: 237 sec
+saving the model at the end of epoch 9, iters 270720
+End of epoch 9 / 10 	 Time Taken: 239 sec
+learning rate = 0.0000333
+epoch:10
+Total: 19059 || Pos: 2421
+(epoch: 10, iters: 128, time: 1.039) G_Loss_SQRT: 0.051 0: 0.000 
+(epoch: 10, iters: 1408, time: 1.584) G_Loss_SQRT: 0.068 0: 0.000 
+(epoch: 10, iters: 2688, time: 1.575) G_Loss_SQRT: 0.063 0: 0.000 
+(epoch: 10, iters: 3968, time: 1.589) G_Loss_SQRT: 0.056 0: 0.000 
+(epoch: 10, iters: 5248, time: 1.579) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 10, iters: 6528, time: 1.570) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 10, iters: 7808, time: 1.584) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 10, iters: 9088, time: 1.584) G_Loss_SQRT: 0.049 0: 0.000 
+(epoch: 10, iters: 10368, time: 1.570) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 10, iters: 11648, time: 1.573) G_Loss_SQRT: 0.067 0: 0.000 
+(epoch: 10, iters: 12928, time: 1.576) G_Loss_SQRT: 0.073 0: 0.000 
+(epoch: 10, iters: 14208, time: 1.582) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 10, iters: 15488, time: 1.582) G_Loss_SQRT: 0.033 0: 0.000 
+(epoch: 10, iters: 16768, time: 1.591) G_Loss_SQRT: 0.080 0: 0.000 
+(epoch: 10, iters: 18048, time: 1.580) G_Loss_SQRT: 0.060 0: 0.000 
+(epoch: 10, iters: 19328, time: 1.582) G_Loss_SQRT: 0.086 0: 0.000 
+(epoch: 10, iters: 20608, time: 1.584) G_Loss_SQRT: 0.072 0: 0.000 
+(epoch: 10, iters: 21888, time: 1.582) G_Loss_SQRT: 0.065 0: 0.000 
+(epoch: 10, iters: 23168, time: 1.582) G_Loss_SQRT: 0.061 0: 0.000 
+(epoch: 10, iters: 24448, time: 1.574) G_Loss_SQRT: 0.072 0: 0.000 
+(epoch: 10, iters: 25728, time: 1.574) G_Loss_SQRT: 0.090 0: 0.000 
+(epoch: 10, iters: 27008, time: 1.573) G_Loss_SQRT: 0.073 0: 0.000 
+(epoch: 10, iters: 28288, time: 1.577) G_Loss_SQRT: 0.059 0: 0.000 
+(epoch: 10, iters: 29568, time: 1.579) G_Loss_SQRT: 0.070 0: 0.000 
+End of epoch 10 / 10 	 Time Taken: 237 sec
+saving the model at the end of epoch 10, iters 300800
+End of epoch 10 / 10 	 Time Taken: 239 sec
+learning rate = 0.0000000
+1
+1
+python /nfs/bigbox/hieule/Penguins_CODE/penguin_train.py --dropout 0.2 --randomSize --keep_ratio --batchSize 128 --biased_sampling -1 --traininglist /nfs/bigbox/hieule/penguin_data/p1000/split/train_1_all --gpu_ids 1 --model single_unet --input_nc 3 --name MSEnc3_train_all_1_bias-1_bs128_do0.2 --root /nfs/bigbox/hieule/penguin_data/p1000/PATCHES/64_386/ --dataroot /nfs/bigbox/hieule/penguin_data/p1000/PATCHES/64_386/ --dataset_mode png_withlist --fineSize 256 --display_port 9999 --checkpoints /nfs/bigbox/hieule/penguin_data/checkpoints_new/
+/nfs/bigbox/hieule/penguin_data/checkpoints_new/MSEnc3_train_all_1_bias-1_bs128_do0.2
+create web directory /nfs/bigbox/hieule/penguin_data/checkpoints_new/MSEnc3_train_all_1_bias-1_bs128_do0.2/web...
+CustomDatasetDataLoader
+/nfs/bigbox/hieule/penguin_data/p1000/split/train_1_all
+['orthoQB02_10DEC161334434-M1BS-101001000CB8F300_u08rfAEAC', 'WV02_20160115040140_103001005065A200_16JAN15040140-M1BS-500638401020_01_P003_u08rf3031', 'WV03_20170217064537_10400100297FEA00_17FEB17064537-M1BS-057107305010_01_P001_u08rf3031', 'WV03_20160121015319_104001001762AC00_16JAN21015319-M1BS-500638671020_01_P001_u08rf3031', 'WV03_20160202130111_1040010017D54900_16FEB02130111-M1BS-500638661010_01_P001_u08rf3031', 'orthoWV02_11FEB030615365-M1BS-1030010008C6A700_u08rf3031', 'orthoWV02_11FEB111306175-M1BS-10300100080D2800_u08rfAEAC', 'WV03_20170106053006_10400100272BF900_17JAN06053006-M1BS-057089629010_01_P001_u08rf3031', 'WV02_20160119013349_1030010050B0C500_16JAN19013349-M1BS-500637522050_01_P001_u08rf3031', 'orthoWV02_11FEB191312281-M1BS-10300100098AAB00_u08rfAEAC', 'WV02_20160101055824_103001004E1BFF00_16JAN01055824-M1BS-500637502050_01_P007_u08rf3031', 'WV02_20160115054221_103001004F69B500_16JAN15054221-M1BS-500637521040_01_P004_u08rf3031', 'orthoQB02_11JAN121245196-M1BS-101001000CD66D00_u08rfAEAC', 'WV03_20160118055744_1040010017491D00_16JAN18055744-M1BS-500638671060_01_P001_u08rf3031', 'WV02_20110131195115_1030010009CCF900_11JAN31195115-M1BS-052549143040_01_P003_u08rf3031', 'WV02_20160101055831_103001004FC8BC00_16JAN01055831-M1BS-500637524030_01_P001_u08rf3031']
+dataset [PNGDATASET] was created
+Total: 19862 || Pos: 2779
+single_unet
+0.2
+initialization method [normal]
+---------- Networks initialized -------------
+UnetGenerator (
+  (model): UnetSkipConnectionBlock (
+    (model): Sequential (
+      (0): Conv2d(3, 64, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+      (1): UnetSkipConnectionBlock (
+        (model): Sequential (
+          (0): LeakyReLU (0.2, inplace)
+          (1): Conv2d(64, 128, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+          (2): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False)
+          (3): UnetSkipConnectionBlock (
+            (model): Sequential (
+              (0): LeakyReLU (0.2, inplace)
+              (1): Conv2d(128, 256, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+              (2): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False)
+              (3): UnetSkipConnectionBlock (
+                (model): Sequential (
+                  (0): LeakyReLU (0.2, inplace)
+                  (1): Conv2d(256, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                  (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                  (3): UnetSkipConnectionBlock (
+                    (model): Sequential (
+                      (0): LeakyReLU (0.2, inplace)
+                      (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                      (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                      (3): UnetSkipConnectionBlock (
+                        (model): Sequential (
+                          (0): LeakyReLU (0.2, inplace)
+                          (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                          (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                          (3): UnetSkipConnectionBlock (
+                            (model): Sequential (
+                              (0): LeakyReLU (0.2, inplace)
+                              (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                              (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                              (3): UnetSkipConnectionBlock (
+                                (model): Sequential (
+                                  (0): LeakyReLU (0.2, inplace)
+                                  (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                                  (2): ReLU (inplace)
+                                  (3): ConvTranspose2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                                  (4): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                                )
+                              )
+                              (4): ReLU (inplace)
+                              (5): ConvTranspose2d(1024, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                              (6): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                              (7): Dropout (p = 0.2)
+                            )
+                          )
+                          (4): ReLU (inplace)
+                          (5): ConvTranspose2d(1024, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                          (6): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                          (7): Dropout (p = 0.2)
+                        )
+                      )
+                      (4): ReLU (inplace)
+                      (5): ConvTranspose2d(1024, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                      (6): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                      (7): Dropout (p = 0.2)
+                    )
+                  )
+                  (4): ReLU (inplace)
+                  (5): ConvTranspose2d(1024, 256, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                  (6): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False)
+                )
+              )
+              (4): ReLU (inplace)
+              (5): ConvTranspose2d(512, 128, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+              (6): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False)
+            )
+          )
+          (4): ReLU (inplace)
+          (5): ConvTranspose2d(256, 64, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+          (6): InstanceNorm2d(64, eps=1e-05, momentum=0.1, affine=False)
+        )
+      )
+      (2): ReLU (inplace)
+      (3): ConvTranspose2d(128, 1, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+      (4): Tanh ()
+    )
+  )
+)
+Total number of parameters: 54405505
+-----------------------------------------------
+model [UnetModel] was created
+epoch:1
+Total: 19862 || Pos: 2779
+(epoch: 1, iters: 128, time: 2.122) G_Loss_SQRT: 0.915 0: 0.000 
+(epoch: 1, iters: 1408, time: 1.577) G_Loss_SQRT: 0.590 0: 0.000 
+(epoch: 1, iters: 2688, time: 1.570) G_Loss_SQRT: 0.444 0: 0.000 
+(epoch: 1, iters: 3968, time: 1.574) G_Loss_SQRT: 0.348 0: 0.000 
+(epoch: 1, iters: 5248, time: 1.564) G_Loss_SQRT: 0.290 0: 0.000 
+(epoch: 1, iters: 6528, time: 1.583) G_Loss_SQRT: 0.252 0: 0.000 
+(epoch: 1, iters: 7808, time: 1.580) G_Loss_SQRT: 0.224 0: 0.000 
+(epoch: 1, iters: 9088, time: 1.588) G_Loss_SQRT: 0.226 0: 0.000 
+(epoch: 1, iters: 10368, time: 1.568) G_Loss_SQRT: 0.191 0: 0.000 
+(epoch: 1, iters: 11648, time: 1.572) G_Loss_SQRT: 0.163 0: 0.000 
+(epoch: 1, iters: 12928, time: 1.574) G_Loss_SQRT: 0.176 0: 0.000 
+(epoch: 1, iters: 14208, time: 1.581) G_Loss_SQRT: 0.136 0: 0.000 
+(epoch: 1, iters: 15488, time: 1.567) G_Loss_SQRT: 0.140 0: 0.000 
+(epoch: 1, iters: 16768, time: 1.580) G_Loss_SQRT: 0.116 0: 0.000 
+(epoch: 1, iters: 18048, time: 1.573) G_Loss_SQRT: 0.193 0: 0.000 
+(epoch: 1, iters: 19328, time: 1.571) G_Loss_SQRT: 0.120 0: 0.000 
+(epoch: 1, iters: 20608, time: 1.558) G_Loss_SQRT: 0.156 0: 0.000 
+(epoch: 1, iters: 21888, time: 1.583) G_Loss_SQRT: 0.102 0: 0.000 
+(epoch: 1, iters: 23168, time: 1.576) G_Loss_SQRT: 0.124 0: 0.000 
+(epoch: 1, iters: 24448, time: 1.580) G_Loss_SQRT: 0.160 0: 0.000 
+(epoch: 1, iters: 25728, time: 1.577) G_Loss_SQRT: 0.146 0: 0.000 
+(epoch: 1, iters: 27008, time: 1.573) G_Loss_SQRT: 0.129 0: 0.000 
+(epoch: 1, iters: 28288, time: 1.569) G_Loss_SQRT: 0.129 0: 0.000 
+(epoch: 1, iters: 29568, time: 1.585) G_Loss_SQRT: 0.121 0: 0.000 
+End of epoch 1 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 1, iters 30080
+End of epoch 1 / 10 	 Time Taken: 240 sec
+learning rate = 0.0002000
+epoch:2
+Total: 19862 || Pos: 2779
+(epoch: 2, iters: 128, time: 1.056) G_Loss_SQRT: 0.171 0: 0.000 
+(epoch: 2, iters: 1408, time: 1.571) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 2, iters: 2688, time: 1.577) G_Loss_SQRT: 0.162 0: 0.000 
+(epoch: 2, iters: 3968, time: 1.570) G_Loss_SQRT: 0.080 0: 0.000 
+(epoch: 2, iters: 5248, time: 1.572) G_Loss_SQRT: 0.117 0: 0.000 
+(epoch: 2, iters: 6528, time: 1.579) G_Loss_SQRT: 0.102 0: 0.000 
+(epoch: 2, iters: 7808, time: 1.568) G_Loss_SQRT: 0.120 0: 0.000 
+(epoch: 2, iters: 9088, time: 1.559) G_Loss_SQRT: 0.116 0: 0.000 
+(epoch: 2, iters: 10368, time: 1.559) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 2, iters: 11648, time: 1.576) G_Loss_SQRT: 0.074 0: 0.000 
+(epoch: 2, iters: 12928, time: 1.585) G_Loss_SQRT: 0.148 0: 0.000 
+(epoch: 2, iters: 14208, time: 1.577) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 2, iters: 15488, time: 1.570) G_Loss_SQRT: 0.135 0: 0.000 
+(epoch: 2, iters: 16768, time: 1.575) G_Loss_SQRT: 0.090 0: 0.000 
+(epoch: 2, iters: 18048, time: 1.577) G_Loss_SQRT: 0.138 0: 0.000 
+(epoch: 2, iters: 19328, time: 1.577) G_Loss_SQRT: 0.093 0: 0.000 
+(epoch: 2, iters: 20608, time: 1.576) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 2, iters: 21888, time: 1.572) G_Loss_SQRT: 0.118 0: 0.000 
+(epoch: 2, iters: 23168, time: 1.583) G_Loss_SQRT: 0.166 0: 0.000 
+(epoch: 2, iters: 24448, time: 1.580) G_Loss_SQRT: 0.139 0: 0.000 
+(epoch: 2, iters: 25728, time: 1.572) G_Loss_SQRT: 0.132 0: 0.000 
+(epoch: 2, iters: 27008, time: 1.574) G_Loss_SQRT: 0.129 0: 0.000 
+(epoch: 2, iters: 28288, time: 1.567) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 2, iters: 29568, time: 1.575) G_Loss_SQRT: 0.143 0: 0.000 
+End of epoch 2 / 10 	 Time Taken: 237 sec
+saving the model at the end of epoch 2, iters 60160
+End of epoch 2 / 10 	 Time Taken: 240 sec
+learning rate = 0.0002000
+epoch:3
+Total: 19862 || Pos: 2779
+(epoch: 3, iters: 128, time: 1.060) G_Loss_SQRT: 0.102 0: 0.000 
+(epoch: 3, iters: 1408, time: 1.580) G_Loss_SQRT: 0.147 0: 0.000 
+(epoch: 3, iters: 2688, time: 1.588) G_Loss_SQRT: 0.108 0: 0.000 
+(epoch: 3, iters: 3968, time: 1.582) G_Loss_SQRT: 0.146 0: 0.000 
+(epoch: 3, iters: 5248, time: 1.577) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 3, iters: 6528, time: 1.577) G_Loss_SQRT: 0.145 0: 0.000 
+(epoch: 3, iters: 7808, time: 1.581) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 3, iters: 9088, time: 1.569) G_Loss_SQRT: 0.127 0: 0.000 
+(epoch: 3, iters: 10368, time: 1.564) G_Loss_SQRT: 0.095 0: 0.000 
+(epoch: 3, iters: 11648, time: 1.574) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 3, iters: 12928, time: 1.583) G_Loss_SQRT: 0.097 0: 0.000 
+(epoch: 3, iters: 14208, time: 1.582) G_Loss_SQRT: 0.123 0: 0.000 
+(epoch: 3, iters: 15488, time: 1.574) G_Loss_SQRT: 0.103 0: 0.000 
+(epoch: 3, iters: 16768, time: 1.580) G_Loss_SQRT: 0.111 0: 0.000 
+(epoch: 3, iters: 18048, time: 1.570) G_Loss_SQRT: 0.102 0: 0.000 
+(epoch: 3, iters: 19328, time: 1.569) G_Loss_SQRT: 0.137 0: 0.000 
+(epoch: 3, iters: 20608, time: 1.572) G_Loss_SQRT: 0.129 0: 0.000 
+(epoch: 3, iters: 21888, time: 1.574) G_Loss_SQRT: 0.102 0: 0.000 
+(epoch: 3, iters: 23168, time: 1.575) G_Loss_SQRT: 0.108 0: 0.000 
+(epoch: 3, iters: 24448, time: 1.581) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 3, iters: 25728, time: 1.575) G_Loss_SQRT: 0.112 0: 0.000 
+(epoch: 3, iters: 27008, time: 1.566) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 3, iters: 28288, time: 1.573) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 3, iters: 29568, time: 1.575) G_Loss_SQRT: 0.120 0: 0.000 
+End of epoch 3 / 10 	 Time Taken: 237 sec
+saving the model at the end of epoch 3, iters 90240
+End of epoch 3 / 10 	 Time Taken: 239 sec
+learning rate = 0.0002000
+epoch:4
+Total: 19862 || Pos: 2779
+(epoch: 4, iters: 128, time: 1.066) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 4, iters: 1408, time: 1.579) G_Loss_SQRT: 0.136 0: 0.000 
+(epoch: 4, iters: 2688, time: 1.584) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 4, iters: 3968, time: 1.579) G_Loss_SQRT: 0.108 0: 0.000 
+(epoch: 4, iters: 5248, time: 1.582) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 4, iters: 6528, time: 1.576) G_Loss_SQRT: 0.113 0: 0.000 
+(epoch: 4, iters: 7808, time: 1.578) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 4, iters: 9088, time: 1.576) G_Loss_SQRT: 0.067 0: 0.000 
+(epoch: 4, iters: 10368, time: 1.578) G_Loss_SQRT: 0.071 0: 0.000 
+(epoch: 4, iters: 11648, time: 1.578) G_Loss_SQRT: 0.100 0: 0.000 
+(epoch: 4, iters: 12928, time: 1.578) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 4, iters: 14208, time: 1.577) G_Loss_SQRT: 0.113 0: 0.000 
+(epoch: 4, iters: 15488, time: 1.584) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 4, iters: 16768, time: 1.581) G_Loss_SQRT: 0.155 0: 0.000 
+(epoch: 4, iters: 18048, time: 1.580) G_Loss_SQRT: 0.130 0: 0.000 
+(epoch: 4, iters: 19328, time: 1.570) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 4, iters: 20608, time: 1.579) G_Loss_SQRT: 0.097 0: 0.000 
+(epoch: 4, iters: 21888, time: 1.583) G_Loss_SQRT: 0.109 0: 0.000 
+(epoch: 4, iters: 23168, time: 1.568) G_Loss_SQRT: 0.117 0: 0.000 
+(epoch: 4, iters: 24448, time: 1.572) G_Loss_SQRT: 0.130 0: 0.000 
+(epoch: 4, iters: 25728, time: 1.558) G_Loss_SQRT: 0.129 0: 0.000 
+(epoch: 4, iters: 27008, time: 1.577) G_Loss_SQRT: 0.103 0: 0.000 
+(epoch: 4, iters: 28288, time: 1.581) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 4, iters: 29568, time: 1.583) G_Loss_SQRT: 0.110 0: 0.000 
+End of epoch 4 / 10 	 Time Taken: 237 sec
+saving the model at the end of epoch 4, iters 120320
+End of epoch 4 / 10 	 Time Taken: 239 sec
+learning rate = 0.0002000
+epoch:5
+Total: 19862 || Pos: 2779
+(epoch: 5, iters: 128, time: 1.065) G_Loss_SQRT: 0.097 0: 0.000 
+(epoch: 5, iters: 1408, time: 1.578) G_Loss_SQRT: 0.095 0: 0.000 
+(epoch: 5, iters: 2688, time: 1.574) G_Loss_SQRT: 0.128 0: 0.000 
+(epoch: 5, iters: 3968, time: 1.590) G_Loss_SQRT: 0.115 0: 0.000 
+(epoch: 5, iters: 5248, time: 1.573) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 5, iters: 6528, time: 1.581) G_Loss_SQRT: 0.114 0: 0.000 
+(epoch: 5, iters: 7808, time: 1.572) G_Loss_SQRT: 0.094 0: 0.000 
+(epoch: 5, iters: 9088, time: 1.573) G_Loss_SQRT: 0.127 0: 0.000 
+(epoch: 5, iters: 10368, time: 1.575) G_Loss_SQRT: 0.140 0: 0.000 
+(epoch: 5, iters: 11648, time: 1.581) G_Loss_SQRT: 0.105 0: 0.000 
+(epoch: 5, iters: 12928, time: 1.569) G_Loss_SQRT: 0.090 0: 0.000 
+(epoch: 5, iters: 14208, time: 1.575) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 5, iters: 15488, time: 1.580) G_Loss_SQRT: 0.064 0: 0.000 
+(epoch: 5, iters: 16768, time: 1.567) G_Loss_SQRT: 0.061 0: 0.000 
+(epoch: 5, iters: 18048, time: 1.584) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 5, iters: 19328, time: 1.580) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 5, iters: 20608, time: 1.577) G_Loss_SQRT: 0.114 0: 0.000 
+(epoch: 5, iters: 21888, time: 1.572) G_Loss_SQRT: 0.118 0: 0.000 
+(epoch: 5, iters: 23168, time: 1.576) G_Loss_SQRT: 0.116 0: 0.000 
+(epoch: 5, iters: 24448, time: 1.573) G_Loss_SQRT: 0.069 0: 0.000 
+(epoch: 5, iters: 25728, time: 1.579) G_Loss_SQRT: 0.137 0: 0.000 
+(epoch: 5, iters: 27008, time: 1.564) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 5, iters: 28288, time: 1.576) G_Loss_SQRT: 0.113 0: 0.000 
+(epoch: 5, iters: 29568, time: 1.569) G_Loss_SQRT: 0.085 0: 0.000 
+End of epoch 5 / 10 	 Time Taken: 236 sec
+saving the model at the end of epoch 5, iters 150400
+End of epoch 5 / 10 	 Time Taken: 239 sec
+learning rate = 0.0001667
+epoch:6
+Total: 19862 || Pos: 2779
+(epoch: 6, iters: 128, time: 1.046) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 6, iters: 1408, time: 1.591) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 6, iters: 2688, time: 1.570) G_Loss_SQRT: 0.046 0: 0.000 
+(epoch: 6, iters: 3968, time: 1.586) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 6, iters: 5248, time: 1.576) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 6, iters: 6528, time: 1.579) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 6, iters: 7808, time: 1.572) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 6, iters: 9088, time: 1.598) G_Loss_SQRT: 0.071 0: 0.000 
+(epoch: 6, iters: 10368, time: 1.580) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 6, iters: 11648, time: 1.570) G_Loss_SQRT: 0.100 0: 0.000 
+(epoch: 6, iters: 12928, time: 1.582) G_Loss_SQRT: 0.127 0: 0.000 
+(epoch: 6, iters: 14208, time: 1.584) G_Loss_SQRT: 0.093 0: 0.000 
+(epoch: 6, iters: 15488, time: 1.572) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 6, iters: 16768, time: 1.574) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 6, iters: 18048, time: 1.579) G_Loss_SQRT: 0.080 0: 0.000 
+(epoch: 6, iters: 19328, time: 1.583) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 6, iters: 20608, time: 1.568) G_Loss_SQRT: 0.093 0: 0.000 
+(epoch: 6, iters: 21888, time: 1.579) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 6, iters: 23168, time: 1.575) G_Loss_SQRT: 0.107 0: 0.000 
+(epoch: 6, iters: 24448, time: 1.585) G_Loss_SQRT: 0.116 0: 0.000 
+(epoch: 6, iters: 25728, time: 1.585) G_Loss_SQRT: 0.074 0: 0.000 
+(epoch: 6, iters: 27008, time: 1.578) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 6, iters: 28288, time: 1.573) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 6, iters: 29568, time: 1.575) G_Loss_SQRT: 0.105 0: 0.000 
+End of epoch 6 / 10 	 Time Taken: 237 sec
+saving the model at the end of epoch 6, iters 180480
+End of epoch 6 / 10 	 Time Taken: 240 sec
+learning rate = 0.0001333
+epoch:7
+Total: 19862 || Pos: 2779
+(epoch: 7, iters: 128, time: 1.053) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 7, iters: 1408, time: 1.557) G_Loss_SQRT: 0.106 0: 0.000 
+(epoch: 7, iters: 2688, time: 1.578) G_Loss_SQRT: 0.109 0: 0.000 
+(epoch: 7, iters: 3968, time: 1.572) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 7, iters: 5248, time: 1.590) G_Loss_SQRT: 0.103 0: 0.000 
+(epoch: 7, iters: 6528, time: 1.564) G_Loss_SQRT: 0.097 0: 0.000 
+(epoch: 7, iters: 7808, time: 1.576) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 7, iters: 9088, time: 1.569) G_Loss_SQRT: 0.055 0: 0.000 
+(epoch: 7, iters: 10368, time: 1.605) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 7, iters: 11648, time: 1.580) G_Loss_SQRT: 0.078 0: 0.000 
+(epoch: 7, iters: 12928, time: 1.576) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 7, iters: 14208, time: 1.581) G_Loss_SQRT: 0.100 0: 0.000 
+(epoch: 7, iters: 15488, time: 1.583) G_Loss_SQRT: 0.121 0: 0.000 
+(epoch: 7, iters: 16768, time: 1.569) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 7, iters: 18048, time: 1.571) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 7, iters: 19328, time: 1.573) G_Loss_SQRT: 0.057 0: 0.000 
+(epoch: 7, iters: 20608, time: 1.578) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 7, iters: 21888, time: 1.576) G_Loss_SQRT: 0.073 0: 0.000 
+(epoch: 7, iters: 23168, time: 1.583) G_Loss_SQRT: 0.097 0: 0.000 
+(epoch: 7, iters: 24448, time: 1.579) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 7, iters: 25728, time: 1.583) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 7, iters: 27008, time: 1.585) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 7, iters: 28288, time: 1.573) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 7, iters: 29568, time: 1.579) G_Loss_SQRT: 0.104 0: 0.000 
+End of epoch 7 / 10 	 Time Taken: 236 sec
+saving the model at the end of epoch 7, iters 210560
+End of epoch 7 / 10 	 Time Taken: 241 sec
+learning rate = 0.0001000
+epoch:8
+Total: 19862 || Pos: 2779
+(epoch: 8, iters: 128, time: 1.055) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 8, iters: 1408, time: 1.595) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 8, iters: 2688, time: 1.580) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 8, iters: 3968, time: 1.580) G_Loss_SQRT: 0.102 0: 0.000 
+(epoch: 8, iters: 5248, time: 1.579) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 8, iters: 6528, time: 1.578) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 8, iters: 7808, time: 1.578) G_Loss_SQRT: 0.073 0: 0.000 
+(epoch: 8, iters: 9088, time: 1.580) G_Loss_SQRT: 0.102 0: 0.000 
+(epoch: 8, iters: 10368, time: 1.576) G_Loss_SQRT: 0.090 0: 0.000 
+(epoch: 8, iters: 11648, time: 1.575) G_Loss_SQRT: 0.095 0: 0.000 
+(epoch: 8, iters: 12928, time: 1.581) G_Loss_SQRT: 0.054 0: 0.000 
+(epoch: 8, iters: 14208, time: 1.580) G_Loss_SQRT: 0.070 0: 0.000 
+(epoch: 8, iters: 15488, time: 1.579) G_Loss_SQRT: 0.060 0: 0.000 
+(epoch: 8, iters: 16768, time: 1.583) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 8, iters: 18048, time: 1.579) G_Loss_SQRT: 0.056 0: 0.000 
+(epoch: 8, iters: 19328, time: 1.582) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 8, iters: 20608, time: 1.588) G_Loss_SQRT: 0.071 0: 0.000 
+(epoch: 8, iters: 21888, time: 1.577) G_Loss_SQRT: 0.062 0: 0.000 
+(epoch: 8, iters: 23168, time: 1.570) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 8, iters: 24448, time: 1.586) G_Loss_SQRT: 0.074 0: 0.000 
+(epoch: 8, iters: 25728, time: 1.581) G_Loss_SQRT: 0.107 0: 0.000 
+(epoch: 8, iters: 27008, time: 1.583) G_Loss_SQRT: 0.126 0: 0.000 
+(epoch: 8, iters: 28288, time: 1.572) G_Loss_SQRT: 0.050 0: 0.000 
+(epoch: 8, iters: 29568, time: 1.587) G_Loss_SQRT: 0.082 0: 0.000 
+End of epoch 8 / 10 	 Time Taken: 237 sec
+saving the model at the end of epoch 8, iters 240640
+End of epoch 8 / 10 	 Time Taken: 239 sec
+learning rate = 0.0000667
+epoch:9
+Total: 19862 || Pos: 2779
+(epoch: 9, iters: 128, time: 1.067) G_Loss_SQRT: 0.095 0: 0.000 
+(epoch: 9, iters: 1408, time: 1.579) G_Loss_SQRT: 0.107 0: 0.000 
+(epoch: 9, iters: 2688, time: 1.581) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 9, iters: 3968, time: 1.577) G_Loss_SQRT: 0.086 0: 0.000 
+(epoch: 9, iters: 5248, time: 1.583) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 9, iters: 6528, time: 1.567) G_Loss_SQRT: 0.124 0: 0.000 
+(epoch: 9, iters: 7808, time: 1.580) G_Loss_SQRT: 0.122 0: 0.000 
+(epoch: 9, iters: 9088, time: 1.579) G_Loss_SQRT: 0.080 0: 0.000 
+(epoch: 9, iters: 10368, time: 1.580) G_Loss_SQRT: 0.072 0: 0.000 
+(epoch: 9, iters: 11648, time: 1.585) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 9, iters: 12928, time: 1.586) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 9, iters: 14208, time: 1.582) G_Loss_SQRT: 0.055 0: 0.000 
+(epoch: 9, iters: 15488, time: 1.581) G_Loss_SQRT: 0.094 0: 0.000 
+(epoch: 9, iters: 16768, time: 1.573) G_Loss_SQRT: 0.053 0: 0.000 
+(epoch: 9, iters: 18048, time: 1.568) G_Loss_SQRT: 0.051 0: 0.000 
+(epoch: 9, iters: 19328, time: 1.595) G_Loss_SQRT: 0.062 0: 0.000 
+(epoch: 9, iters: 20608, time: 1.585) G_Loss_SQRT: 0.063 0: 0.000 
+(epoch: 9, iters: 21888, time: 1.577) G_Loss_SQRT: 0.058 0: 0.000 
+(epoch: 9, iters: 23168, time: 1.579) G_Loss_SQRT: 0.102 0: 0.000 
+(epoch: 9, iters: 24448, time: 1.583) G_Loss_SQRT: 0.097 0: 0.000 
+(epoch: 9, iters: 25728, time: 1.560) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 9, iters: 27008, time: 1.586) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 9, iters: 28288, time: 1.589) G_Loss_SQRT: 0.078 0: 0.000 
+(epoch: 9, iters: 29568, time: 1.566) G_Loss_SQRT: 0.082 0: 0.000 
+End of epoch 9 / 10 	 Time Taken: 237 sec
+saving the model at the end of epoch 9, iters 270720
+End of epoch 9 / 10 	 Time Taken: 239 sec
+learning rate = 0.0000333
+epoch:10
+Total: 19862 || Pos: 2779
+(epoch: 10, iters: 128, time: 1.066) G_Loss_SQRT: 0.094 0: 0.000 
+(epoch: 10, iters: 1408, time: 1.566) G_Loss_SQRT: 0.058 0: 0.000 
+(epoch: 10, iters: 2688, time: 1.575) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 10, iters: 3968, time: 1.569) G_Loss_SQRT: 0.049 0: 0.000 
+(epoch: 10, iters: 5248, time: 1.576) G_Loss_SQRT: 0.067 0: 0.000 
+(epoch: 10, iters: 6528, time: 1.579) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 10, iters: 7808, time: 1.573) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 10, iters: 9088, time: 1.580) G_Loss_SQRT: 0.038 0: 0.000 
+(epoch: 10, iters: 10368, time: 1.583) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 10, iters: 11648, time: 1.575) G_Loss_SQRT: 0.052 0: 0.000 
+(epoch: 10, iters: 12928, time: 1.570) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 10, iters: 14208, time: 1.577) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 10, iters: 15488, time: 1.580) G_Loss_SQRT: 0.118 0: 0.000 
+(epoch: 10, iters: 16768, time: 1.575) G_Loss_SQRT: 0.058 0: 0.000 
+(epoch: 10, iters: 18048, time: 1.582) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 10, iters: 19328, time: 1.574) G_Loss_SQRT: 0.053 0: 0.000 
+(epoch: 10, iters: 20608, time: 1.574) G_Loss_SQRT: 0.045 0: 0.000 
+(epoch: 10, iters: 21888, time: 1.574) G_Loss_SQRT: 0.072 0: 0.000 
+(epoch: 10, iters: 23168, time: 1.577) G_Loss_SQRT: 0.090 0: 0.000 
+(epoch: 10, iters: 24448, time: 1.568) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 10, iters: 25728, time: 1.563) G_Loss_SQRT: 0.074 0: 0.000 
+(epoch: 10, iters: 27008, time: 1.579) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 10, iters: 28288, time: 1.570) G_Loss_SQRT: 0.065 0: 0.000 
+(epoch: 10, iters: 29568, time: 1.573) G_Loss_SQRT: 0.069 0: 0.000 
+End of epoch 10 / 10 	 Time Taken: 237 sec
+saving the model at the end of epoch 10, iters 300800
+End of epoch 10 / 10 	 Time Taken: 240 sec
+learning rate = 0.0000000
+2
+2
+python /nfs/bigbox/hieule/Penguins_CODE/penguin_train.py --dropout 0.2 --randomSize --keep_ratio --batchSize 128 --biased_sampling -1 --traininglist /nfs/bigbox/hieule/penguin_data/p1000/split/train_2_all --gpu_ids 1 --model single_unet --input_nc 3 --name MSEnc3_train_all_2_bias-1_bs128_do0.2 --root /nfs/bigbox/hieule/penguin_data/p1000/PATCHES/64_386/ --dataroot /nfs/bigbox/hieule/penguin_data/p1000/PATCHES/64_386/ --dataset_mode png_withlist --fineSize 256 --display_port 9999 --checkpoints /nfs/bigbox/hieule/penguin_data/checkpoints_new/
+/nfs/bigbox/hieule/penguin_data/checkpoints_new/MSEnc3_train_all_2_bias-1_bs128_do0.2
+create web directory /nfs/bigbox/hieule/penguin_data/checkpoints_new/MSEnc3_train_all_2_bias-1_bs128_do0.2/web...
+CustomDatasetDataLoader
+/nfs/bigbox/hieule/penguin_data/p1000/split/train_2_all
+['orthoQB02_10DEC161334434-M1BS-101001000CB8F300_u08rfAEAC', 'WV02_20160115040140_103001005065A200_16JAN15040140-M1BS-500638401020_01_P003_u08rf3031', 'WV03_20170217064537_10400100297FEA00_17FEB17064537-M1BS-057107305010_01_P001_u08rf3031', 'WV03_20160121015319_104001001762AC00_16JAN21015319-M1BS-500638671020_01_P001_u08rf3031', 'WV03_20160202130111_1040010017D54900_16FEB02130111-M1BS-500638661010_01_P001_u08rf3031', 'orthoWV02_11FEB030615365-M1BS-1030010008C6A700_u08rf3031', 'orthoWV02_11FEB111306175-M1BS-10300100080D2800_u08rfAEAC', 'orthoWV02_11FEB251253222-M1BS-1030010009092C00_u08rfAEAC', 'WV03_20170106053006_10400100272BF900_17JAN06053006-M1BS-057089629010_01_P001_u08rf3031', 'WV02_20151204195602_103001004F9A8500_15DEC04195602-M1BS-500637515080_01_P006_u08rf3031', 'WV02_20160119013349_1030010050B0C500_16JAN19013349-M1BS-500637522050_01_P001_u08rf3031', 'WV02_20160218213346_1030010053BC0300_16FEB18213346-M1BS-500638407020_01_P002_u08rf3031', 'WV02_20160115054221_103001004F69B500_16JAN15054221-M1BS-500637521040_01_P004_u08rf3031', 'orthoQB02_11JAN121245196-M1BS-101001000CD66D00_u08rfAEAC', 'WV03_20160118055744_1040010017491D00_16JAN18055744-M1BS-500638671060_01_P001_u08rf3031', 'WV02_20160203054101_1030010051854A00_16FEB03054101-M1BS-500637516020_01_P001_u08rf3031']
+dataset [PNGDATASET] was created
+Total: 19952 || Pos: 2666
+single_unet
+0.2
+initialization method [normal]
+---------- Networks initialized -------------
+UnetGenerator (
+  (model): UnetSkipConnectionBlock (
+    (model): Sequential (
+      (0): Conv2d(3, 64, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+      (1): UnetSkipConnectionBlock (
+        (model): Sequential (
+          (0): LeakyReLU (0.2, inplace)
+          (1): Conv2d(64, 128, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+          (2): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False)
+          (3): UnetSkipConnectionBlock (
+            (model): Sequential (
+              (0): LeakyReLU (0.2, inplace)
+              (1): Conv2d(128, 256, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+              (2): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False)
+              (3): UnetSkipConnectionBlock (
+                (model): Sequential (
+                  (0): LeakyReLU (0.2, inplace)
+                  (1): Conv2d(256, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                  (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                  (3): UnetSkipConnectionBlock (
+                    (model): Sequential (
+                      (0): LeakyReLU (0.2, inplace)
+                      (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                      (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                      (3): UnetSkipConnectionBlock (
+                        (model): Sequential (
+                          (0): LeakyReLU (0.2, inplace)
+                          (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                          (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                          (3): UnetSkipConnectionBlock (
+                            (model): Sequential (
+                              (0): LeakyReLU (0.2, inplace)
+                              (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                              (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                              (3): UnetSkipConnectionBlock (
+                                (model): Sequential (
+                                  (0): LeakyReLU (0.2, inplace)
+                                  (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                                  (2): ReLU (inplace)
+                                  (3): ConvTranspose2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                                  (4): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                                )
+                              )
+                              (4): ReLU (inplace)
+                              (5): ConvTranspose2d(1024, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                              (6): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                              (7): Dropout (p = 0.2)
+                            )
+                          )
+                          (4): ReLU (inplace)
+                          (5): ConvTranspose2d(1024, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                          (6): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                          (7): Dropout (p = 0.2)
+                        )
+                      )
+                      (4): ReLU (inplace)
+                      (5): ConvTranspose2d(1024, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                      (6): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                      (7): Dropout (p = 0.2)
+                    )
+                  )
+                  (4): ReLU (inplace)
+                  (5): ConvTranspose2d(1024, 256, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                  (6): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False)
+                )
+              )
+              (4): ReLU (inplace)
+              (5): ConvTranspose2d(512, 128, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+              (6): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False)
+            )
+          )
+          (4): ReLU (inplace)
+          (5): ConvTranspose2d(256, 64, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+          (6): InstanceNorm2d(64, eps=1e-05, momentum=0.1, affine=False)
+        )
+      )
+      (2): ReLU (inplace)
+      (3): ConvTranspose2d(128, 1, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+      (4): Tanh ()
+    )
+  )
+)
+Total number of parameters: 54405505
+-----------------------------------------------
+model [UnetModel] was created
+epoch:1
+Total: 19952 || Pos: 2666
+(epoch: 1, iters: 128, time: 2.114) G_Loss_SQRT: 1.089 0: 0.000 
+(epoch: 1, iters: 1408, time: 1.589) G_Loss_SQRT: 0.770 0: 0.000 
+(epoch: 1, iters: 2688, time: 1.586) G_Loss_SQRT: 0.565 0: 0.000 
+(epoch: 1, iters: 3968, time: 1.574) G_Loss_SQRT: 0.440 0: 0.000 
+(epoch: 1, iters: 5248, time: 1.585) G_Loss_SQRT: 0.371 0: 0.000 
+(epoch: 1, iters: 6528, time: 1.579) G_Loss_SQRT: 0.318 0: 0.000 
+(epoch: 1, iters: 7808, time: 1.582) G_Loss_SQRT: 0.269 0: 0.000 
+(epoch: 1, iters: 9088, time: 1.581) G_Loss_SQRT: 0.240 0: 0.000 
+(epoch: 1, iters: 10368, time: 1.576) G_Loss_SQRT: 0.190 0: 0.000 
+(epoch: 1, iters: 11648, time: 1.577) G_Loss_SQRT: 0.186 0: 0.000 
+(epoch: 1, iters: 12928, time: 1.585) G_Loss_SQRT: 0.195 0: 0.000 
+(epoch: 1, iters: 14208, time: 1.591) G_Loss_SQRT: 0.164 0: 0.000 
+(epoch: 1, iters: 15488, time: 1.583) G_Loss_SQRT: 0.174 0: 0.000 
+(epoch: 1, iters: 16768, time: 1.582) G_Loss_SQRT: 0.176 0: 0.000 
+(epoch: 1, iters: 18048, time: 1.574) G_Loss_SQRT: 0.175 0: 0.000 
+(epoch: 1, iters: 19328, time: 1.583) G_Loss_SQRT: 0.199 0: 0.000 
+(epoch: 1, iters: 20608, time: 1.588) G_Loss_SQRT: 0.131 0: 0.000 
+(epoch: 1, iters: 21888, time: 1.577) G_Loss_SQRT: 0.252 0: 0.000 
+(epoch: 1, iters: 23168, time: 1.571) G_Loss_SQRT: 0.127 0: 0.000 
+(epoch: 1, iters: 24448, time: 1.579) G_Loss_SQRT: 0.115 0: 0.000 
+(epoch: 1, iters: 25728, time: 1.590) G_Loss_SQRT: 0.151 0: 0.000 
+(epoch: 1, iters: 27008, time: 1.593) G_Loss_SQRT: 0.120 0: 0.000 
+(epoch: 1, iters: 28288, time: 1.575) G_Loss_SQRT: 0.148 0: 0.000 
+(epoch: 1, iters: 29568, time: 1.565) G_Loss_SQRT: 0.134 0: 0.000 
+End of epoch 1 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 1, iters 30080
+End of epoch 1 / 10 	 Time Taken: 241 sec
+learning rate = 0.0002000
+epoch:2
+Total: 19952 || Pos: 2666
+(epoch: 2, iters: 128, time: 1.054) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 2, iters: 1408, time: 1.574) G_Loss_SQRT: 0.141 0: 0.000 
+(epoch: 2, iters: 2688, time: 1.569) G_Loss_SQRT: 0.143 0: 0.000 
+(epoch: 2, iters: 3968, time: 1.566) G_Loss_SQRT: 0.118 0: 0.000 
+(epoch: 2, iters: 5248, time: 1.565) G_Loss_SQRT: 0.155 0: 0.000 
+(epoch: 2, iters: 6528, time: 1.585) G_Loss_SQRT: 0.136 0: 0.000 
+(epoch: 2, iters: 7808, time: 1.574) G_Loss_SQRT: 0.119 0: 0.000 
+(epoch: 2, iters: 9088, time: 1.573) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 2, iters: 10368, time: 1.577) G_Loss_SQRT: 0.117 0: 0.000 
+(epoch: 2, iters: 11648, time: 1.571) G_Loss_SQRT: 0.134 0: 0.000 
+(epoch: 2, iters: 12928, time: 1.567) G_Loss_SQRT: 0.122 0: 0.000 
+(epoch: 2, iters: 14208, time: 1.570) G_Loss_SQRT: 0.175 0: 0.000 
+(epoch: 2, iters: 15488, time: 1.574) G_Loss_SQRT: 0.115 0: 0.000 
+(epoch: 2, iters: 16768, time: 1.576) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 2, iters: 18048, time: 1.580) G_Loss_SQRT: 0.108 0: 0.000 
+(epoch: 2, iters: 19328, time: 1.566) G_Loss_SQRT: 0.109 0: 0.000 
+(epoch: 2, iters: 20608, time: 1.581) G_Loss_SQRT: 0.121 0: 0.000 
+(epoch: 2, iters: 21888, time: 1.573) G_Loss_SQRT: 0.136 0: 0.000 
+(epoch: 2, iters: 23168, time: 1.580) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 2, iters: 24448, time: 1.598) G_Loss_SQRT: 0.151 0: 0.000 
+(epoch: 2, iters: 25728, time: 1.572) G_Loss_SQRT: 0.110 0: 0.000 
+(epoch: 2, iters: 27008, time: 1.587) G_Loss_SQRT: 0.094 0: 0.000 
+(epoch: 2, iters: 28288, time: 1.570) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 2, iters: 29568, time: 1.570) G_Loss_SQRT: 0.124 0: 0.000 
+End of epoch 2 / 10 	 Time Taken: 237 sec
+saving the model at the end of epoch 2, iters 60160
+End of epoch 2 / 10 	 Time Taken: 240 sec
+learning rate = 0.0002000
+epoch:3
+Total: 19952 || Pos: 2666
+(epoch: 3, iters: 128, time: 1.034) G_Loss_SQRT: 0.100 0: 0.000 
+(epoch: 3, iters: 1408, time: 1.568) G_Loss_SQRT: 0.126 0: 0.000 
+(epoch: 3, iters: 2688, time: 1.580) G_Loss_SQRT: 0.114 0: 0.000 
+(epoch: 3, iters: 3968, time: 1.568) G_Loss_SQRT: 0.119 0: 0.000 
+(epoch: 3, iters: 5248, time: 1.582) G_Loss_SQRT: 0.133 0: 0.000 
+(epoch: 3, iters: 6528, time: 1.574) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 3, iters: 7808, time: 1.581) G_Loss_SQRT: 0.117 0: 0.000 
+(epoch: 3, iters: 9088, time: 1.577) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 3, iters: 10368, time: 1.582) G_Loss_SQRT: 0.097 0: 0.000 
+(epoch: 3, iters: 11648, time: 1.575) G_Loss_SQRT: 0.129 0: 0.000 
+(epoch: 3, iters: 12928, time: 1.562) G_Loss_SQRT: 0.118 0: 0.000 
+(epoch: 3, iters: 14208, time: 1.592) G_Loss_SQRT: 0.125 0: 0.000 
+(epoch: 3, iters: 15488, time: 1.576) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 3, iters: 16768, time: 1.575) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 3, iters: 18048, time: 1.578) G_Loss_SQRT: 0.119 0: 0.000 
+(epoch: 3, iters: 19328, time: 1.582) G_Loss_SQRT: 0.145 0: 0.000 
+(epoch: 3, iters: 20608, time: 1.582) G_Loss_SQRT: 0.106 0: 0.000 
+(epoch: 3, iters: 21888, time: 1.583) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 3, iters: 23168, time: 1.580) G_Loss_SQRT: 0.109 0: 0.000 
+(epoch: 3, iters: 24448, time: 1.577) G_Loss_SQRT: 0.117 0: 0.000 
+(epoch: 3, iters: 25728, time: 1.577) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 3, iters: 27008, time: 1.575) G_Loss_SQRT: 0.121 0: 0.000 
+(epoch: 3, iters: 28288, time: 1.591) G_Loss_SQRT: 0.093 0: 0.000 
+(epoch: 3, iters: 29568, time: 1.557) G_Loss_SQRT: 0.103 0: 0.000 
+End of epoch 3 / 10 	 Time Taken: 237 sec
+saving the model at the end of epoch 3, iters 90240
+End of epoch 3 / 10 	 Time Taken: 240 sec
+learning rate = 0.0002000
+epoch:4
+Total: 19952 || Pos: 2666
+(epoch: 4, iters: 128, time: 1.052) G_Loss_SQRT: 0.115 0: 0.000 
+(epoch: 4, iters: 1408, time: 1.604) G_Loss_SQRT: 0.069 0: 0.000 
+(epoch: 4, iters: 2688, time: 1.568) G_Loss_SQRT: 0.100 0: 0.000 
+(epoch: 4, iters: 3968, time: 1.563) G_Loss_SQRT: 0.101 0: 0.000 
+(epoch: 4, iters: 5248, time: 1.582) G_Loss_SQRT: 0.118 0: 0.000 
+(epoch: 4, iters: 6528, time: 1.573) G_Loss_SQRT: 0.095 0: 0.000 
+(epoch: 4, iters: 7808, time: 1.580) G_Loss_SQRT: 0.090 0: 0.000 
+(epoch: 4, iters: 9088, time: 1.559) G_Loss_SQRT: 0.117 0: 0.000 
+(epoch: 4, iters: 10368, time: 1.599) G_Loss_SQRT: 0.106 0: 0.000 
+(epoch: 4, iters: 11648, time: 1.582) G_Loss_SQRT: 0.147 0: 0.000 
+(epoch: 4, iters: 12928, time: 1.500) G_Loss_SQRT: 0.072 0: 0.000 
+(epoch: 4, iters: 14208, time: 1.579) G_Loss_SQRT: 0.094 0: 0.000 
+(epoch: 4, iters: 15488, time: 1.578) G_Loss_SQRT: 0.065 0: 0.000 
+(epoch: 4, iters: 16768, time: 1.580) G_Loss_SQRT: 0.110 0: 0.000 
+(epoch: 4, iters: 18048, time: 1.574) G_Loss_SQRT: 0.090 0: 0.000 
+(epoch: 4, iters: 19328, time: 1.585) G_Loss_SQRT: 0.107 0: 0.000 
+(epoch: 4, iters: 20608, time: 1.576) G_Loss_SQRT: 0.128 0: 0.000 
+(epoch: 4, iters: 21888, time: 1.582) G_Loss_SQRT: 0.116 0: 0.000 
+(epoch: 4, iters: 23168, time: 1.573) G_Loss_SQRT: 0.121 0: 0.000 
+(epoch: 4, iters: 24448, time: 1.580) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 4, iters: 25728, time: 1.566) G_Loss_SQRT: 0.140 0: 0.000 
+(epoch: 4, iters: 27008, time: 1.575) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 4, iters: 28288, time: 1.578) G_Loss_SQRT: 0.107 0: 0.000 
+(epoch: 4, iters: 29568, time: 1.567) G_Loss_SQRT: 0.087 0: 0.000 
+End of epoch 4 / 10 	 Time Taken: 239 sec
+saving the model at the end of epoch 4, iters 120320
+End of epoch 4 / 10 	 Time Taken: 241 sec
+learning rate = 0.0002000
+epoch:5
+Total: 19952 || Pos: 2666
+(epoch: 5, iters: 128, time: 1.058) G_Loss_SQRT: 0.128 0: 0.000 
+(epoch: 5, iters: 1408, time: 1.563) G_Loss_SQRT: 0.072 0: 0.000 
+(epoch: 5, iters: 2688, time: 1.577) G_Loss_SQRT: 0.086 0: 0.000 
+(epoch: 5, iters: 3968, time: 1.559) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 5, iters: 5248, time: 1.582) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 5, iters: 6528, time: 1.569) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 5, iters: 7808, time: 1.564) G_Loss_SQRT: 0.125 0: 0.000 
+(epoch: 5, iters: 9088, time: 1.576) G_Loss_SQRT: 0.116 0: 0.000 
+(epoch: 5, iters: 10368, time: 1.580) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 5, iters: 11648, time: 1.572) G_Loss_SQRT: 0.146 0: 0.000 
+(epoch: 5, iters: 12928, time: 1.565) G_Loss_SQRT: 0.074 0: 0.000 
+(epoch: 5, iters: 14208, time: 1.582) G_Loss_SQRT: 0.080 0: 0.000 
+(epoch: 5, iters: 15488, time: 1.579) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 5, iters: 16768, time: 1.578) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 5, iters: 18048, time: 1.573) G_Loss_SQRT: 0.102 0: 0.000 
+(epoch: 5, iters: 19328, time: 1.587) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 5, iters: 20608, time: 1.534) G_Loss_SQRT: 0.076 0: 0.000 
+(epoch: 5, iters: 21888, time: 1.582) G_Loss_SQRT: 0.091 0: 0.000 
+(epoch: 5, iters: 23168, time: 1.586) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 5, iters: 24448, time: 1.629) G_Loss_SQRT: 0.113 0: 0.000 
+(epoch: 5, iters: 25728, time: 1.578) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 5, iters: 27008, time: 1.588) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 5, iters: 28288, time: 1.602) G_Loss_SQRT: 0.091 0: 0.000 
+(epoch: 5, iters: 29568, time: 1.587) G_Loss_SQRT: 0.110 0: 0.000 
+End of epoch 5 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 5, iters 150400
+End of epoch 5 / 10 	 Time Taken: 241 sec
+learning rate = 0.0001667
+epoch:6
+Total: 19952 || Pos: 2666
+(epoch: 6, iters: 128, time: 1.068) G_Loss_SQRT: 0.060 0: 0.000 
+(epoch: 6, iters: 1408, time: 1.576) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 6, iters: 2688, time: 1.575) G_Loss_SQRT: 0.124 0: 0.000 
+(epoch: 6, iters: 3968, time: 1.556) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 6, iters: 5248, time: 1.575) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 6, iters: 6528, time: 1.559) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 6, iters: 7808, time: 1.570) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 6, iters: 9088, time: 1.560) G_Loss_SQRT: 0.112 0: 0.000 
+(epoch: 6, iters: 10368, time: 1.572) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 6, iters: 11648, time: 1.596) G_Loss_SQRT: 0.105 0: 0.000 
+(epoch: 6, iters: 12928, time: 1.598) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 6, iters: 14208, time: 1.568) G_Loss_SQRT: 0.078 0: 0.000 
+(epoch: 6, iters: 15488, time: 1.553) G_Loss_SQRT: 0.067 0: 0.000 
+(epoch: 6, iters: 16768, time: 1.560) G_Loss_SQRT: 0.100 0: 0.000 
+(epoch: 6, iters: 18048, time: 1.577) G_Loss_SQRT: 0.058 0: 0.000 
+(epoch: 6, iters: 19328, time: 1.570) G_Loss_SQRT: 0.086 0: 0.000 
+(epoch: 6, iters: 20608, time: 1.576) G_Loss_SQRT: 0.140 0: 0.000 
+(epoch: 6, iters: 21888, time: 1.560) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 6, iters: 23168, time: 1.584) G_Loss_SQRT: 0.071 0: 0.000 
+(epoch: 6, iters: 24448, time: 1.579) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 6, iters: 25728, time: 1.571) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 6, iters: 27008, time: 1.557) G_Loss_SQRT: 0.091 0: 0.000 
+(epoch: 6, iters: 28288, time: 1.560) G_Loss_SQRT: 0.072 0: 0.000 
+(epoch: 6, iters: 29568, time: 1.573) G_Loss_SQRT: 0.085 0: 0.000 
+End of epoch 6 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 6, iters 180480
+End of epoch 6 / 10 	 Time Taken: 241 sec
+learning rate = 0.0001333
+epoch:7
+Total: 19952 || Pos: 2666
+(epoch: 7, iters: 128, time: 1.062) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 7, iters: 1408, time: 1.571) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 7, iters: 2688, time: 1.559) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 7, iters: 3968, time: 1.585) G_Loss_SQRT: 0.093 0: 0.000 
+(epoch: 7, iters: 5248, time: 1.577) G_Loss_SQRT: 0.067 0: 0.000 
+(epoch: 7, iters: 6528, time: 1.580) G_Loss_SQRT: 0.057 0: 0.000 
+(epoch: 7, iters: 7808, time: 1.578) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 7, iters: 9088, time: 1.564) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 7, iters: 10368, time: 1.569) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 7, iters: 11648, time: 1.572) G_Loss_SQRT: 0.115 0: 0.000 
+(epoch: 7, iters: 12928, time: 1.595) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 7, iters: 14208, time: 1.578) G_Loss_SQRT: 0.064 0: 0.000 
+(epoch: 7, iters: 15488, time: 1.568) G_Loss_SQRT: 0.067 0: 0.000 
+(epoch: 7, iters: 16768, time: 1.563) G_Loss_SQRT: 0.069 0: 0.000 
+(epoch: 7, iters: 18048, time: 1.569) G_Loss_SQRT: 0.064 0: 0.000 
+(epoch: 7, iters: 19328, time: 1.583) G_Loss_SQRT: 0.062 0: 0.000 
+(epoch: 7, iters: 20608, time: 1.573) G_Loss_SQRT: 0.072 0: 0.000 
+(epoch: 7, iters: 21888, time: 1.570) G_Loss_SQRT: 0.068 0: 0.000 
+(epoch: 7, iters: 23168, time: 1.574) G_Loss_SQRT: 0.122 0: 0.000 
+(epoch: 7, iters: 24448, time: 1.582) G_Loss_SQRT: 0.100 0: 0.000 
+(epoch: 7, iters: 25728, time: 1.522) G_Loss_SQRT: 0.112 0: 0.000 
+(epoch: 7, iters: 27008, time: 1.580) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 7, iters: 28288, time: 1.578) G_Loss_SQRT: 0.102 0: 0.000 
+(epoch: 7, iters: 29568, time: 1.574) G_Loss_SQRT: 0.069 0: 0.000 
+End of epoch 7 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 7, iters 210560
+End of epoch 7 / 10 	 Time Taken: 241 sec
+learning rate = 0.0001000
+epoch:8
+Total: 19952 || Pos: 2666
+(epoch: 8, iters: 128, time: 1.068) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 8, iters: 1408, time: 1.579) G_Loss_SQRT: 0.064 0: 0.000 
+(epoch: 8, iters: 2688, time: 1.548) G_Loss_SQRT: 0.055 0: 0.000 
+(epoch: 8, iters: 3968, time: 1.575) G_Loss_SQRT: 0.110 0: 0.000 
+(epoch: 8, iters: 5248, time: 1.566) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 8, iters: 6528, time: 1.594) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 8, iters: 7808, time: 1.574) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 8, iters: 9088, time: 1.577) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 8, iters: 10368, time: 1.561) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 8, iters: 11648, time: 1.585) G_Loss_SQRT: 0.056 0: 0.000 
+(epoch: 8, iters: 12928, time: 1.567) G_Loss_SQRT: 0.067 0: 0.000 
+(epoch: 8, iters: 14208, time: 1.586) G_Loss_SQRT: 0.080 0: 0.000 
+(epoch: 8, iters: 15488, time: 1.577) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 8, iters: 16768, time: 1.580) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 8, iters: 18048, time: 1.568) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 8, iters: 19328, time: 1.570) G_Loss_SQRT: 0.070 0: 0.000 
+(epoch: 8, iters: 20608, time: 1.574) G_Loss_SQRT: 0.051 0: 0.000 
+(epoch: 8, iters: 21888, time: 1.573) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 8, iters: 23168, time: 1.575) G_Loss_SQRT: 0.071 0: 0.000 
+(epoch: 8, iters: 24448, time: 1.581) G_Loss_SQRT: 0.109 0: 0.000 
+(epoch: 8, iters: 25728, time: 1.576) G_Loss_SQRT: 0.100 0: 0.000 
+(epoch: 8, iters: 27008, time: 1.569) G_Loss_SQRT: 0.106 0: 0.000 
+(epoch: 8, iters: 28288, time: 1.568) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 8, iters: 29568, time: 1.583) G_Loss_SQRT: 0.078 0: 0.000 
+End of epoch 8 / 10 	 Time Taken: 239 sec
+saving the model at the end of epoch 8, iters 240640
+End of epoch 8 / 10 	 Time Taken: 241 sec
+learning rate = 0.0000667
+epoch:9
+Total: 19952 || Pos: 2666
+(epoch: 9, iters: 128, time: 1.050) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 9, iters: 1408, time: 1.587) G_Loss_SQRT: 0.072 0: 0.000 
+(epoch: 9, iters: 2688, time: 1.557) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 9, iters: 3968, time: 1.571) G_Loss_SQRT: 0.070 0: 0.000 
+(epoch: 9, iters: 5248, time: 1.579) G_Loss_SQRT: 0.063 0: 0.000 
+(epoch: 9, iters: 6528, time: 1.570) G_Loss_SQRT: 0.062 0: 0.000 
+(epoch: 9, iters: 7808, time: 1.579) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 9, iters: 9088, time: 1.562) G_Loss_SQRT: 0.067 0: 0.000 
+(epoch: 9, iters: 10368, time: 1.548) G_Loss_SQRT: 0.072 0: 0.000 
+(epoch: 9, iters: 11648, time: 1.541) G_Loss_SQRT: 0.048 0: 0.000 
+(epoch: 9, iters: 12928, time: 1.564) G_Loss_SQRT: 0.103 0: 0.000 
+(epoch: 9, iters: 14208, time: 1.573) G_Loss_SQRT: 0.074 0: 0.000 
+(epoch: 9, iters: 15488, time: 1.577) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 9, iters: 16768, time: 1.575) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 9, iters: 18048, time: 1.575) G_Loss_SQRT: 0.071 0: 0.000 
+(epoch: 9, iters: 19328, time: 1.602) G_Loss_SQRT: 0.063 0: 0.000 
+(epoch: 9, iters: 20608, time: 1.570) G_Loss_SQRT: 0.068 0: 0.000 
+(epoch: 9, iters: 21888, time: 1.565) G_Loss_SQRT: 0.062 0: 0.000 
+(epoch: 9, iters: 23168, time: 1.563) G_Loss_SQRT: 0.091 0: 0.000 
+(epoch: 9, iters: 24448, time: 1.556) G_Loss_SQRT: 0.074 0: 0.000 
+(epoch: 9, iters: 25728, time: 1.581) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 9, iters: 27008, time: 1.578) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 9, iters: 28288, time: 1.566) G_Loss_SQRT: 0.056 0: 0.000 
+(epoch: 9, iters: 29568, time: 1.577) G_Loss_SQRT: 0.060 0: 0.000 
+End of epoch 9 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 9, iters 270720
+End of epoch 9 / 10 	 Time Taken: 241 sec
+learning rate = 0.0000333
+epoch:10
+Total: 19952 || Pos: 2666
+(epoch: 10, iters: 128, time: 1.057) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 10, iters: 1408, time: 1.553) G_Loss_SQRT: 0.058 0: 0.000 
+(epoch: 10, iters: 2688, time: 1.562) G_Loss_SQRT: 0.068 0: 0.000 
+(epoch: 10, iters: 3968, time: 1.577) G_Loss_SQRT: 0.069 0: 0.000 
+(epoch: 10, iters: 5248, time: 1.586) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 10, iters: 6528, time: 1.576) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 10, iters: 7808, time: 1.572) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 10, iters: 9088, time: 1.582) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 10, iters: 10368, time: 1.580) G_Loss_SQRT: 0.067 0: 0.000 
+(epoch: 10, iters: 11648, time: 1.574) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 10, iters: 12928, time: 1.606) G_Loss_SQRT: 0.086 0: 0.000 
+(epoch: 10, iters: 14208, time: 1.573) G_Loss_SQRT: 0.063 0: 0.000 
+(epoch: 10, iters: 15488, time: 1.572) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 10, iters: 16768, time: 1.589) G_Loss_SQRT: 0.049 0: 0.000 
+(epoch: 10, iters: 18048, time: 1.591) G_Loss_SQRT: 0.055 0: 0.000 
+(epoch: 10, iters: 19328, time: 1.526) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 10, iters: 20608, time: 1.606) G_Loss_SQRT: 0.065 0: 0.000 
+(epoch: 10, iters: 21888, time: 1.579) G_Loss_SQRT: 0.044 0: 0.000 
+(epoch: 10, iters: 23168, time: 1.574) G_Loss_SQRT: 0.057 0: 0.000 
+(epoch: 10, iters: 24448, time: 1.579) G_Loss_SQRT: 0.052 0: 0.000 
+(epoch: 10, iters: 25728, time: 1.564) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 10, iters: 27008, time: 1.576) G_Loss_SQRT: 0.047 0: 0.000 
+(epoch: 10, iters: 28288, time: 1.542) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 10, iters: 29568, time: 1.563) G_Loss_SQRT: 0.036 0: 0.000 
+End of epoch 10 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 10, iters 300800
+End of epoch 10 / 10 	 Time Taken: 241 sec
+learning rate = 0.0000000
+3
+3
+python /nfs/bigbox/hieule/Penguins_CODE/penguin_train.py --dropout 0.2 --randomSize --keep_ratio --batchSize 128 --biased_sampling -1 --traininglist /nfs/bigbox/hieule/penguin_data/p1000/split/train_3_all --gpu_ids 1 --model single_unet --input_nc 3 --name MSEnc3_train_all_3_bias-1_bs128_do0.2 --root /nfs/bigbox/hieule/penguin_data/p1000/PATCHES/64_386/ --dataroot /nfs/bigbox/hieule/penguin_data/p1000/PATCHES/64_386/ --dataset_mode png_withlist --fineSize 256 --display_port 9999 --checkpoints /nfs/bigbox/hieule/penguin_data/checkpoints_new/
+/nfs/bigbox/hieule/penguin_data/checkpoints_new/MSEnc3_train_all_3_bias-1_bs128_do0.2
+create web directory /nfs/bigbox/hieule/penguin_data/checkpoints_new/MSEnc3_train_all_3_bias-1_bs128_do0.2/web...
+CustomDatasetDataLoader
+/nfs/bigbox/hieule/penguin_data/p1000/split/train_3_all
+['orthoQB02_10DEC161334434-M1BS-101001000CB8F300_u08rfAEAC', 'WV03_20170217064537_10400100297FEA00_17FEB17064537-M1BS-057107305010_01_P001_u08rf3031', 'WV03_20160121015319_104001001762AC00_16JAN21015319-M1BS-500638671020_01_P001_u08rf3031', 'WV03_20160202130111_1040010017D54900_16FEB02130111-M1BS-500638661010_01_P001_u08rf3031', 'orthoWV02_11FEB030615365-M1BS-1030010008C6A700_u08rf3031', 'orthoWV02_11FEB251253222-M1BS-1030010009092C00_u08rfAEAC', 'WV03_20170106053006_10400100272BF900_17JAN06053006-M1BS-057089629010_01_P001_u08rf3031', 'WV02_20151204195602_103001004F9A8500_15DEC04195602-M1BS-500637515080_01_P006_u08rf3031', 'WV02_20160119013349_1030010050B0C500_16JAN19013349-M1BS-500637522050_01_P001_u08rf3031', 'orthoWV02_11FEB191312281-M1BS-10300100098AAB00_u08rfAEAC', 'WV02_20160101055824_103001004E1BFF00_16JAN01055824-M1BS-500637502050_01_P007_u08rf3031', 'WV02_20160115054221_103001004F69B500_16JAN15054221-M1BS-500637521040_01_P004_u08rf3031', 'orthoQB02_11JAN121245196-M1BS-101001000CD66D00_u08rfAEAC', 'WV03_20160118055744_1040010017491D00_16JAN18055744-M1BS-500638671060_01_P001_u08rf3031', 'WV02_20160101055831_103001004FC8BC00_16JAN01055831-M1BS-500637524030_01_P001_u08rf3031', 'WV02_20160203054101_1030010051854A00_16FEB03054101-M1BS-500637516020_01_P001_u08rf3031']
+dataset [PNGDATASET] was created
+Total: 17683 || Pos: 2555
+single_unet
+0.2
+initialization method [normal]
+---------- Networks initialized -------------
+UnetGenerator (
+  (model): UnetSkipConnectionBlock (
+    (model): Sequential (
+      (0): Conv2d(3, 64, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+      (1): UnetSkipConnectionBlock (
+        (model): Sequential (
+          (0): LeakyReLU (0.2, inplace)
+          (1): Conv2d(64, 128, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+          (2): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False)
+          (3): UnetSkipConnectionBlock (
+            (model): Sequential (
+              (0): LeakyReLU (0.2, inplace)
+              (1): Conv2d(128, 256, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+              (2): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False)
+              (3): UnetSkipConnectionBlock (
+                (model): Sequential (
+                  (0): LeakyReLU (0.2, inplace)
+                  (1): Conv2d(256, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                  (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                  (3): UnetSkipConnectionBlock (
+                    (model): Sequential (
+                      (0): LeakyReLU (0.2, inplace)
+                      (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                      (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                      (3): UnetSkipConnectionBlock (
+                        (model): Sequential (
+                          (0): LeakyReLU (0.2, inplace)
+                          (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                          (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                          (3): UnetSkipConnectionBlock (
+                            (model): Sequential (
+                              (0): LeakyReLU (0.2, inplace)
+                              (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                              (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                              (3): UnetSkipConnectionBlock (
+                                (model): Sequential (
+                                  (0): LeakyReLU (0.2, inplace)
+                                  (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                                  (2): ReLU (inplace)
+                                  (3): ConvTranspose2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                                  (4): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                                )
+                              )
+                              (4): ReLU (inplace)
+                              (5): ConvTranspose2d(1024, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                              (6): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                              (7): Dropout (p = 0.2)
+                            )
+                          )
+                          (4): ReLU (inplace)
+                          (5): ConvTranspose2d(1024, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                          (6): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                          (7): Dropout (p = 0.2)
+                        )
+                      )
+                      (4): ReLU (inplace)
+                      (5): ConvTranspose2d(1024, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                      (6): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                      (7): Dropout (p = 0.2)
+                    )
+                  )
+                  (4): ReLU (inplace)
+                  (5): ConvTranspose2d(1024, 256, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                  (6): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False)
+                )
+              )
+              (4): ReLU (inplace)
+              (5): ConvTranspose2d(512, 128, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+              (6): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False)
+            )
+          )
+          (4): ReLU (inplace)
+          (5): ConvTranspose2d(256, 64, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+          (6): InstanceNorm2d(64, eps=1e-05, momentum=0.1, affine=False)
+        )
+      )
+      (2): ReLU (inplace)
+      (3): ConvTranspose2d(128, 1, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+      (4): Tanh ()
+    )
+  )
+)
+Total number of parameters: 54405505
+-----------------------------------------------
+model [UnetModel] was created
+epoch:1
+Total: 17683 || Pos: 2555
+(epoch: 1, iters: 128, time: 2.172) G_Loss_SQRT: 1.071 0: 0.000 
+(epoch: 1, iters: 1408, time: 1.586) G_Loss_SQRT: 0.740 0: 0.000 
+(epoch: 1, iters: 2688, time: 1.581) G_Loss_SQRT: 0.549 0: 0.000 
+(epoch: 1, iters: 3968, time: 1.581) G_Loss_SQRT: 0.429 0: 0.000 
+(epoch: 1, iters: 5248, time: 1.574) G_Loss_SQRT: 0.349 0: 0.000 
+(epoch: 1, iters: 6528, time: 1.580) G_Loss_SQRT: 0.291 0: 0.000 
+(epoch: 1, iters: 7808, time: 1.584) G_Loss_SQRT: 0.231 0: 0.000 
+(epoch: 1, iters: 9088, time: 1.584) G_Loss_SQRT: 0.211 0: 0.000 
+(epoch: 1, iters: 10368, time: 1.577) G_Loss_SQRT: 0.198 0: 0.000 
+(epoch: 1, iters: 11648, time: 1.577) G_Loss_SQRT: 0.170 0: 0.000 
+(epoch: 1, iters: 12928, time: 1.595) G_Loss_SQRT: 0.172 0: 0.000 
+(epoch: 1, iters: 14208, time: 1.583) G_Loss_SQRT: 0.173 0: 0.000 
+(epoch: 1, iters: 15488, time: 1.598) G_Loss_SQRT: 0.147 0: 0.000 
+(epoch: 1, iters: 16768, time: 1.576) G_Loss_SQRT: 0.139 0: 0.000 
+(epoch: 1, iters: 18048, time: 1.575) G_Loss_SQRT: 0.144 0: 0.000 
+(epoch: 1, iters: 19328, time: 1.593) G_Loss_SQRT: 0.134 0: 0.000 
+(epoch: 1, iters: 20608, time: 1.580) G_Loss_SQRT: 0.126 0: 0.000 
+(epoch: 1, iters: 21888, time: 1.591) G_Loss_SQRT: 0.139 0: 0.000 
+(epoch: 1, iters: 23168, time: 1.568) G_Loss_SQRT: 0.134 0: 0.000 
+(epoch: 1, iters: 24448, time: 1.502) G_Loss_SQRT: 0.124 0: 0.000 
+(epoch: 1, iters: 25728, time: 1.566) G_Loss_SQRT: 0.123 0: 0.000 
+(epoch: 1, iters: 27008, time: 1.572) G_Loss_SQRT: 0.125 0: 0.000 
+(epoch: 1, iters: 28288, time: 1.569) G_Loss_SQRT: 0.146 0: 0.000 
+(epoch: 1, iters: 29568, time: 1.586) G_Loss_SQRT: 0.104 0: 0.000 
+End of epoch 1 / 10 	 Time Taken: 239 sec
+saving the model at the end of epoch 1, iters 30080
+End of epoch 1 / 10 	 Time Taken: 243 sec
+learning rate = 0.0002000
+epoch:2
+Total: 17683 || Pos: 2555
+(epoch: 2, iters: 128, time: 1.071) G_Loss_SQRT: 0.140 0: 0.000 
+(epoch: 2, iters: 1408, time: 1.587) G_Loss_SQRT: 0.119 0: 0.000 
+(epoch: 2, iters: 2688, time: 1.575) G_Loss_SQRT: 0.120 0: 0.000 
+(epoch: 2, iters: 3968, time: 1.573) G_Loss_SQRT: 0.106 0: 0.000 
+(epoch: 2, iters: 5248, time: 1.540) G_Loss_SQRT: 0.142 0: 0.000 
+(epoch: 2, iters: 6528, time: 1.585) G_Loss_SQRT: 0.114 0: 0.000 
+(epoch: 2, iters: 7808, time: 1.582) G_Loss_SQRT: 0.153 0: 0.000 
+(epoch: 2, iters: 9088, time: 1.593) G_Loss_SQRT: 0.141 0: 0.000 
+(epoch: 2, iters: 10368, time: 1.477) G_Loss_SQRT: 0.130 0: 0.000 
+(epoch: 2, iters: 11648, time: 1.569) G_Loss_SQRT: 0.116 0: 0.000 
+(epoch: 2, iters: 12928, time: 1.577) G_Loss_SQRT: 0.159 0: 0.000 
+(epoch: 2, iters: 14208, time: 1.582) G_Loss_SQRT: 0.160 0: 0.000 
+(epoch: 2, iters: 15488, time: 1.584) G_Loss_SQRT: 0.131 0: 0.000 
+(epoch: 2, iters: 16768, time: 1.594) G_Loss_SQRT: 0.114 0: 0.000 
+(epoch: 2, iters: 18048, time: 1.586) G_Loss_SQRT: 0.145 0: 0.000 
+(epoch: 2, iters: 19328, time: 1.606) G_Loss_SQRT: 0.114 0: 0.000 
+(epoch: 2, iters: 20608, time: 1.585) G_Loss_SQRT: 0.110 0: 0.000 
+(epoch: 2, iters: 21888, time: 1.562) G_Loss_SQRT: 0.105 0: 0.000 
+(epoch: 2, iters: 23168, time: 1.578) G_Loss_SQRT: 0.185 0: 0.000 
+(epoch: 2, iters: 24448, time: 1.575) G_Loss_SQRT: 0.114 0: 0.000 
+(epoch: 2, iters: 25728, time: 1.604) G_Loss_SQRT: 0.107 0: 0.000 
+(epoch: 2, iters: 27008, time: 1.598) G_Loss_SQRT: 0.137 0: 0.000 
+(epoch: 2, iters: 28288, time: 1.583) G_Loss_SQRT: 0.102 0: 0.000 
+(epoch: 2, iters: 29568, time: 1.569) G_Loss_SQRT: 0.112 0: 0.000 
+End of epoch 2 / 10 	 Time Taken: 239 sec
+saving the model at the end of epoch 2, iters 60160
+End of epoch 2 / 10 	 Time Taken: 242 sec
+learning rate = 0.0002000
+epoch:3
+Total: 17683 || Pos: 2555
+(epoch: 3, iters: 128, time: 1.068) G_Loss_SQRT: 0.145 0: 0.000 
+(epoch: 3, iters: 1408, time: 1.064) G_Loss_SQRT: 0.126 0: 0.000 
+(epoch: 3, iters: 2688, time: 1.037) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 3, iters: 3968, time: 1.266) G_Loss_SQRT: 0.110 0: 0.000 
+(epoch: 3, iters: 5248, time: 1.598) G_Loss_SQRT: 0.114 0: 0.000 
+(epoch: 3, iters: 6528, time: 1.574) G_Loss_SQRT: 0.069 0: 0.000 
+(epoch: 3, iters: 7808, time: 1.584) G_Loss_SQRT: 0.131 0: 0.000 
+(epoch: 3, iters: 9088, time: 1.564) G_Loss_SQRT: 0.133 0: 0.000 
+(epoch: 3, iters: 10368, time: 1.573) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 3, iters: 11648, time: 1.566) G_Loss_SQRT: 0.135 0: 0.000 
+(epoch: 3, iters: 12928, time: 1.576) G_Loss_SQRT: 0.123 0: 0.000 
+(epoch: 3, iters: 14208, time: 1.574) G_Loss_SQRT: 0.106 0: 0.000 
+(epoch: 3, iters: 15488, time: 1.571) G_Loss_SQRT: 0.105 0: 0.000 
+(epoch: 3, iters: 16768, time: 1.582) G_Loss_SQRT: 0.145 0: 0.000 
+(epoch: 3, iters: 18048, time: 1.572) G_Loss_SQRT: 0.106 0: 0.000 
+(epoch: 3, iters: 19328, time: 1.575) G_Loss_SQRT: 0.117 0: 0.000 
+(epoch: 3, iters: 20608, time: 1.577) G_Loss_SQRT: 0.115 0: 0.000 
+(epoch: 3, iters: 21888, time: 1.577) G_Loss_SQRT: 0.123 0: 0.000 
+(epoch: 3, iters: 23168, time: 1.575) G_Loss_SQRT: 0.097 0: 0.000 
+(epoch: 3, iters: 24448, time: 1.576) G_Loss_SQRT: 0.124 0: 0.000 
+(epoch: 3, iters: 25728, time: 1.576) G_Loss_SQRT: 0.108 0: 0.000 
+(epoch: 3, iters: 27008, time: 1.572) G_Loss_SQRT: 0.123 0: 0.000 
+(epoch: 3, iters: 28288, time: 1.582) G_Loss_SQRT: 0.106 0: 0.000 
+(epoch: 3, iters: 29568, time: 1.573) G_Loss_SQRT: 0.108 0: 0.000 
+End of epoch 3 / 10 	 Time Taken: 239 sec
+saving the model at the end of epoch 3, iters 90240
+End of epoch 3 / 10 	 Time Taken: 241 sec
+learning rate = 0.0002000
+epoch:4
+Total: 17683 || Pos: 2555
+(epoch: 4, iters: 128, time: 1.055) G_Loss_SQRT: 0.143 0: 0.000 
+(epoch: 4, iters: 1408, time: 1.067) G_Loss_SQRT: 0.158 0: 0.000 
+(epoch: 4, iters: 2688, time: 1.209) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 4, iters: 3968, time: 1.218) G_Loss_SQRT: 0.118 0: 0.000 
+(epoch: 4, iters: 5248, time: 1.471) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 4, iters: 6528, time: 1.576) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 4, iters: 7808, time: 1.569) G_Loss_SQRT: 0.117 0: 0.000 
+(epoch: 4, iters: 9088, time: 1.580) G_Loss_SQRT: 0.095 0: 0.000 
+(epoch: 4, iters: 10368, time: 1.572) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 4, iters: 11648, time: 1.575) G_Loss_SQRT: 0.123 0: 0.000 
+(epoch: 4, iters: 12928, time: 1.576) G_Loss_SQRT: 0.054 0: 0.000 
+(epoch: 4, iters: 14208, time: 1.576) G_Loss_SQRT: 0.095 0: 0.000 
+(epoch: 4, iters: 15488, time: 1.575) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 4, iters: 16768, time: 1.523) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 4, iters: 18048, time: 1.580) G_Loss_SQRT: 0.093 0: 0.000 
+(epoch: 4, iters: 19328, time: 1.579) G_Loss_SQRT: 0.095 0: 0.000 
+(epoch: 4, iters: 20608, time: 1.582) G_Loss_SQRT: 0.122 0: 0.000 
+(epoch: 4, iters: 21888, time: 1.574) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 4, iters: 23168, time: 1.506) G_Loss_SQRT: 0.105 0: 0.000 
+(epoch: 4, iters: 24448, time: 1.505) G_Loss_SQRT: 0.080 0: 0.000 
+(epoch: 4, iters: 25728, time: 1.581) G_Loss_SQRT: 0.078 0: 0.000 
+(epoch: 4, iters: 27008, time: 1.570) G_Loss_SQRT: 0.100 0: 0.000 
+(epoch: 4, iters: 28288, time: 1.568) G_Loss_SQRT: 0.103 0: 0.000 
+(epoch: 4, iters: 29568, time: 1.592) G_Loss_SQRT: 0.093 0: 0.000 
+End of epoch 4 / 10 	 Time Taken: 239 sec
+saving the model at the end of epoch 4, iters 120320
+End of epoch 4 / 10 	 Time Taken: 241 sec
+learning rate = 0.0002000
+epoch:5
+Total: 17683 || Pos: 2555
+(epoch: 5, iters: 128, time: 1.066) G_Loss_SQRT: 0.119 0: 0.000 
+(epoch: 5, iters: 1408, time: 1.123) G_Loss_SQRT: 0.065 0: 0.000 
+(epoch: 5, iters: 2688, time: 1.065) G_Loss_SQRT: 0.117 0: 0.000 
+(epoch: 5, iters: 3968, time: 1.157) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 5, iters: 5248, time: 1.575) G_Loss_SQRT: 0.114 0: 0.000 
+(epoch: 5, iters: 6528, time: 1.575) G_Loss_SQRT: 0.095 0: 0.000 
+(epoch: 5, iters: 7808, time: 1.579) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 5, iters: 9088, time: 1.576) G_Loss_SQRT: 0.109 0: 0.000 
+(epoch: 5, iters: 10368, time: 1.568) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 5, iters: 11648, time: 1.575) G_Loss_SQRT: 0.118 0: 0.000 
+(epoch: 5, iters: 12928, time: 1.584) G_Loss_SQRT: 0.078 0: 0.000 
+(epoch: 5, iters: 14208, time: 1.572) G_Loss_SQRT: 0.091 0: 0.000 
+(epoch: 5, iters: 15488, time: 1.578) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 5, iters: 16768, time: 1.582) G_Loss_SQRT: 0.067 0: 0.000 
+(epoch: 5, iters: 18048, time: 1.580) G_Loss_SQRT: 0.052 0: 0.000 
+(epoch: 5, iters: 19328, time: 1.578) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 5, iters: 20608, time: 1.577) G_Loss_SQRT: 0.114 0: 0.000 
+(epoch: 5, iters: 21888, time: 1.584) G_Loss_SQRT: 0.106 0: 0.000 
+(epoch: 5, iters: 23168, time: 1.581) G_Loss_SQRT: 0.067 0: 0.000 
+(epoch: 5, iters: 24448, time: 1.580) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 5, iters: 25728, time: 1.584) G_Loss_SQRT: 0.112 0: 0.000 
+(epoch: 5, iters: 27008, time: 1.569) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 5, iters: 28288, time: 1.575) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 5, iters: 29568, time: 1.568) G_Loss_SQRT: 0.082 0: 0.000 
+End of epoch 5 / 10 	 Time Taken: 239 sec
+saving the model at the end of epoch 5, iters 150400
+End of epoch 5 / 10 	 Time Taken: 241 sec
+learning rate = 0.0001667
+epoch:6
+Total: 17683 || Pos: 2555
+(epoch: 6, iters: 128, time: 1.053) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 6, iters: 1408, time: 1.578) G_Loss_SQRT: 0.074 0: 0.000 
+(epoch: 6, iters: 2688, time: 1.588) G_Loss_SQRT: 0.064 0: 0.000 
+(epoch: 6, iters: 3968, time: 1.580) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 6, iters: 5248, time: 1.574) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 6, iters: 6528, time: 1.579) G_Loss_SQRT: 0.091 0: 0.000 
+(epoch: 6, iters: 7808, time: 1.590) G_Loss_SQRT: 0.095 0: 0.000 
+(epoch: 6, iters: 9088, time: 1.580) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 6, iters: 10368, time: 1.585) G_Loss_SQRT: 0.114 0: 0.000 
+(epoch: 6, iters: 11648, time: 1.579) G_Loss_SQRT: 0.095 0: 0.000 
+(epoch: 6, iters: 12928, time: 1.587) G_Loss_SQRT: 0.086 0: 0.000 
+(epoch: 6, iters: 14208, time: 1.583) G_Loss_SQRT: 0.086 0: 0.000 
+(epoch: 6, iters: 15488, time: 1.570) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 6, iters: 16768, time: 1.559) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 6, iters: 18048, time: 1.570) G_Loss_SQRT: 0.073 0: 0.000 
+(epoch: 6, iters: 19328, time: 1.581) G_Loss_SQRT: 0.126 0: 0.000 
+(epoch: 6, iters: 20608, time: 1.587) G_Loss_SQRT: 0.070 0: 0.000 
+(epoch: 6, iters: 21888, time: 1.575) G_Loss_SQRT: 0.078 0: 0.000 
+(epoch: 6, iters: 23168, time: 1.585) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 6, iters: 24448, time: 1.577) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 6, iters: 25728, time: 1.587) G_Loss_SQRT: 0.097 0: 0.000 
+(epoch: 6, iters: 27008, time: 1.580) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 6, iters: 28288, time: 1.583) G_Loss_SQRT: 0.070 0: 0.000 
+(epoch: 6, iters: 29568, time: 1.580) G_Loss_SQRT: 0.072 0: 0.000 
+End of epoch 6 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 6, iters 180480
+End of epoch 6 / 10 	 Time Taken: 240 sec
+learning rate = 0.0001333
+epoch:7
+Total: 17683 || Pos: 2555
+(epoch: 7, iters: 128, time: 1.052) G_Loss_SQRT: 0.058 0: 0.000 
+(epoch: 7, iters: 1408, time: 1.578) G_Loss_SQRT: 0.095 0: 0.000 
+(epoch: 7, iters: 2688, time: 1.567) G_Loss_SQRT: 0.078 0: 0.000 
+(epoch: 7, iters: 3968, time: 1.584) G_Loss_SQRT: 0.074 0: 0.000 
+(epoch: 7, iters: 5248, time: 1.577) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 7, iters: 6528, time: 1.579) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 7, iters: 7808, time: 1.580) G_Loss_SQRT: 0.105 0: 0.000 
+(epoch: 7, iters: 9088, time: 1.577) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 7, iters: 10368, time: 1.581) G_Loss_SQRT: 0.117 0: 0.000 
+(epoch: 7, iters: 11648, time: 1.587) G_Loss_SQRT: 0.086 0: 0.000 
+(epoch: 7, iters: 12928, time: 1.584) G_Loss_SQRT: 0.078 0: 0.000 
+(epoch: 7, iters: 14208, time: 1.584) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 7, iters: 15488, time: 1.582) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 7, iters: 16768, time: 1.578) G_Loss_SQRT: 0.105 0: 0.000 
+(epoch: 7, iters: 18048, time: 1.579) G_Loss_SQRT: 0.094 0: 0.000 
+(epoch: 7, iters: 19328, time: 1.576) G_Loss_SQRT: 0.093 0: 0.000 
+(epoch: 7, iters: 20608, time: 1.575) G_Loss_SQRT: 0.109 0: 0.000 
+(epoch: 7, iters: 21888, time: 1.583) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 7, iters: 23168, time: 1.586) G_Loss_SQRT: 0.071 0: 0.000 
+(epoch: 7, iters: 24448, time: 1.579) G_Loss_SQRT: 0.091 0: 0.000 
+(epoch: 7, iters: 25728, time: 1.581) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 7, iters: 27008, time: 1.582) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 7, iters: 28288, time: 1.571) G_Loss_SQRT: 0.070 0: 0.000 
+(epoch: 7, iters: 29568, time: 1.581) G_Loss_SQRT: 0.075 0: 0.000 
+End of epoch 7 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 7, iters 210560
+End of epoch 7 / 10 	 Time Taken: 241 sec
+learning rate = 0.0001000
+epoch:8
+Total: 17683 || Pos: 2555
+(epoch: 8, iters: 128, time: 1.060) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 8, iters: 1408, time: 1.580) G_Loss_SQRT: 0.134 0: 0.000 
+(epoch: 8, iters: 2688, time: 1.582) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 8, iters: 3968, time: 1.584) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 8, iters: 5248, time: 1.576) G_Loss_SQRT: 0.076 0: 0.000 
+(epoch: 8, iters: 6528, time: 1.579) G_Loss_SQRT: 0.063 0: 0.000 
+(epoch: 8, iters: 7808, time: 1.584) G_Loss_SQRT: 0.055 0: 0.000 
+(epoch: 8, iters: 9088, time: 1.579) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 8, iters: 10368, time: 1.575) G_Loss_SQRT: 0.106 0: 0.000 
+(epoch: 8, iters: 11648, time: 1.581) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 8, iters: 12928, time: 1.580) G_Loss_SQRT: 0.095 0: 0.000 
+(epoch: 8, iters: 14208, time: 1.585) G_Loss_SQRT: 0.073 0: 0.000 
+(epoch: 8, iters: 15488, time: 1.587) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 8, iters: 16768, time: 1.565) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 8, iters: 18048, time: 1.576) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 8, iters: 19328, time: 1.600) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 8, iters: 20608, time: 1.568) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 8, iters: 21888, time: 1.587) G_Loss_SQRT: 0.112 0: 0.000 
+(epoch: 8, iters: 23168, time: 1.567) G_Loss_SQRT: 0.061 0: 0.000 
+(epoch: 8, iters: 24448, time: 1.586) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 8, iters: 25728, time: 1.569) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 8, iters: 27008, time: 1.583) G_Loss_SQRT: 0.070 0: 0.000 
+(epoch: 8, iters: 28288, time: 1.590) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 8, iters: 29568, time: 1.586) G_Loss_SQRT: 0.068 0: 0.000 
+End of epoch 8 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 8, iters 240640
+End of epoch 8 / 10 	 Time Taken: 241 sec
+learning rate = 0.0000667
+epoch:9
+Total: 17683 || Pos: 2555
+(epoch: 9, iters: 128, time: 1.048) G_Loss_SQRT: 0.071 0: 0.000 
+(epoch: 9, iters: 1408, time: 1.587) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 9, iters: 2688, time: 1.582) G_Loss_SQRT: 0.101 0: 0.000 
+(epoch: 9, iters: 3968, time: 1.583) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 9, iters: 5248, time: 1.590) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 9, iters: 6528, time: 1.574) G_Loss_SQRT: 0.060 0: 0.000 
+(epoch: 9, iters: 7808, time: 1.570) G_Loss_SQRT: 0.121 0: 0.000 
+(epoch: 9, iters: 9088, time: 1.585) G_Loss_SQRT: 0.068 0: 0.000 
+(epoch: 9, iters: 10368, time: 1.577) G_Loss_SQRT: 0.069 0: 0.000 
+(epoch: 9, iters: 11648, time: 1.584) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 9, iters: 12928, time: 1.578) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 9, iters: 14208, time: 1.585) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 9, iters: 15488, time: 1.576) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 9, iters: 16768, time: 1.578) G_Loss_SQRT: 0.073 0: 0.000 
+(epoch: 9, iters: 18048, time: 1.574) G_Loss_SQRT: 0.056 0: 0.000 
+(epoch: 9, iters: 19328, time: 1.575) G_Loss_SQRT: 0.058 0: 0.000 
+(epoch: 9, iters: 20608, time: 1.574) G_Loss_SQRT: 0.061 0: 0.000 
+(epoch: 9, iters: 21888, time: 1.570) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 9, iters: 23168, time: 1.585) G_Loss_SQRT: 0.086 0: 0.000 
+(epoch: 9, iters: 24448, time: 1.585) G_Loss_SQRT: 0.070 0: 0.000 
+(epoch: 9, iters: 25728, time: 1.595) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 9, iters: 27008, time: 1.581) G_Loss_SQRT: 0.061 0: 0.000 
+(epoch: 9, iters: 28288, time: 1.649) G_Loss_SQRT: 0.062 0: 0.000 
+(epoch: 9, iters: 29568, time: 1.574) G_Loss_SQRT: 0.072 0: 0.000 
+End of epoch 9 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 9, iters 270720
+End of epoch 9 / 10 	 Time Taken: 241 sec
+learning rate = 0.0000333
+epoch:10
+Total: 17683 || Pos: 2555
+(epoch: 10, iters: 128, time: 1.044) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 10, iters: 1408, time: 1.582) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 10, iters: 2688, time: 1.575) G_Loss_SQRT: 0.058 0: 0.000 
+(epoch: 10, iters: 3968, time: 1.577) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 10, iters: 5248, time: 1.572) G_Loss_SQRT: 0.060 0: 0.000 
+(epoch: 10, iters: 6528, time: 1.578) G_Loss_SQRT: 0.049 0: 0.000 
+(epoch: 10, iters: 7808, time: 1.595) G_Loss_SQRT: 0.097 0: 0.000 
+(epoch: 10, iters: 9088, time: 1.578) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 10, iters: 10368, time: 1.577) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 10, iters: 11648, time: 1.576) G_Loss_SQRT: 0.128 0: 0.000 
+(epoch: 10, iters: 12928, time: 1.571) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 10, iters: 14208, time: 1.568) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 10, iters: 15488, time: 1.590) G_Loss_SQRT: 0.067 0: 0.000 
+(epoch: 10, iters: 16768, time: 1.570) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 10, iters: 18048, time: 1.578) G_Loss_SQRT: 0.090 0: 0.000 
+(epoch: 10, iters: 19328, time: 1.588) G_Loss_SQRT: 0.064 0: 0.000 
+(epoch: 10, iters: 20608, time: 1.599) G_Loss_SQRT: 0.078 0: 0.000 
+(epoch: 10, iters: 21888, time: 1.596) G_Loss_SQRT: 0.052 0: 0.000 
+(epoch: 10, iters: 23168, time: 1.570) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 10, iters: 24448, time: 1.588) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 10, iters: 25728, time: 1.568) G_Loss_SQRT: 0.058 0: 0.000 
+(epoch: 10, iters: 27008, time: 1.572) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 10, iters: 28288, time: 1.579) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 10, iters: 29568, time: 1.575) G_Loss_SQRT: 0.064 0: 0.000 
+End of epoch 10 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 10, iters 300800
+End of epoch 10 / 10 	 Time Taken: 241 sec
+learning rate = 0.0000000
+4
+4
+python /nfs/bigbox/hieule/Penguins_CODE/penguin_train.py --dropout 0.2 --randomSize --keep_ratio --batchSize 128 --biased_sampling -1 --traininglist /nfs/bigbox/hieule/penguin_data/p1000/split/train_4_all --gpu_ids 1 --model single_unet --input_nc 3 --name MSEnc3_train_all_4_bias-1_bs128_do0.2 --root /nfs/bigbox/hieule/penguin_data/p1000/PATCHES/64_386/ --dataroot /nfs/bigbox/hieule/penguin_data/p1000/PATCHES/64_386/ --dataset_mode png_withlist --fineSize 256 --display_port 9999 --checkpoints /nfs/bigbox/hieule/penguin_data/checkpoints_new/
+/nfs/bigbox/hieule/penguin_data/checkpoints_new/MSEnc3_train_all_4_bias-1_bs128_do0.2
+create web directory /nfs/bigbox/hieule/penguin_data/checkpoints_new/MSEnc3_train_all_4_bias-1_bs128_do0.2/web...
+CustomDatasetDataLoader
+/nfs/bigbox/hieule/penguin_data/p1000/split/train_4_all
+['orthoQB02_10DEC161334434-M1BS-101001000CB8F300_u08rfAEAC', 'WV02_20160115040140_103001005065A200_16JAN15040140-M1BS-500638401020_01_P003_u08rf3031', 'WV03_20170217064537_10400100297FEA00_17FEB17064537-M1BS-057107305010_01_P001_u08rf3031', 'WV03_20160121015319_104001001762AC00_16JAN21015319-M1BS-500638671020_01_P001_u08rf3031', 'WV03_20160202130111_1040010017D54900_16FEB02130111-M1BS-500638661010_01_P001_u08rf3031', 'orthoWV02_11FEB030615365-M1BS-1030010008C6A700_u08rf3031', 'orthoWV02_11FEB251253222-M1BS-1030010009092C00_u08rfAEAC', 'WV03_20170106053006_10400100272BF900_17JAN06053006-M1BS-057089629010_01_P001_u08rf3031', 'WV02_20151204195602_103001004F9A8500_15DEC04195602-M1BS-500637515080_01_P006_u08rf3031', 'WV02_20160119013349_1030010050B0C500_16JAN19013349-M1BS-500637522050_01_P001_u08rf3031', 'orthoWV02_11FEB191312281-M1BS-10300100098AAB00_u08rfAEAC', 'WV02_20160218213346_1030010053BC0300_16FEB18213346-M1BS-500638407020_01_P002_u08rf3031', 'WV02_20160115054221_103001004F69B500_16JAN15054221-M1BS-500637521040_01_P004_u08rf3031', 'WV02_20110131195115_1030010009CCF900_11JAN31195115-M1BS-052549143040_01_P003_u08rf3031', 'WV02_20160101055831_103001004FC8BC00_16JAN01055831-M1BS-500637524030_01_P001_u08rf3031', 'WV02_20160203054101_1030010051854A00_16FEB03054101-M1BS-500637516020_01_P001_u08rf3031']
+dataset [PNGDATASET] was created
+Total: 12530 || Pos: 2334
+single_unet
+0.2
+initialization method [normal]
+---------- Networks initialized -------------
+UnetGenerator (
+  (model): UnetSkipConnectionBlock (
+    (model): Sequential (
+      (0): Conv2d(3, 64, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+      (1): UnetSkipConnectionBlock (
+        (model): Sequential (
+          (0): LeakyReLU (0.2, inplace)
+          (1): Conv2d(64, 128, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+          (2): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False)
+          (3): UnetSkipConnectionBlock (
+            (model): Sequential (
+              (0): LeakyReLU (0.2, inplace)
+              (1): Conv2d(128, 256, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+              (2): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False)
+              (3): UnetSkipConnectionBlock (
+                (model): Sequential (
+                  (0): LeakyReLU (0.2, inplace)
+                  (1): Conv2d(256, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                  (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                  (3): UnetSkipConnectionBlock (
+                    (model): Sequential (
+                      (0): LeakyReLU (0.2, inplace)
+                      (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                      (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                      (3): UnetSkipConnectionBlock (
+                        (model): Sequential (
+                          (0): LeakyReLU (0.2, inplace)
+                          (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                          (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                          (3): UnetSkipConnectionBlock (
+                            (model): Sequential (
+                              (0): LeakyReLU (0.2, inplace)
+                              (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                              (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                              (3): UnetSkipConnectionBlock (
+                                (model): Sequential (
+                                  (0): LeakyReLU (0.2, inplace)
+                                  (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                                  (2): ReLU (inplace)
+                                  (3): ConvTranspose2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                                  (4): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                                )
+                              )
+                              (4): ReLU (inplace)
+                              (5): ConvTranspose2d(1024, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                              (6): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                              (7): Dropout (p = 0.2)
+                            )
+                          )
+                          (4): ReLU (inplace)
+                          (5): ConvTranspose2d(1024, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                          (6): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                          (7): Dropout (p = 0.2)
+                        )
+                      )
+                      (4): ReLU (inplace)
+                      (5): ConvTranspose2d(1024, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                      (6): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                      (7): Dropout (p = 0.2)
+                    )
+                  )
+                  (4): ReLU (inplace)
+                  (5): ConvTranspose2d(1024, 256, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                  (6): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False)
+                )
+              )
+              (4): ReLU (inplace)
+              (5): ConvTranspose2d(512, 128, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+              (6): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False)
+            )
+          )
+          (4): ReLU (inplace)
+          (5): ConvTranspose2d(256, 64, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+          (6): InstanceNorm2d(64, eps=1e-05, momentum=0.1, affine=False)
+        )
+      )
+      (2): ReLU (inplace)
+      (3): ConvTranspose2d(128, 1, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+      (4): Tanh ()
+    )
+  )
+)
+Total number of parameters: 54405505
+-----------------------------------------------
+model [UnetModel] was created
+epoch:1
+Total: 12530 || Pos: 2334
+(epoch: 1, iters: 128, time: 2.051) G_Loss_SQRT: 1.052 0: 0.000 
+(epoch: 1, iters: 1408, time: 1.499) G_Loss_SQRT: 0.733 0: 0.000 
+(epoch: 1, iters: 2688, time: 1.585) G_Loss_SQRT: 0.546 0: 0.000 
+(epoch: 1, iters: 3968, time: 1.586) G_Loss_SQRT: 0.419 0: 0.000 
+(epoch: 1, iters: 5248, time: 1.576) G_Loss_SQRT: 0.344 0: 0.000 
+(epoch: 1, iters: 6528, time: 1.574) G_Loss_SQRT: 0.269 0: 0.000 
+(epoch: 1, iters: 7808, time: 1.567) G_Loss_SQRT: 0.252 0: 0.000 
+(epoch: 1, iters: 9088, time: 1.583) G_Loss_SQRT: 0.230 0: 0.000 
+(epoch: 1, iters: 10368, time: 1.579) G_Loss_SQRT: 0.189 0: 0.000 
+(epoch: 1, iters: 11648, time: 1.590) G_Loss_SQRT: 0.192 0: 0.000 
+(epoch: 1, iters: 12928, time: 1.590) G_Loss_SQRT: 0.207 0: 0.000 
+(epoch: 1, iters: 14208, time: 1.569) G_Loss_SQRT: 0.180 0: 0.000 
+(epoch: 1, iters: 15488, time: 1.581) G_Loss_SQRT: 0.200 0: 0.000 
+(epoch: 1, iters: 16768, time: 1.586) G_Loss_SQRT: 0.183 0: 0.000 
+(epoch: 1, iters: 18048, time: 1.590) G_Loss_SQRT: 0.171 0: 0.000 
+(epoch: 1, iters: 19328, time: 1.575) G_Loss_SQRT: 0.173 0: 0.000 
+(epoch: 1, iters: 20608, time: 1.587) G_Loss_SQRT: 0.152 0: 0.000 
+(epoch: 1, iters: 21888, time: 1.581) G_Loss_SQRT: 0.160 0: 0.000 
+(epoch: 1, iters: 23168, time: 1.579) G_Loss_SQRT: 0.182 0: 0.000 
+(epoch: 1, iters: 24448, time: 1.587) G_Loss_SQRT: 0.166 0: 0.000 
+(epoch: 1, iters: 25728, time: 1.643) G_Loss_SQRT: 0.158 0: 0.000 
+(epoch: 1, iters: 27008, time: 1.576) G_Loss_SQRT: 0.185 0: 0.000 
+(epoch: 1, iters: 28288, time: 1.594) G_Loss_SQRT: 0.171 0: 0.000 
+(epoch: 1, iters: 29568, time: 1.584) G_Loss_SQRT: 0.131 0: 0.000 
+End of epoch 1 / 10 	 Time Taken: 239 sec
+saving the model at the end of epoch 1, iters 30080
+End of epoch 1 / 10 	 Time Taken: 241 sec
+learning rate = 0.0002000
+epoch:2
+Total: 12530 || Pos: 2334
+(epoch: 2, iters: 128, time: 1.047) G_Loss_SQRT: 0.120 0: 0.000 
+(epoch: 2, iters: 1408, time: 1.565) G_Loss_SQRT: 0.179 0: 0.000 
+(epoch: 2, iters: 2688, time: 1.580) G_Loss_SQRT: 0.160 0: 0.000 
+(epoch: 2, iters: 3968, time: 1.568) G_Loss_SQRT: 0.196 0: 0.000 
+(epoch: 2, iters: 5248, time: 1.578) G_Loss_SQRT: 0.167 0: 0.000 
+(epoch: 2, iters: 6528, time: 1.589) G_Loss_SQRT: 0.173 0: 0.000 
+(epoch: 2, iters: 7808, time: 1.577) G_Loss_SQRT: 0.210 0: 0.000 
+(epoch: 2, iters: 9088, time: 1.583) G_Loss_SQRT: 0.135 0: 0.000 
+(epoch: 2, iters: 10368, time: 1.581) G_Loss_SQRT: 0.146 0: 0.000 
+(epoch: 2, iters: 11648, time: 1.579) G_Loss_SQRT: 0.133 0: 0.000 
+(epoch: 2, iters: 12928, time: 1.576) G_Loss_SQRT: 0.187 0: 0.000 
+(epoch: 2, iters: 14208, time: 1.593) G_Loss_SQRT: 0.176 0: 0.000 
+(epoch: 2, iters: 15488, time: 1.575) G_Loss_SQRT: 0.172 0: 0.000 
+(epoch: 2, iters: 16768, time: 1.581) G_Loss_SQRT: 0.132 0: 0.000 
+(epoch: 2, iters: 18048, time: 1.522) G_Loss_SQRT: 0.131 0: 0.000 
+(epoch: 2, iters: 19328, time: 1.574) G_Loss_SQRT: 0.115 0: 0.000 
+(epoch: 2, iters: 20608, time: 1.548) G_Loss_SQRT: 0.151 0: 0.000 
+(epoch: 2, iters: 21888, time: 1.586) G_Loss_SQRT: 0.144 0: 0.000 
+(epoch: 2, iters: 23168, time: 1.573) G_Loss_SQRT: 0.115 0: 0.000 
+(epoch: 2, iters: 24448, time: 1.558) G_Loss_SQRT: 0.153 0: 0.000 
+(epoch: 2, iters: 25728, time: 1.580) G_Loss_SQRT: 0.105 0: 0.000 
+(epoch: 2, iters: 27008, time: 1.574) G_Loss_SQRT: 0.111 0: 0.000 
+(epoch: 2, iters: 28288, time: 1.577) G_Loss_SQRT: 0.131 0: 0.000 
+(epoch: 2, iters: 29568, time: 1.556) G_Loss_SQRT: 0.137 0: 0.000 
+End of epoch 2 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 2, iters 60160
+End of epoch 2 / 10 	 Time Taken: 240 sec
+learning rate = 0.0002000
+epoch:3
+Total: 12530 || Pos: 2334
+(epoch: 3, iters: 128, time: 1.046) G_Loss_SQRT: 0.097 0: 0.000 
+(epoch: 3, iters: 1408, time: 1.561) G_Loss_SQRT: 0.135 0: 0.000 
+(epoch: 3, iters: 2688, time: 1.583) G_Loss_SQRT: 0.152 0: 0.000 
+(epoch: 3, iters: 3968, time: 1.579) G_Loss_SQRT: 0.146 0: 0.000 
+(epoch: 3, iters: 5248, time: 1.583) G_Loss_SQRT: 0.120 0: 0.000 
+(epoch: 3, iters: 6528, time: 1.565) G_Loss_SQRT: 0.138 0: 0.000 
+(epoch: 3, iters: 7808, time: 1.571) G_Loss_SQRT: 0.141 0: 0.000 
+(epoch: 3, iters: 9088, time: 1.588) G_Loss_SQRT: 0.151 0: 0.000 
+(epoch: 3, iters: 10368, time: 1.575) G_Loss_SQRT: 0.160 0: 0.000 
+(epoch: 3, iters: 11648, time: 1.536) G_Loss_SQRT: 0.125 0: 0.000 
+(epoch: 3, iters: 12928, time: 1.583) G_Loss_SQRT: 0.107 0: 0.000 
+(epoch: 3, iters: 14208, time: 1.583) G_Loss_SQRT: 0.133 0: 0.000 
+(epoch: 3, iters: 15488, time: 1.570) G_Loss_SQRT: 0.131 0: 0.000 
+(epoch: 3, iters: 16768, time: 1.576) G_Loss_SQRT: 0.124 0: 0.000 
+(epoch: 3, iters: 18048, time: 1.586) G_Loss_SQRT: 0.131 0: 0.000 
+(epoch: 3, iters: 19328, time: 1.573) G_Loss_SQRT: 0.110 0: 0.000 
+(epoch: 3, iters: 20608, time: 1.600) G_Loss_SQRT: 0.122 0: 0.000 
+(epoch: 3, iters: 21888, time: 1.579) G_Loss_SQRT: 0.123 0: 0.000 
+(epoch: 3, iters: 23168, time: 1.565) G_Loss_SQRT: 0.117 0: 0.000 
+(epoch: 3, iters: 24448, time: 1.592) G_Loss_SQRT: 0.111 0: 0.000 
+(epoch: 3, iters: 25728, time: 1.573) G_Loss_SQRT: 0.128 0: 0.000 
+(epoch: 3, iters: 27008, time: 1.581) G_Loss_SQRT: 0.115 0: 0.000 
+(epoch: 3, iters: 28288, time: 1.580) G_Loss_SQRT: 0.080 0: 0.000 
+(epoch: 3, iters: 29568, time: 1.531) G_Loss_SQRT: 0.106 0: 0.000 
+End of epoch 3 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 3, iters 90240
+End of epoch 3 / 10 	 Time Taken: 240 sec
+learning rate = 0.0002000
+epoch:4
+Total: 12530 || Pos: 2334
+(epoch: 4, iters: 128, time: 1.057) G_Loss_SQRT: 0.102 0: 0.000 
+(epoch: 4, iters: 1408, time: 1.582) G_Loss_SQRT: 0.116 0: 0.000 
+(epoch: 4, iters: 2688, time: 1.575) G_Loss_SQRT: 0.127 0: 0.000 
+(epoch: 4, iters: 3968, time: 1.571) G_Loss_SQRT: 0.194 0: 0.000 
+(epoch: 4, iters: 5248, time: 1.576) G_Loss_SQRT: 0.124 0: 0.000 
+(epoch: 4, iters: 6528, time: 1.575) G_Loss_SQRT: 0.109 0: 0.000 
+(epoch: 4, iters: 7808, time: 1.582) G_Loss_SQRT: 0.126 0: 0.000 
+(epoch: 4, iters: 9088, time: 1.588) G_Loss_SQRT: 0.130 0: 0.000 
+(epoch: 4, iters: 10368, time: 1.577) G_Loss_SQRT: 0.118 0: 0.000 
+(epoch: 4, iters: 11648, time: 1.581) G_Loss_SQRT: 0.122 0: 0.000 
+(epoch: 4, iters: 12928, time: 1.580) G_Loss_SQRT: 0.111 0: 0.000 
+(epoch: 4, iters: 14208, time: 1.584) G_Loss_SQRT: 0.150 0: 0.000 
+(epoch: 4, iters: 15488, time: 1.568) G_Loss_SQRT: 0.118 0: 0.000 
+(epoch: 4, iters: 16768, time: 1.593) G_Loss_SQRT: 0.134 0: 0.000 
+(epoch: 4, iters: 18048, time: 1.574) G_Loss_SQRT: 0.126 0: 0.000 
+(epoch: 4, iters: 19328, time: 1.515) G_Loss_SQRT: 0.091 0: 0.000 
+(epoch: 4, iters: 20608, time: 1.583) G_Loss_SQRT: 0.145 0: 0.000 
+(epoch: 4, iters: 21888, time: 1.590) G_Loss_SQRT: 0.123 0: 0.000 
+(epoch: 4, iters: 23168, time: 1.587) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 4, iters: 24448, time: 1.584) G_Loss_SQRT: 0.121 0: 0.000 
+(epoch: 4, iters: 25728, time: 1.578) G_Loss_SQRT: 0.114 0: 0.000 
+(epoch: 4, iters: 27008, time: 1.581) G_Loss_SQRT: 0.120 0: 0.000 
+(epoch: 4, iters: 28288, time: 1.579) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 4, iters: 29568, time: 1.476) G_Loss_SQRT: 0.123 0: 0.000 
+End of epoch 4 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 4, iters 120320
+End of epoch 4 / 10 	 Time Taken: 240 sec
+learning rate = 0.0002000
+epoch:5
+Total: 12530 || Pos: 2334
+(epoch: 5, iters: 128, time: 1.057) G_Loss_SQRT: 0.091 0: 0.000 
+(epoch: 5, iters: 1408, time: 1.585) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 5, iters: 2688, time: 1.577) G_Loss_SQRT: 0.108 0: 0.000 
+(epoch: 5, iters: 3968, time: 1.584) G_Loss_SQRT: 0.126 0: 0.000 
+(epoch: 5, iters: 5248, time: 1.579) G_Loss_SQRT: 0.103 0: 0.000 
+(epoch: 5, iters: 6528, time: 1.587) G_Loss_SQRT: 0.119 0: 0.000 
+(epoch: 5, iters: 7808, time: 1.571) G_Loss_SQRT: 0.120 0: 0.000 
+(epoch: 5, iters: 9088, time: 1.584) G_Loss_SQRT: 0.095 0: 0.000 
+(epoch: 5, iters: 10368, time: 1.576) G_Loss_SQRT: 0.127 0: 0.000 
+(epoch: 5, iters: 11648, time: 1.577) G_Loss_SQRT: 0.076 0: 0.000 
+(epoch: 5, iters: 12928, time: 1.569) G_Loss_SQRT: 0.147 0: 0.000 
+(epoch: 5, iters: 14208, time: 1.569) G_Loss_SQRT: 0.123 0: 0.000 
+(epoch: 5, iters: 15488, time: 1.580) G_Loss_SQRT: 0.123 0: 0.000 
+(epoch: 5, iters: 16768, time: 1.671) G_Loss_SQRT: 0.086 0: 0.000 
+(epoch: 5, iters: 18048, time: 1.577) G_Loss_SQRT: 0.100 0: 0.000 
+(epoch: 5, iters: 19328, time: 1.575) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 5, iters: 20608, time: 1.602) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 5, iters: 21888, time: 1.583) G_Loss_SQRT: 0.113 0: 0.000 
+(epoch: 5, iters: 23168, time: 1.578) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 5, iters: 24448, time: 1.585) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 5, iters: 25728, time: 1.576) G_Loss_SQRT: 0.115 0: 0.000 
+(epoch: 5, iters: 27008, time: 1.588) G_Loss_SQRT: 0.090 0: 0.000 
+(epoch: 5, iters: 28288, time: 1.577) G_Loss_SQRT: 0.090 0: 0.000 
+(epoch: 5, iters: 29568, time: 1.577) G_Loss_SQRT: 0.120 0: 0.000 
+End of epoch 5 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 5, iters 150400
+End of epoch 5 / 10 	 Time Taken: 240 sec
+learning rate = 0.0001667
+epoch:6
+Total: 12530 || Pos: 2334
+(epoch: 6, iters: 128, time: 1.061) G_Loss_SQRT: 0.145 0: 0.000 
+(epoch: 6, iters: 1408, time: 1.565) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 6, iters: 2688, time: 1.584) G_Loss_SQRT: 0.125 0: 0.000 
+(epoch: 6, iters: 3968, time: 1.581) G_Loss_SQRT: 0.110 0: 0.000 
+(epoch: 6, iters: 5248, time: 1.575) G_Loss_SQRT: 0.118 0: 0.000 
+(epoch: 6, iters: 6528, time: 1.565) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 6, iters: 7808, time: 1.578) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 6, iters: 9088, time: 1.589) G_Loss_SQRT: 0.080 0: 0.000 
+(epoch: 6, iters: 10368, time: 1.586) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 6, iters: 11648, time: 1.585) G_Loss_SQRT: 0.111 0: 0.000 
+(epoch: 6, iters: 12928, time: 1.568) G_Loss_SQRT: 0.086 0: 0.000 
+(epoch: 6, iters: 14208, time: 1.570) G_Loss_SQRT: 0.112 0: 0.000 
+(epoch: 6, iters: 15488, time: 1.588) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 6, iters: 16768, time: 1.575) G_Loss_SQRT: 0.113 0: 0.000 
+(epoch: 6, iters: 18048, time: 1.578) G_Loss_SQRT: 0.122 0: 0.000 
+(epoch: 6, iters: 19328, time: 1.582) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 6, iters: 20608, time: 1.577) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 6, iters: 21888, time: 1.592) G_Loss_SQRT: 0.110 0: 0.000 
+(epoch: 6, iters: 23168, time: 1.577) G_Loss_SQRT: 0.105 0: 0.000 
+(epoch: 6, iters: 24448, time: 1.584) G_Loss_SQRT: 0.080 0: 0.000 
+(epoch: 6, iters: 25728, time: 1.587) G_Loss_SQRT: 0.101 0: 0.000 
+(epoch: 6, iters: 27008, time: 1.574) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 6, iters: 28288, time: 1.573) G_Loss_SQRT: 0.120 0: 0.000 
+(epoch: 6, iters: 29568, time: 1.583) G_Loss_SQRT: 0.084 0: 0.000 
+End of epoch 6 / 10 	 Time Taken: 237 sec
+saving the model at the end of epoch 6, iters 180480
+End of epoch 6 / 10 	 Time Taken: 240 sec
+learning rate = 0.0001333
+epoch:7
+Total: 12530 || Pos: 2334
+(epoch: 7, iters: 128, time: 1.042) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 7, iters: 1408, time: 1.579) G_Loss_SQRT: 0.086 0: 0.000 
+(epoch: 7, iters: 2688, time: 1.582) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 7, iters: 3968, time: 1.580) G_Loss_SQRT: 0.115 0: 0.000 
+(epoch: 7, iters: 5248, time: 1.582) G_Loss_SQRT: 0.094 0: 0.000 
+(epoch: 7, iters: 6528, time: 1.528) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 7, iters: 7808, time: 1.565) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 7, iters: 9088, time: 1.578) G_Loss_SQRT: 0.112 0: 0.000 
+(epoch: 7, iters: 10368, time: 1.571) G_Loss_SQRT: 0.109 0: 0.000 
+(epoch: 7, iters: 11648, time: 1.541) G_Loss_SQRT: 0.103 0: 0.000 
+(epoch: 7, iters: 12928, time: 1.583) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 7, iters: 14208, time: 1.574) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 7, iters: 15488, time: 1.576) G_Loss_SQRT: 0.113 0: 0.000 
+(epoch: 7, iters: 16768, time: 1.588) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 7, iters: 18048, time: 1.598) G_Loss_SQRT: 0.080 0: 0.000 
+(epoch: 7, iters: 19328, time: 1.574) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 7, iters: 20608, time: 1.586) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 7, iters: 21888, time: 1.567) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 7, iters: 23168, time: 1.584) G_Loss_SQRT: 0.105 0: 0.000 
+(epoch: 7, iters: 24448, time: 1.583) G_Loss_SQRT: 0.127 0: 0.000 
+(epoch: 7, iters: 25728, time: 1.578) G_Loss_SQRT: 0.095 0: 0.000 
+(epoch: 7, iters: 27008, time: 1.620) G_Loss_SQRT: 0.121 0: 0.000 
+(epoch: 7, iters: 28288, time: 1.586) G_Loss_SQRT: 0.093 0: 0.000 
+(epoch: 7, iters: 29568, time: 1.575) G_Loss_SQRT: 0.091 0: 0.000 
+End of epoch 7 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 7, iters 210560
+End of epoch 7 / 10 	 Time Taken: 240 sec
+learning rate = 0.0001000
+epoch:8
+Total: 12530 || Pos: 2334
+(epoch: 8, iters: 128, time: 1.057) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 8, iters: 1408, time: 1.564) G_Loss_SQRT: 0.102 0: 0.000 
+(epoch: 8, iters: 2688, time: 1.580) G_Loss_SQRT: 0.095 0: 0.000 
+(epoch: 8, iters: 3968, time: 1.573) G_Loss_SQRT: 0.109 0: 0.000 
+(epoch: 8, iters: 5248, time: 1.575) G_Loss_SQRT: 0.100 0: 0.000 
+(epoch: 8, iters: 6528, time: 1.573) G_Loss_SQRT: 0.109 0: 0.000 
+(epoch: 8, iters: 7808, time: 1.584) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 8, iters: 9088, time: 1.577) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 8, iters: 10368, time: 1.593) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 8, iters: 11648, time: 1.583) G_Loss_SQRT: 0.073 0: 0.000 
+(epoch: 8, iters: 12928, time: 1.640) G_Loss_SQRT: 0.106 0: 0.000 
+(epoch: 8, iters: 14208, time: 1.587) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 8, iters: 15488, time: 1.583) G_Loss_SQRT: 0.110 0: 0.000 
+(epoch: 8, iters: 16768, time: 1.578) G_Loss_SQRT: 0.100 0: 0.000 
+(epoch: 8, iters: 18048, time: 1.577) G_Loss_SQRT: 0.111 0: 0.000 
+(epoch: 8, iters: 19328, time: 1.588) G_Loss_SQRT: 0.063 0: 0.000 
+(epoch: 8, iters: 20608, time: 1.578) G_Loss_SQRT: 0.071 0: 0.000 
+(epoch: 8, iters: 21888, time: 1.580) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 8, iters: 23168, time: 1.605) G_Loss_SQRT: 0.117 0: 0.000 
+(epoch: 8, iters: 24448, time: 1.571) G_Loss_SQRT: 0.067 0: 0.000 
+(epoch: 8, iters: 25728, time: 1.567) G_Loss_SQRT: 0.113 0: 0.000 
+(epoch: 8, iters: 27008, time: 1.580) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 8, iters: 28288, time: 1.583) G_Loss_SQRT: 0.071 0: 0.000 
+(epoch: 8, iters: 29568, time: 1.589) G_Loss_SQRT: 0.075 0: 0.000 
+End of epoch 8 / 10 	 Time Taken: 239 sec
+saving the model at the end of epoch 8, iters 240640
+End of epoch 8 / 10 	 Time Taken: 241 sec
+learning rate = 0.0000667
+epoch:9
+Total: 12530 || Pos: 2334
+(epoch: 9, iters: 128, time: 1.051) G_Loss_SQRT: 0.126 0: 0.000 
+(epoch: 9, iters: 1408, time: 1.573) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 9, iters: 2688, time: 1.582) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 9, iters: 3968, time: 1.569) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 9, iters: 5248, time: 1.585) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 9, iters: 6528, time: 1.583) G_Loss_SQRT: 0.074 0: 0.000 
+(epoch: 9, iters: 7808, time: 1.576) G_Loss_SQRT: 0.063 0: 0.000 
+(epoch: 9, iters: 9088, time: 1.620) G_Loss_SQRT: 0.090 0: 0.000 
+(epoch: 9, iters: 10368, time: 1.593) G_Loss_SQRT: 0.094 0: 0.000 
+(epoch: 9, iters: 11648, time: 1.581) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 9, iters: 12928, time: 1.579) G_Loss_SQRT: 0.112 0: 0.000 
+(epoch: 9, iters: 14208, time: 1.565) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 9, iters: 15488, time: 1.577) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 9, iters: 16768, time: 1.586) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 9, iters: 18048, time: 1.593) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 9, iters: 19328, time: 1.568) G_Loss_SQRT: 0.107 0: 0.000 
+(epoch: 9, iters: 20608, time: 1.587) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 9, iters: 21888, time: 1.608) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 9, iters: 23168, time: 1.589) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 9, iters: 24448, time: 1.576) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 9, iters: 25728, time: 1.595) G_Loss_SQRT: 0.086 0: 0.000 
+(epoch: 9, iters: 27008, time: 1.602) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 9, iters: 28288, time: 1.581) G_Loss_SQRT: 0.057 0: 0.000 
+(epoch: 9, iters: 29568, time: 1.577) G_Loss_SQRT: 0.103 0: 0.000 
+End of epoch 9 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 9, iters 270720
+End of epoch 9 / 10 	 Time Taken: 240 sec
+learning rate = 0.0000333
+epoch:10
+Total: 12530 || Pos: 2334
+(epoch: 10, iters: 128, time: 1.058) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 10, iters: 1408, time: 1.581) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 10, iters: 2688, time: 1.573) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 10, iters: 3968, time: 1.569) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 10, iters: 5248, time: 1.578) G_Loss_SQRT: 0.093 0: 0.000 
+(epoch: 10, iters: 6528, time: 1.588) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 10, iters: 7808, time: 1.573) G_Loss_SQRT: 0.070 0: 0.000 
+(epoch: 10, iters: 9088, time: 1.576) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 10, iters: 10368, time: 1.582) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 10, iters: 11648, time: 1.581) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 10, iters: 12928, time: 1.592) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 10, iters: 14208, time: 1.579) G_Loss_SQRT: 0.074 0: 0.000 
+(epoch: 10, iters: 15488, time: 1.562) G_Loss_SQRT: 0.109 0: 0.000 
+(epoch: 10, iters: 16768, time: 1.577) G_Loss_SQRT: 0.072 0: 0.000 
+(epoch: 10, iters: 18048, time: 1.578) G_Loss_SQRT: 0.074 0: 0.000 
+(epoch: 10, iters: 19328, time: 1.584) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 10, iters: 20608, time: 1.588) G_Loss_SQRT: 0.068 0: 0.000 
+(epoch: 10, iters: 21888, time: 1.576) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 10, iters: 23168, time: 1.609) G_Loss_SQRT: 0.107 0: 0.000 
+(epoch: 10, iters: 24448, time: 1.582) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 10, iters: 25728, time: 1.571) G_Loss_SQRT: 0.061 0: 0.000 
+(epoch: 10, iters: 27008, time: 1.580) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 10, iters: 28288, time: 1.578) G_Loss_SQRT: 0.091 0: 0.000 
+(epoch: 10, iters: 29568, time: 1.580) G_Loss_SQRT: 0.082 0: 0.000 
+End of epoch 10 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 10, iters 300800
+End of epoch 10 / 10 	 Time Taken: 240 sec
+learning rate = 0.0000000
+5
+5
+python /nfs/bigbox/hieule/Penguins_CODE/penguin_train.py --dropout 0.2 --randomSize --keep_ratio --batchSize 128 --biased_sampling -1 --traininglist /nfs/bigbox/hieule/penguin_data/p1000/split/train_5_all --gpu_ids 1 --model single_unet --input_nc 3 --name MSEnc3_train_all_5_bias-1_bs128_do0.2 --root /nfs/bigbox/hieule/penguin_data/p1000/PATCHES/64_386/ --dataroot /nfs/bigbox/hieule/penguin_data/p1000/PATCHES/64_386/ --dataset_mode png_withlist --fineSize 256 --display_port 9999 --checkpoints /nfs/bigbox/hieule/penguin_data/checkpoints_new/
+/nfs/bigbox/hieule/penguin_data/checkpoints_new/MSEnc3_train_all_5_bias-1_bs128_do0.2
+create web directory /nfs/bigbox/hieule/penguin_data/checkpoints_new/MSEnc3_train_all_5_bias-1_bs128_do0.2/web...
+CustomDatasetDataLoader
+/nfs/bigbox/hieule/penguin_data/p1000/split/train_5_all
+['orthoQB02_10DEC161334434-M1BS-101001000CB8F300_u08rfAEAC', 'WV02_20160115040140_103001005065A200_16JAN15040140-M1BS-500638401020_01_P003_u08rf3031', 'WV03_20170217064537_10400100297FEA00_17FEB17064537-M1BS-057107305010_01_P001_u08rf3031', 'WV03_20160121015319_104001001762AC00_16JAN21015319-M1BS-500638671020_01_P001_u08rf3031', 'WV03_20160202130111_1040010017D54900_16FEB02130111-M1BS-500638661010_01_P001_u08rf3031', 'orthoWV02_11FEB030615365-M1BS-1030010008C6A700_u08rf3031', 'orthoWV02_11FEB111306175-M1BS-10300100080D2800_u08rfAEAC', 'orthoWV02_11FEB251253222-M1BS-1030010009092C00_u08rfAEAC', 'WV02_20160119013349_1030010050B0C500_16JAN19013349-M1BS-500637522050_01_P001_u08rf3031', 'orthoWV02_11FEB191312281-M1BS-10300100098AAB00_u08rfAEAC', 'WV02_20160101055824_103001004E1BFF00_16JAN01055824-M1BS-500637502050_01_P007_u08rf3031', 'WV02_20160218213346_1030010053BC0300_16FEB18213346-M1BS-500638407020_01_P002_u08rf3031', 'orthoQB02_11JAN121245196-M1BS-101001000CD66D00_u08rfAEAC', 'WV03_20160118055744_1040010017491D00_16JAN18055744-M1BS-500638671060_01_P001_u08rf3031', 'WV02_20160101055831_103001004FC8BC00_16JAN01055831-M1BS-500637524030_01_P001_u08rf3031', 'WV02_20160203054101_1030010051854A00_16FEB03054101-M1BS-500637516020_01_P001_u08rf3031']
+dataset [PNGDATASET] was created
+Total: 17471 || Pos: 2450
+single_unet
+0.2
+initialization method [normal]
+---------- Networks initialized -------------
+UnetGenerator (
+  (model): UnetSkipConnectionBlock (
+    (model): Sequential (
+      (0): Conv2d(3, 64, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+      (1): UnetSkipConnectionBlock (
+        (model): Sequential (
+          (0): LeakyReLU (0.2, inplace)
+          (1): Conv2d(64, 128, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+          (2): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False)
+          (3): UnetSkipConnectionBlock (
+            (model): Sequential (
+              (0): LeakyReLU (0.2, inplace)
+              (1): Conv2d(128, 256, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+              (2): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False)
+              (3): UnetSkipConnectionBlock (
+                (model): Sequential (
+                  (0): LeakyReLU (0.2, inplace)
+                  (1): Conv2d(256, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                  (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                  (3): UnetSkipConnectionBlock (
+                    (model): Sequential (
+                      (0): LeakyReLU (0.2, inplace)
+                      (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                      (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                      (3): UnetSkipConnectionBlock (
+                        (model): Sequential (
+                          (0): LeakyReLU (0.2, inplace)
+                          (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                          (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                          (3): UnetSkipConnectionBlock (
+                            (model): Sequential (
+                              (0): LeakyReLU (0.2, inplace)
+                              (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                              (2): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                              (3): UnetSkipConnectionBlock (
+                                (model): Sequential (
+                                  (0): LeakyReLU (0.2, inplace)
+                                  (1): Conv2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                                  (2): ReLU (inplace)
+                                  (3): ConvTranspose2d(512, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                                  (4): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                                )
+                              )
+                              (4): ReLU (inplace)
+                              (5): ConvTranspose2d(1024, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                              (6): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                              (7): Dropout (p = 0.2)
+                            )
+                          )
+                          (4): ReLU (inplace)
+                          (5): ConvTranspose2d(1024, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                          (6): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                          (7): Dropout (p = 0.2)
+                        )
+                      )
+                      (4): ReLU (inplace)
+                      (5): ConvTranspose2d(1024, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                      (6): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False)
+                      (7): Dropout (p = 0.2)
+                    )
+                  )
+                  (4): ReLU (inplace)
+                  (5): ConvTranspose2d(1024, 256, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+                  (6): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False)
+                )
+              )
+              (4): ReLU (inplace)
+              (5): ConvTranspose2d(512, 128, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+              (6): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False)
+            )
+          )
+          (4): ReLU (inplace)
+          (5): ConvTranspose2d(256, 64, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+          (6): InstanceNorm2d(64, eps=1e-05, momentum=0.1, affine=False)
+        )
+      )
+      (2): ReLU (inplace)
+      (3): ConvTranspose2d(128, 1, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+      (4): Tanh ()
+    )
+  )
+)
+Total number of parameters: 54405505
+-----------------------------------------------
+model [UnetModel] was created
+epoch:1
+Total: 17471 || Pos: 2450
+(epoch: 1, iters: 128, time: 2.052) G_Loss_SQRT: 1.011 0: 0.000 
+(epoch: 1, iters: 1408, time: 1.589) G_Loss_SQRT: 0.696 0: 0.000 
+(epoch: 1, iters: 2688, time: 1.595) G_Loss_SQRT: 0.518 0: 0.000 
+(epoch: 1, iters: 3968, time: 1.577) G_Loss_SQRT: 0.400 0: 0.000 
+(epoch: 1, iters: 5248, time: 1.580) G_Loss_SQRT: 0.311 0: 0.000 
+(epoch: 1, iters: 6528, time: 1.577) G_Loss_SQRT: 0.257 0: 0.000 
+(epoch: 1, iters: 7808, time: 1.579) G_Loss_SQRT: 0.231 0: 0.000 
+(epoch: 1, iters: 9088, time: 1.577) G_Loss_SQRT: 0.194 0: 0.000 
+(epoch: 1, iters: 10368, time: 1.582) G_Loss_SQRT: 0.182 0: 0.000 
+(epoch: 1, iters: 11648, time: 1.592) G_Loss_SQRT: 0.196 0: 0.000 
+(epoch: 1, iters: 12928, time: 1.582) G_Loss_SQRT: 0.162 0: 0.000 
+(epoch: 1, iters: 14208, time: 1.593) G_Loss_SQRT: 0.157 0: 0.000 
+(epoch: 1, iters: 15488, time: 1.593) G_Loss_SQRT: 0.137 0: 0.000 
+(epoch: 1, iters: 16768, time: 1.591) G_Loss_SQRT: 0.144 0: 0.000 
+(epoch: 1, iters: 18048, time: 1.578) G_Loss_SQRT: 0.145 0: 0.000 
+(epoch: 1, iters: 19328, time: 1.596) G_Loss_SQRT: 0.170 0: 0.000 
+(epoch: 1, iters: 20608, time: 1.604) G_Loss_SQRT: 0.136 0: 0.000 
+(epoch: 1, iters: 21888, time: 1.583) G_Loss_SQRT: 0.117 0: 0.000 
+(epoch: 1, iters: 23168, time: 1.576) G_Loss_SQRT: 0.129 0: 0.000 
+(epoch: 1, iters: 24448, time: 1.577) G_Loss_SQRT: 0.111 0: 0.000 
+(epoch: 1, iters: 25728, time: 1.586) G_Loss_SQRT: 0.104 0: 0.000 
+(epoch: 1, iters: 27008, time: 1.601) G_Loss_SQRT: 0.129 0: 0.000 
+(epoch: 1, iters: 28288, time: 1.581) G_Loss_SQRT: 0.125 0: 0.000 
+(epoch: 1, iters: 29568, time: 1.588) G_Loss_SQRT: 0.120 0: 0.000 
+End of epoch 1 / 10 	 Time Taken: 239 sec
+saving the model at the end of epoch 1, iters 30080
+End of epoch 1 / 10 	 Time Taken: 242 sec
+learning rate = 0.0002000
+epoch:2
+Total: 17471 || Pos: 2450
+(epoch: 2, iters: 128, time: 1.047) G_Loss_SQRT: 0.125 0: 0.000 
+(epoch: 2, iters: 1408, time: 1.584) G_Loss_SQRT: 0.135 0: 0.000 
+(epoch: 2, iters: 2688, time: 1.563) G_Loss_SQRT: 0.108 0: 0.000 
+(epoch: 2, iters: 3968, time: 1.576) G_Loss_SQRT: 0.150 0: 0.000 
+(epoch: 2, iters: 5248, time: 1.587) G_Loss_SQRT: 0.129 0: 0.000 
+(epoch: 2, iters: 6528, time: 1.575) G_Loss_SQRT: 0.153 0: 0.000 
+(epoch: 2, iters: 7808, time: 1.575) G_Loss_SQRT: 0.136 0: 0.000 
+(epoch: 2, iters: 9088, time: 1.585) G_Loss_SQRT: 0.175 0: 0.000 
+(epoch: 2, iters: 10368, time: 1.579) G_Loss_SQRT: 0.134 0: 0.000 
+(epoch: 2, iters: 11648, time: 1.702) G_Loss_SQRT: 0.118 0: 0.000 
+(epoch: 2, iters: 12928, time: 1.570) G_Loss_SQRT: 0.116 0: 0.000 
+(epoch: 2, iters: 14208, time: 1.569) G_Loss_SQRT: 0.095 0: 0.000 
+(epoch: 2, iters: 15488, time: 1.582) G_Loss_SQRT: 0.115 0: 0.000 
+(epoch: 2, iters: 16768, time: 1.577) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 2, iters: 18048, time: 1.593) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 2, iters: 19328, time: 1.572) G_Loss_SQRT: 0.115 0: 0.000 
+(epoch: 2, iters: 20608, time: 1.584) G_Loss_SQRT: 0.110 0: 0.000 
+(epoch: 2, iters: 21888, time: 1.560) G_Loss_SQRT: 0.106 0: 0.000 
+(epoch: 2, iters: 23168, time: 1.575) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 2, iters: 24448, time: 1.604) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 2, iters: 25728, time: 1.575) G_Loss_SQRT: 0.108 0: 0.000 
+(epoch: 2, iters: 27008, time: 1.577) G_Loss_SQRT: 0.128 0: 0.000 
+(epoch: 2, iters: 28288, time: 1.578) G_Loss_SQRT: 0.094 0: 0.000 
+(epoch: 2, iters: 29568, time: 1.575) G_Loss_SQRT: 0.099 0: 0.000 
+End of epoch 2 / 10 	 Time Taken: 239 sec
+saving the model at the end of epoch 2, iters 60160
+End of epoch 2 / 10 	 Time Taken: 241 sec
+learning rate = 0.0002000
+epoch:3
+Total: 17471 || Pos: 2450
+(epoch: 3, iters: 128, time: 1.057) G_Loss_SQRT: 0.074 0: 0.000 
+(epoch: 3, iters: 1408, time: 1.569) G_Loss_SQRT: 0.106 0: 0.000 
+(epoch: 3, iters: 2688, time: 1.580) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 3, iters: 3968, time: 1.580) G_Loss_SQRT: 0.153 0: 0.000 
+(epoch: 3, iters: 5248, time: 1.573) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 3, iters: 6528, time: 1.582) G_Loss_SQRT: 0.125 0: 0.000 
+(epoch: 3, iters: 7808, time: 1.575) G_Loss_SQRT: 0.093 0: 0.000 
+(epoch: 3, iters: 9088, time: 1.576) G_Loss_SQRT: 0.090 0: 0.000 
+(epoch: 3, iters: 10368, time: 1.581) G_Loss_SQRT: 0.120 0: 0.000 
+(epoch: 3, iters: 11648, time: 1.582) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 3, iters: 12928, time: 1.584) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 3, iters: 14208, time: 1.573) G_Loss_SQRT: 0.125 0: 0.000 
+(epoch: 3, iters: 15488, time: 1.614) G_Loss_SQRT: 0.108 0: 0.000 
+(epoch: 3, iters: 16768, time: 1.625) G_Loss_SQRT: 0.116 0: 0.000 
+(epoch: 3, iters: 18048, time: 1.588) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 3, iters: 19328, time: 1.585) G_Loss_SQRT: 0.123 0: 0.000 
+(epoch: 3, iters: 20608, time: 1.577) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 3, iters: 21888, time: 1.576) G_Loss_SQRT: 0.102 0: 0.000 
+(epoch: 3, iters: 23168, time: 1.580) G_Loss_SQRT: 0.112 0: 0.000 
+(epoch: 3, iters: 24448, time: 1.579) G_Loss_SQRT: 0.128 0: 0.000 
+(epoch: 3, iters: 25728, time: 1.590) G_Loss_SQRT: 0.116 0: 0.000 
+(epoch: 3, iters: 27008, time: 1.582) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 3, iters: 28288, time: 1.595) G_Loss_SQRT: 0.145 0: 0.000 
+(epoch: 3, iters: 29568, time: 1.585) G_Loss_SQRT: 0.090 0: 0.000 
+End of epoch 3 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 3, iters 90240
+End of epoch 3 / 10 	 Time Taken: 240 sec
+learning rate = 0.0002000
+epoch:4
+Total: 17471 || Pos: 2450
+(epoch: 4, iters: 128, time: 1.052) G_Loss_SQRT: 0.132 0: 0.000 
+(epoch: 4, iters: 1408, time: 1.578) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 4, iters: 2688, time: 1.578) G_Loss_SQRT: 0.115 0: 0.000 
+(epoch: 4, iters: 3968, time: 1.574) G_Loss_SQRT: 0.094 0: 0.000 
+(epoch: 4, iters: 5248, time: 1.573) G_Loss_SQRT: 0.134 0: 0.000 
+(epoch: 4, iters: 6528, time: 1.581) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 4, iters: 7808, time: 1.564) G_Loss_SQRT: 0.117 0: 0.000 
+(epoch: 4, iters: 9088, time: 1.573) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 4, iters: 10368, time: 1.684) G_Loss_SQRT: 0.103 0: 0.000 
+(epoch: 4, iters: 11648, time: 1.581) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 4, iters: 12928, time: 1.603) G_Loss_SQRT: 0.078 0: 0.000 
+(epoch: 4, iters: 14208, time: 1.579) G_Loss_SQRT: 0.103 0: 0.000 
+(epoch: 4, iters: 15488, time: 1.576) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 4, iters: 16768, time: 1.579) G_Loss_SQRT: 0.127 0: 0.000 
+(epoch: 4, iters: 18048, time: 1.580) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 4, iters: 19328, time: 1.582) G_Loss_SQRT: 0.107 0: 0.000 
+(epoch: 4, iters: 20608, time: 1.617) G_Loss_SQRT: 0.071 0: 0.000 
+(epoch: 4, iters: 21888, time: 1.583) G_Loss_SQRT: 0.120 0: 0.000 
+(epoch: 4, iters: 23168, time: 1.590) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 4, iters: 24448, time: 1.575) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 4, iters: 25728, time: 1.591) G_Loss_SQRT: 0.092 0: 0.000 
+(epoch: 4, iters: 27008, time: 1.577) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 4, iters: 28288, time: 1.575) G_Loss_SQRT: 0.113 0: 0.000 
+(epoch: 4, iters: 29568, time: 1.582) G_Loss_SQRT: 0.074 0: 0.000 
+End of epoch 4 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 4, iters 120320
+End of epoch 4 / 10 	 Time Taken: 240 sec
+learning rate = 0.0002000
+epoch:5
+Total: 17471 || Pos: 2450
+(epoch: 5, iters: 128, time: 1.061) G_Loss_SQRT: 0.065 0: 0.000 
+(epoch: 5, iters: 1408, time: 1.535) G_Loss_SQRT: 0.094 0: 0.000 
+(epoch: 5, iters: 2688, time: 1.579) G_Loss_SQRT: 0.091 0: 0.000 
+(epoch: 5, iters: 3968, time: 1.583) G_Loss_SQRT: 0.096 0: 0.000 
+(epoch: 5, iters: 5248, time: 1.574) G_Loss_SQRT: 0.111 0: 0.000 
+(epoch: 5, iters: 6528, time: 1.575) G_Loss_SQRT: 0.090 0: 0.000 
+(epoch: 5, iters: 7808, time: 1.595) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 5, iters: 9088, time: 1.580) G_Loss_SQRT: 0.080 0: 0.000 
+(epoch: 5, iters: 10368, time: 1.581) G_Loss_SQRT: 0.058 0: 0.000 
+(epoch: 5, iters: 11648, time: 1.580) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 5, iters: 12928, time: 1.573) G_Loss_SQRT: 0.098 0: 0.000 
+(epoch: 5, iters: 14208, time: 1.584) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 5, iters: 15488, time: 1.577) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 5, iters: 16768, time: 1.579) G_Loss_SQRT: 0.095 0: 0.000 
+(epoch: 5, iters: 18048, time: 1.577) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 5, iters: 19328, time: 1.572) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 5, iters: 20608, time: 1.581) G_Loss_SQRT: 0.103 0: 0.000 
+(epoch: 5, iters: 21888, time: 1.604) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 5, iters: 23168, time: 1.575) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 5, iters: 24448, time: 1.581) G_Loss_SQRT: 0.099 0: 0.000 
+(epoch: 5, iters: 25728, time: 1.580) G_Loss_SQRT: 0.087 0: 0.000 
+(epoch: 5, iters: 27008, time: 1.585) G_Loss_SQRT: 0.057 0: 0.000 
+(epoch: 5, iters: 28288, time: 1.578) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 5, iters: 29568, time: 1.575) G_Loss_SQRT: 0.100 0: 0.000 
+End of epoch 5 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 5, iters 150400
+End of epoch 5 / 10 	 Time Taken: 240 sec
+learning rate = 0.0001667
+epoch:6
+Total: 17471 || Pos: 2450
+(epoch: 6, iters: 128, time: 1.062) G_Loss_SQRT: 0.103 0: 0.000 
+(epoch: 6, iters: 1408, time: 1.577) G_Loss_SQRT: 0.073 0: 0.000 
+(epoch: 6, iters: 2688, time: 1.580) G_Loss_SQRT: 0.100 0: 0.000 
+(epoch: 6, iters: 3968, time: 1.579) G_Loss_SQRT: 0.073 0: 0.000 
+(epoch: 6, iters: 5248, time: 1.574) G_Loss_SQRT: 0.070 0: 0.000 
+(epoch: 6, iters: 6528, time: 1.571) G_Loss_SQRT: 0.076 0: 0.000 
+(epoch: 6, iters: 7808, time: 1.580) G_Loss_SQRT: 0.071 0: 0.000 
+(epoch: 6, iters: 9088, time: 1.571) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 6, iters: 10368, time: 1.576) G_Loss_SQRT: 0.065 0: 0.000 
+(epoch: 6, iters: 11648, time: 1.585) G_Loss_SQRT: 0.059 0: 0.000 
+(epoch: 6, iters: 12928, time: 1.580) G_Loss_SQRT: 0.078 0: 0.000 
+(epoch: 6, iters: 14208, time: 1.578) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 6, iters: 15488, time: 1.581) G_Loss_SQRT: 0.080 0: 0.000 
+(epoch: 6, iters: 16768, time: 1.569) G_Loss_SQRT: 0.093 0: 0.000 
+(epoch: 6, iters: 18048, time: 1.586) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 6, iters: 19328, time: 1.600) G_Loss_SQRT: 0.093 0: 0.000 
+(epoch: 6, iters: 20608, time: 1.578) G_Loss_SQRT: 0.078 0: 0.000 
+(epoch: 6, iters: 21888, time: 1.578) G_Loss_SQRT: 0.091 0: 0.000 
+(epoch: 6, iters: 23168, time: 1.629) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 6, iters: 24448, time: 1.579) G_Loss_SQRT: 0.105 0: 0.000 
+(epoch: 6, iters: 25728, time: 1.584) G_Loss_SQRT: 0.073 0: 0.000 
+(epoch: 6, iters: 27008, time: 1.565) G_Loss_SQRT: 0.103 0: 0.000 
+(epoch: 6, iters: 28288, time: 1.578) G_Loss_SQRT: 0.074 0: 0.000 
+(epoch: 6, iters: 29568, time: 1.578) G_Loss_SQRT: 0.098 0: 0.000 
+End of epoch 6 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 6, iters 180480
+End of epoch 6 / 10 	 Time Taken: 240 sec
+learning rate = 0.0001333
+epoch:7
+Total: 17471 || Pos: 2450
+(epoch: 7, iters: 128, time: 1.043) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 7, iters: 1408, time: 1.581) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 7, iters: 2688, time: 1.574) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 7, iters: 3968, time: 1.579) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 7, iters: 5248, time: 1.572) G_Loss_SQRT: 0.068 0: 0.000 
+(epoch: 7, iters: 6528, time: 1.568) G_Loss_SQRT: 0.050 0: 0.000 
+(epoch: 7, iters: 7808, time: 1.581) G_Loss_SQRT: 0.084 0: 0.000 
+(epoch: 7, iters: 9088, time: 1.590) G_Loss_SQRT: 0.091 0: 0.000 
+(epoch: 7, iters: 10368, time: 1.594) G_Loss_SQRT: 0.076 0: 0.000 
+(epoch: 7, iters: 11648, time: 1.594) G_Loss_SQRT: 0.091 0: 0.000 
+(epoch: 7, iters: 12928, time: 1.579) G_Loss_SQRT: 0.102 0: 0.000 
+(epoch: 7, iters: 14208, time: 1.575) G_Loss_SQRT: 0.091 0: 0.000 
+(epoch: 7, iters: 15488, time: 1.575) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 7, iters: 16768, time: 1.590) G_Loss_SQRT: 0.073 0: 0.000 
+(epoch: 7, iters: 18048, time: 1.594) G_Loss_SQRT: 0.101 0: 0.000 
+(epoch: 7, iters: 19328, time: 1.581) G_Loss_SQRT: 0.091 0: 0.000 
+(epoch: 7, iters: 20608, time: 1.589) G_Loss_SQRT: 0.056 0: 0.000 
+(epoch: 7, iters: 21888, time: 1.576) G_Loss_SQRT: 0.086 0: 0.000 
+(epoch: 7, iters: 23168, time: 1.566) G_Loss_SQRT: 0.094 0: 0.000 
+(epoch: 7, iters: 24448, time: 1.577) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 7, iters: 25728, time: 1.562) G_Loss_SQRT: 0.065 0: 0.000 
+(epoch: 7, iters: 27008, time: 1.584) G_Loss_SQRT: 0.071 0: 0.000 
+(epoch: 7, iters: 28288, time: 1.582) G_Loss_SQRT: 0.064 0: 0.000 
+(epoch: 7, iters: 29568, time: 1.576) G_Loss_SQRT: 0.071 0: 0.000 
+End of epoch 7 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 7, iters 210560
+End of epoch 7 / 10 	 Time Taken: 240 sec
+learning rate = 0.0001000
+epoch:8
+Total: 17471 || Pos: 2450
+(epoch: 8, iters: 128, time: 1.051) G_Loss_SQRT: 0.086 0: 0.000 
+(epoch: 8, iters: 1408, time: 1.576) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 8, iters: 2688, time: 1.583) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 8, iters: 3968, time: 1.578) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 8, iters: 5248, time: 1.573) G_Loss_SQRT: 0.086 0: 0.000 
+(epoch: 8, iters: 6528, time: 1.567) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 8, iters: 7808, time: 1.585) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 8, iters: 9088, time: 1.577) G_Loss_SQRT: 0.061 0: 0.000 
+(epoch: 8, iters: 10368, time: 1.574) G_Loss_SQRT: 0.108 0: 0.000 
+(epoch: 8, iters: 11648, time: 1.576) G_Loss_SQRT: 0.059 0: 0.000 
+(epoch: 8, iters: 12928, time: 1.581) G_Loss_SQRT: 0.060 0: 0.000 
+(epoch: 8, iters: 14208, time: 1.580) G_Loss_SQRT: 0.070 0: 0.000 
+(epoch: 8, iters: 15488, time: 1.579) G_Loss_SQRT: 0.043 0: 0.000 
+(epoch: 8, iters: 16768, time: 1.585) G_Loss_SQRT: 0.090 0: 0.000 
+(epoch: 8, iters: 18048, time: 1.588) G_Loss_SQRT: 0.060 0: 0.000 
+(epoch: 8, iters: 19328, time: 1.583) G_Loss_SQRT: 0.055 0: 0.000 
+(epoch: 8, iters: 20608, time: 1.574) G_Loss_SQRT: 0.079 0: 0.000 
+(epoch: 8, iters: 21888, time: 1.577) G_Loss_SQRT: 0.045 0: 0.000 
+(epoch: 8, iters: 23168, time: 1.565) G_Loss_SQRT: 0.059 0: 0.000 
+(epoch: 8, iters: 24448, time: 1.572) G_Loss_SQRT: 0.035 0: 0.000 
+(epoch: 8, iters: 25728, time: 1.638) G_Loss_SQRT: 0.074 0: 0.000 
+(epoch: 8, iters: 27008, time: 1.576) G_Loss_SQRT: 0.062 0: 0.000 
+(epoch: 8, iters: 28288, time: 1.594) G_Loss_SQRT: 0.097 0: 0.000 
+(epoch: 8, iters: 29568, time: 1.574) G_Loss_SQRT: 0.099 0: 0.000 
+End of epoch 8 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 8, iters 240640
+End of epoch 8 / 10 	 Time Taken: 240 sec
+learning rate = 0.0000667
+epoch:9
+Total: 17471 || Pos: 2450
+(epoch: 9, iters: 128, time: 1.051) G_Loss_SQRT: 0.074 0: 0.000 
+(epoch: 9, iters: 1408, time: 1.559) G_Loss_SQRT: 0.076 0: 0.000 
+(epoch: 9, iters: 2688, time: 1.579) G_Loss_SQRT: 0.071 0: 0.000 
+(epoch: 9, iters: 3968, time: 1.579) G_Loss_SQRT: 0.068 0: 0.000 
+(epoch: 9, iters: 5248, time: 1.575) G_Loss_SQRT: 0.075 0: 0.000 
+(epoch: 9, iters: 6528, time: 1.584) G_Loss_SQRT: 0.065 0: 0.000 
+(epoch: 9, iters: 7808, time: 1.578) G_Loss_SQRT: 0.090 0: 0.000 
+(epoch: 9, iters: 9088, time: 1.574) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 9, iters: 10368, time: 1.573) G_Loss_SQRT: 0.081 0: 0.000 
+(epoch: 9, iters: 11648, time: 1.584) G_Loss_SQRT: 0.060 0: 0.000 
+(epoch: 9, iters: 12928, time: 1.578) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 9, iters: 14208, time: 1.589) G_Loss_SQRT: 0.042 0: 0.000 
+(epoch: 9, iters: 15488, time: 1.573) G_Loss_SQRT: 0.072 0: 0.000 
+(epoch: 9, iters: 16768, time: 1.584) G_Loss_SQRT: 0.105 0: 0.000 
+(epoch: 9, iters: 18048, time: 1.572) G_Loss_SQRT: 0.050 0: 0.000 
+(epoch: 9, iters: 19328, time: 1.576) G_Loss_SQRT: 0.073 0: 0.000 
+(epoch: 9, iters: 20608, time: 1.575) G_Loss_SQRT: 0.077 0: 0.000 
+(epoch: 9, iters: 21888, time: 1.574) G_Loss_SQRT: 0.051 0: 0.000 
+(epoch: 9, iters: 23168, time: 1.585) G_Loss_SQRT: 0.055 0: 0.000 
+(epoch: 9, iters: 24448, time: 1.602) G_Loss_SQRT: 0.039 0: 0.000 
+(epoch: 9, iters: 25728, time: 1.591) G_Loss_SQRT: 0.064 0: 0.000 
+(epoch: 9, iters: 27008, time: 1.572) G_Loss_SQRT: 0.058 0: 0.000 
+(epoch: 9, iters: 28288, time: 1.575) G_Loss_SQRT: 0.060 0: 0.000 
+(epoch: 9, iters: 29568, time: 1.580) G_Loss_SQRT: 0.100 0: 0.000 
+End of epoch 9 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 9, iters 270720
+End of epoch 9 / 10 	 Time Taken: 240 sec
+learning rate = 0.0000333
+epoch:10
+Total: 17471 || Pos: 2450
+(epoch: 10, iters: 128, time: 1.050) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 10, iters: 1408, time: 1.573) G_Loss_SQRT: 0.074 0: 0.000 
+(epoch: 10, iters: 2688, time: 1.581) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 10, iters: 3968, time: 1.572) G_Loss_SQRT: 0.055 0: 0.000 
+(epoch: 10, iters: 5248, time: 1.589) G_Loss_SQRT: 0.051 0: 0.000 
+(epoch: 10, iters: 6528, time: 1.568) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 10, iters: 7808, time: 1.581) G_Loss_SQRT: 0.066 0: 0.000 
+(epoch: 10, iters: 9088, time: 1.581) G_Loss_SQRT: 0.089 0: 0.000 
+(epoch: 10, iters: 10368, time: 1.588) G_Loss_SQRT: 0.085 0: 0.000 
+(epoch: 10, iters: 11648, time: 1.571) G_Loss_SQRT: 0.082 0: 0.000 
+(epoch: 10, iters: 12928, time: 1.575) G_Loss_SQRT: 0.074 0: 0.000 
+(epoch: 10, iters: 14208, time: 1.588) G_Loss_SQRT: 0.068 0: 0.000 
+(epoch: 10, iters: 15488, time: 1.581) G_Loss_SQRT: 0.059 0: 0.000 
+(epoch: 10, iters: 16768, time: 1.587) G_Loss_SQRT: 0.083 0: 0.000 
+(epoch: 10, iters: 18048, time: 1.592) G_Loss_SQRT: 0.060 0: 0.000 
+(epoch: 10, iters: 19328, time: 1.581) G_Loss_SQRT: 0.088 0: 0.000 
+(epoch: 10, iters: 20608, time: 1.583) G_Loss_SQRT: 0.053 0: 0.000 
+(epoch: 10, iters: 21888, time: 1.579) G_Loss_SQRT: 0.094 0: 0.000 
+(epoch: 10, iters: 23168, time: 1.598) G_Loss_SQRT: 0.070 0: 0.000 
+(epoch: 10, iters: 24448, time: 1.586) G_Loss_SQRT: 0.093 0: 0.000 
+(epoch: 10, iters: 25728, time: 1.578) G_Loss_SQRT: 0.100 0: 0.000 
+(epoch: 10, iters: 27008, time: 1.606) G_Loss_SQRT: 0.071 0: 0.000 
+(epoch: 10, iters: 28288, time: 1.581) G_Loss_SQRT: 0.055 0: 0.000 
+(epoch: 10, iters: 29568, time: 1.577) G_Loss_SQRT: 0.068 0: 0.000 
+End of epoch 10 / 10 	 Time Taken: 238 sec
+saving the model at the end of epoch 10, iters 300800
+End of epoch 10 / 10 	 Time Taken: 240 sec
+learning rate = 0.0000000
+6

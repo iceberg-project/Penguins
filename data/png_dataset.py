@@ -1,4 +1,4 @@
-import torch,cv2
+import torch
 import os.path
 from scipy import misc
 from data.base_dataset import BaseDataset, get_transform

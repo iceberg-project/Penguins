@@ -35,6 +35,7 @@ class BaseOptions():
         self.parser.add_argument('--display_winsize', type=int, default=150,  help='display window size')
         self.parser.add_argument('--display_id', type=int, default=1, help='window id of the web display')
         self.parser.add_argument('--biased_sampling', type=float, default=-1, help='window id of the web display')
+        self.parser.add_argument('--dropout_w', type=float, default=0.5)
         self.parser.add_argument('--display_port', type=int, default=8097, help='visdom port of the web display')
         self.parser.add_argument('--tw', type=int, default=512, help='visdom port of the web display')
         self.parser.add_argument('--th', type=int, default=512, help='visdom port of the web display')

@@ -10,18 +10,18 @@ import torch
 import os.path
 import argparse
 from scipy import misc
-from m_util import sdmkdir,savepatch_test,savepatch_train,patches2png
 from vis import visAB,visABC
+from m_util import *
 parse = argparse.ArgumentParser()
 parse.add_argument('--dataset')
 opt = parse.parse_args()
 opt.root = '/nfs/bigbox/hieule/penguin_data/p1000/'
-#opt.im_fold = '/nfs/bigbox/hieule/penguin_data/CROPPED/' + opt.dataset +'/'#+'/nfs/bigbox/hieule/p1000/testing/CROZ/'
-#opt.im_fold = '/nfs/bigbox/hieule/penguin_data//CROPPED/' + opt.dataset +'/'#+'/nfs/bigbox/hieule/p1000/testing/CROZ/'
-#opt.im_fold = opt.root + opt.dataset + '/'
+#opt.im_fold_temp ='/nfs/bigbox/hieule/penguin_data/Test/*TEST*/CROPPED/p300/'
+#for t in ["PAUL","CROZ"]:
+#opt.im_fold = opt.im_fold_temp.replace("*TEST*",t)
 opt.im_fold = opt.root
 opt.step = 64 #128 for testing, 64 for training
-opt.size = 256 #256 for testing, 386 for training
+opt.size = 386 #256 for testing, 386 for training
 opt.patch_fold_A = opt.im_fold+'PATCHES/'+str(opt.step)+'_'+ str(opt.size)+ '/A/'
 opt.patch_fold_B = opt.im_fold+'PATCHES/'+str(opt.step)+'_'+ str(opt.size)+'/B/'
 A_fold = opt.im_fold + 'A/'
@@ -31,18 +31,13 @@ opt.input_nc =3
 sdmkdir(opt.patch_fold_A)
 sdmkdir(opt.patch_fold_B)
 imlist=[]
+todolist = read_list('/nfs/bigbox/hieule/penguin_data/p1000/split/test_new')
+print todolist
 imnamelist=[]
 
-opt.traininglist = '/nfs/bigbox/hieule/penguin_data/p1000/test1'
-if os.path.isfile(opt.traininglist):
-    file = open(opt.traininglist,"r")
-    a= file.read()
-    traininglist =  a.split("$")
-    del traininglist[-1]
-    print traininglist
 for root,_,fnames in sorted(os.walk(A_fold)):
     for fname in fnames:
-        if fname.endswith('.png') and 'M1BS' in fname:
+        if fname.endswith('.png') and 'M1BS' in fname and fname[:-4] in todolist:
             path = os.path.join(root,fname)
             path_mask = os.path.join(B_fold,fname)
             imlist.append((path,path_mask,fname))

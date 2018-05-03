@@ -2,6 +2,21 @@ import os
 import numpy as np
 from PIL import Image
 from scipy import misc
+#AT this point, I don't even know what is this file about. junk codes assembly.
+def list_to_file(f,list):
+    file = open(f,"w")
+    for i in list:
+        file.write(i[:-4]+"\n")
+    file.close()
+
+def read_list(f):
+    if os.path.isfile(f):
+        with open(f, "r") as ins:
+            array = []
+            for line in ins:
+                array.append(line[:-1])  #-1 due to '\n'
+            return array
+    return []
 
 def convertMbandstoRGB(tif,imname):
     if tif.shape[0] ==1:
@@ -19,6 +34,7 @@ def convertMbandstoRGB(tif,imname):
 def to_rgb3b(im):
     # as 3a, but we add an extra copy to contiguous 'C' order
     # data
+    # ... where is to_rgb3a?
     return np.dstack([im.astype(np.uint8)] * 3).copy(order='C')
 def sdsaveim(savetif,name):
     print savetif.shape

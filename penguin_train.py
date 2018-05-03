@@ -16,11 +16,7 @@ data_loader = CreateDataLoader(opt)
 #dataset = TifDataset(opt)
 dataset = data_loader.load_data()
 #print 'dataset size: ' + str(len(dataset))
-
-
-
-#dataset.dprint()
-
+dataset_size = len(data_loader)
 model = create_model(opt)
 
 for epoch in range(opt.epoch_count,opt.niter+opt.niter_decay+1):
@@ -30,14 +26,22 @@ for epoch in range(opt.epoch_count,opt.niter+opt.niter_decay+1):
     print('epoch:%d'%(epoch))
 
     for i,data in enumerate(dataset):
+        iter_start_time = time.time()
+        total_steps += opt.batchSize
+        epoch_iter += opt.batchSize
         model.set_input(data)
         model.optimize_parameters()
         if i% 10 ==0:
             visualizer.display_current_results(model.get_current_visuals(), epoch, False)
             errors = model.get_current_errors()
-            visualizer.print_current_errors(epoch, epoch_iter, errors,10)
+            visualizer.print_current_errors(epoch, epoch_iter, errors,time.time()-iter_start_time)
+            visualizer.plot_current_errors(epoch, float(epoch_iter)/dataset_size, opt, errors)
     print('End of epoch %d / %d \t Time Taken: %d sec' %
                         (epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time))
     if epoch % opt.save_epoch_freq ==0:
+        print('saving the model at the end of epoch %d, iters %d' %
+              (epoch, total_steps))
         model.save(epoch)
+    print('End of epoch %d / %d \t Time Taken: %d sec' %
+          (epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time))
     model.update_learning_rate()

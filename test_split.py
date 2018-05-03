@@ -32,6 +32,14 @@ opt.no_dropout = True
 #'MSEnc3_train10.5_0_bias0.2_bs128',
 #'MSEnc3_train10.25_0_bias0.2_bs128'
 #        ]
+def read_list(f):
+    if os.path.isfile(f):
+        file = open(f,"r")
+        a= file.read()
+        traininglist =  a.split("$")
+        del traininglist[-1]
+        return traininglist
+    return []
 def do_the_thing_please(opt):
     opt.patch_fold_res = opt.im_fold + 'PATCHES/res/' + opt.name+ '/'
     opt.im_res = opt.im_fold + 'res/' + opt.name +'e'+str(opt.which_epoch)+'/'
@@ -54,7 +62,7 @@ def do_the_thing_please(opt):
     opt.fineSize = 256
     opt.loadSize = 256
     opt.biased_sampling = -0.5
-    opt.batchSize = 32
+    opt.batchSize = 96
     opt.max_dataset_size = 5000000
     opt.no_flip = True
     opt.serial_batches = False
@@ -66,16 +74,14 @@ def do_the_thing_please(opt):
     
 
     for i,data in enumerate(dataset):
-        print data['A'].shape
         temp = model.get_prediction(data)['raw_out']
-        print temp.shape
         for k in range(0,temp.shape[0]):
             misc.toimage(temp[k,:,:,0],mode='L').save(os.path.join(opt.patch_fold_res,data['imname'][k]))
     imlist=[]
     imnamelist=[]
     for root,_,fnames in sorted(os.walk(A_fold)):
         for fname in fnames:
-            if fname.endswith('.png') and "M1BS" in fname and fname[:-4] in traininglist:
+            if fname.endswith('.png') and "M1BS" in fname and fname[:-4] in opt.FILES:
                 path = os.path.join(root,fname)
                 path_mask = os.path.join(B_fold,fname)
                 imlist.append((path,path_mask,fname))
@@ -87,11 +93,13 @@ def do_the_thing_please(opt):
         misc.toimage(mask.astype(np.uint8),mode='L').save(os.path.join(opt.im_res,imname))
 
 name = [
-'MSEnc3_train0.8_0_bias-1_bs128',
-'MSEnc3_train_0_0.5_0_bias-1_bs128',
-'MSEnc3_train_0_0.75_0_bias-1_bs128',
-'MSEnc3_train_0_0.25_0_bias-1_bs128'
+'MSEnc3_train_0_0.5_$_bias-1_bs128',
+'MSEnc3_train_0_0.75_$_bias-1_bs128',
+'MSEnc3_train_0_0.25_$_bias-1_bs128'
 ]
+name = ['MSEnc3_train_all_$_bias-1_bs128_do0.2']
+FILE_META = '/nfs/bigbox/hieule/penguin_data/p1000/split/test_$'
+FILE_META = '/nfs/bigbox/hieule/penguin_data/p1000/split/test_new'
 
 def list2file(li,fi):
     file = open(fi,"w")
@@ -102,23 +110,20 @@ def list2file(li,fi):
         file.write("\n")
     file.close()
 
-opt.traininglist = '/nfs/bigbox/hieule/penguin_data/p1000/split/test_0'
-if os.path.isfile(opt.traininglist):
-    file = open(opt.traininglist,"r")
-    a= file.read()
-    traininglist =  a.split("$")
-    del traininglist[-1]
-    print traininglist
-for epoch in [2,4,6,8]:
+
+for epoch in [10]:
     opt.which_epoch = epoch
     for n in name:
-        opt.name = n
-        model = create_model(opt)
-        opt.im_fold = '/nfs/bigbox/hieule/penguin_data/p1000/'
-        do_the_thing_please(opt)
-        visABC(opt.im_fold,opt.name+'e'+str(opt.which_epoch),imlist = traininglist )
-        auc = AUC(opt.im_fold,opt.name+'e'+str(opt.which_epoch),pimlist = traininglist )
-        list2file(auc,'./AUC/'+opt.name+'_e'+str(epoch)+'.txt')
+        for k in [0,1,2,3,4]:
+            opt.name = n.replace('$',str(k))
+            opt.traininglist = FILE_META.replace('$',str(k))
+            opt.FILES = read_list(opt.traininglist)
+            model = create_model(opt)
+            opt.im_fold = '/nfs/bigbox/hieule/penguin_data/p1000/'
+            do_the_thing_please(opt)
+            visABC(opt.im_fold,opt.name+'e'+str(opt.which_epoch),imlist = opt.FILES)
+            auc = AUC(opt.im_fold,opt.name+'e'+str(opt.which_epoch),pimlist = opt.FILES)
+            list2file(auc,'./AUC/'+opt.name+'_e'+str(epoch)+'.txt')
     #    visAB(opt.im_fold,opt.name+'e'+str(opt.which_epoch),imlist = traininglist)
 
 #opt.im_fold ='/nfs/bigbox/hieule/penguin_data/CROPPED/p500_train/'
