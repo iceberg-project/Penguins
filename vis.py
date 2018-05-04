@@ -69,6 +69,7 @@ def visdir2(imdir,GT,maskdir,visdir,pimlist=[]):
                     imnamelist.append(fname)
     print imlist
     sz = 1500 
+    count=0
     for pathA,pathB,pathmask,fname in imlist:
         A = misc.imread(pathA).astype(np.uint8)
         GT = misc.imread(pathB)
@@ -83,7 +84,9 @@ def visdir2(imdir,GT,maskdir,visdir,pimlist=[]):
         maskv = show_heatmap_on_image(A,mask)
         maskv = draw(maskv,auc)
         #misc.imsave(os.path.join(visdir,fname),np.hstack((A,maskv,GTv)))#np.append(np.append(A,GTv,axis=1),maskv,axis=1))
-        misc.imsave(os.path.join(visdir,fname),maskv)#np.append(np.append(A,GTv,axis=1),maskv,axis=1))
+        #misc.imsave(os.path.join(visdir,fname),maskv)
+        misc.imsave(os.path.join(visdir,str(count)+'.png'),maskv)
+        count=count+1
         #misc.imsave(os.path.join(visdir,fname),A)#np.append(np.append(A,GTv,axis=1),maskv,axis=1))
 def visAB(root,name,imlist= []):
     
