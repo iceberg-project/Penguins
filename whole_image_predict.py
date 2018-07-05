@@ -24,10 +24,14 @@ opt.no_flip = True  # no flip
 opt.no_dropout = True
 model = create_model(opt)
 opt.dataset = '/gpfs/projects/LynchGroup/Penguin_workstation/Train_all/fullsize/'
-sdmkdir(opt.dataset+'/output')
+sdmkdir(opt.dataset+'/output/'+opt.name+'_'+str(+opt.which_epoch))
 file = 'WV03_20160121015319_104001001762AC00_16JAN21015319-M1BS-500638671020_01_P001_u08rf3031.png'
 filename = opt.dataset + 'A/' + file
+outfile =opt.dataset+'/output/'+opt.name+'_'+str(+opt.which_epoch)+'/'+file
+filename = './exp/A.png'
+outfile = './exp/out.png'
 last = time.time()
+
 # your code
 im = misc.imread(filename)
 elapsed_time = time.time() - last
@@ -80,4 +84,4 @@ outpng = np.squeeze(outpng)
 outpng[outpng<0.5] = 0
 outpng[outpng>=0.5] = 1
 outpng = outpng*255
-misc.toimage(outpng.astype(np.uint8),mode='L').save(opt.dataset+'/output/'+opt.name+'_'+str(+opt.which_epoch)+'/'+file)
+misc.toimage(outpng.astype(np.uint8),mode='L').save(outfile)

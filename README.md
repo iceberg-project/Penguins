@@ -43,8 +43,7 @@ TBD
 python whole_image_prediction.py --gpu_ids 0
 
 
-
-<img src='Exp/A.png' width=400 height = 500> <img src='Exp/B.png'  width=400 height =500> 
+<img src='exp/A.png' width=300 height = 200> <img src='exp/B.png' width=300 height = 200> <img src='exp/out.png' width=300 height = 200> 
 <br><br><br>
 
 
