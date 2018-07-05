@@ -17,14 +17,16 @@ opt.model ='single_unet'
 opt.checkpoints_dir ='/gpfs/projects/LynchGroup/Penguin_workstation/checkpoints/'
 opt.name = 'MSEnc3__bias0.5_bs128_512_768_all'
 opt.which_epoch = 25
-opt.gpu_ids= [0]
 opt.step = 128
 opt.size = 256
 opt.serial_batches = True  # no shuffle
 opt.no_flip = True  # no flip
 opt.no_dropout = True
 model = create_model(opt)
-filename = '/gpfs/projects/LynchGroup/Penguin_workstation/Train_all/fullsize/A/WV03_20160121015319_104001001762AC00_16JAN21015319-M1BS-500638671020_01_P001_u08rf3031.png'
+opt.dataset = '/gpfs/projects/LynchGroup/Penguin_workstation/Train_all/fullsize/'
+sdmkdir(opt.dataset+'/output')
+file = 'WV03_20160121015319_104001001762AC00_16JAN21015319-M1BS-500638671020_01_P001_u08rf3031.png'
+filename = opt.dataset + 'A/' + file
 last = time.time()
 # your code
 im = misc.imread(filename)
@@ -34,7 +36,7 @@ print('read im: %0.4f'%(elapsed_time))
 
 w,h,c = im.shape
 patches = png2patches(im,opt.step,opt.size)
-
+print(patches.shape)
 elapsed_time = time.time() - last
 last = time.time()
 print('im 2 patches: %0.4f'%(elapsed_time))
@@ -49,16 +51,18 @@ patches = np.transpose(patches,(0,3,1,2))
 s = np.asarray(patches.shape)
 s[1] = 1
 bs = 96
-n_patches = patches.size[0]
+n_patches = patches.shape[0]
 out = np.zeros(s) 
 print('numbers of patches %d'%(n_patches))
+print('Processing all the patches')
 for i in range(0,n_patches,bs):
     batch  = patches[i:i+bs,:,:,:]
     batch = torch.from_numpy(batch).float().div(255)
     batch = (batch  - 0.5) * 2
     temp = model.get_prediction_tensor(batch)
     out[i:i+bs,:,:,:] = temp['raw_out']
-    print(temp['raw_out'].shape)
+    
+    #print(temp['raw_out'].shape)
 
 elapsed_time = time.time() - last
 last = time.time()
@@ -76,5 +80,4 @@ outpng = np.squeeze(outpng)
 outpng[outpng<0.5] = 0
 outpng[outpng>=0.5] = 1
 outpng = outpng*255
-print(outpng.shape)
-misc.toimage(outpng.astype(np.uint8),mode='L').save('as.png')
+misc.toimage(outpng.astype(np.uint8),mode='L').save(opt.dataset+'/output/'+opt.name+'_'+str(+opt.which_epoch)+'/'+file)

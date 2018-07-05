@@ -11,7 +11,7 @@ display_port: 8097
 display_winsize: 150
 dropout_w: 0.5
 fineSize: 256
-gpu_ids: [0]
+gpu_ids: [5]
 how_many: 50
 i: 50
 init_type: normal
