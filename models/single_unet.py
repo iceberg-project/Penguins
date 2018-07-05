@@ -76,8 +76,7 @@ class UnetModel(BaseModel):
             input_A = input_A.cuda(self.gpu_ids[0], async=True)
         self.input = Variable(input_A)
         self.output = self.netG(self.input)
-        raw = self.output[0].data.cpu().float().numpy()
-        raw = np.transpose(raw,(1,2,0))
+        raw = self.output.data.cpu().float().numpy()
         return OrderedDict([('input',util.tensor2im(self.input.data)),('output',util.tensor2im(self.output.data)),('raw_out',raw)])
 
     def get_prediction(self,input):

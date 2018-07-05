@@ -35,7 +35,7 @@ class PngDataset(BaseDataset):
         if not self.opt.isTrain:
             return self.nim
         else:
-            return 10000
+            return 50000
         #return self.nim*20
     def name(self):
         return 'PNGDATASET'
@@ -125,4 +125,7 @@ class PngDataset(BaseDataset):
         C_img = torch.from_numpy(C_img).float().div(255)
         A_img = A_img - 0.5
         A_img = A_img * 2
+
+        B_img = B_img - 0.5
+        B_img = B_img * 2
         return  {'A': A_img, 'B': B_img,'C':C_img,'imname':imname}

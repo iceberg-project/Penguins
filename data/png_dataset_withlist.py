@@ -23,7 +23,7 @@ class PngDataset(BaseDataset):
         self.imname = []
         self.imname_pos = []
         self.todolist  = []
-        print opt.todolist
+        print(opt.todolist)
         if os.path.isfile(opt.todolist):
             self.todolist = read_list(opt.todolist)
             print(self.todolist)
@@ -49,7 +49,7 @@ class PngDataset(BaseDataset):
 
     def __len__(self):
 
-        print("Total: %d || Pos: %d")%(self.nim,len(self.imname_pos))
+        print("Total: %d || Pos: %d" %(self.nim,len(self.imname_pos)))
         if self.opt.isTrain:
             return 30000
         else:

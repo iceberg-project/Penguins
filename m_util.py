@@ -37,13 +37,12 @@ def to_rgb3b(im):
     # ... where is to_rgb3a?
     return np.dstack([im.astype(np.uint8)] * 3).copy(order='C')
 def sdsaveim(savetif,name):
-    print savetif.shape
+    print(savetif.shape)
     if savetif.dtype == np.uint16:
         savetif = savetif.astype(np.float)
         for i in range(0,savetif.shape[2]):
             savetif[:,:,i] =  savetif[:,:,i] / np.max(savetif[:,:,i]) * 255
         savetif = savetif.astype(np.uint8) 
-        print np.max(np.max(savetif,axis=0),axis=0)
     if savetif.shape[2] == 3:
         Image.fromarray(savetif.astype(np.uint8)).save(name)
     if savetif.shape[2] == 1:
@@ -58,12 +57,12 @@ def sdmkdir(d):
 def png2patches(png,step,size):
     step = np.int32(step)
     size=  np.int32(size)
-    z,w,h = png.shape
+    w,h,z = png.shape
     ni = np.int32(np.floor((w- size)/step) +2)
 
     nj = np.int32(np.floor((h- size)/step) +2)
 
-    patches = np.zeros((ni,nj,z,size,size))
+    patches = np.zeros((ni,nj,size,size,z))
     for i in range(0,ni-1):
         for j in range(0,nj-1):
             patches[i,j,:,:,:] = png[i*step:i*step+size,j*step:j*step+size,:]
@@ -76,14 +75,45 @@ def png2patches(png,step,size):
     return patches
 
 
-def patches2png(patches,w,h,step,size):
+def patches2png(patch_fold,imname,w,h,step,size):
+    imname=imname[:-4]+'#'
+    png = np.zeros((w,h))
+    ws = np.zeros((w,h))
+    
+    ni = np.int32(np.floor((w- size)/step) +2)
+
+    nj = np.int32(np.floor((h- size)/step) +2)
+    for i in range(0,ni-1):
+        for j in range(0,nj-1):
+            
+            patch = misc.imread(patch_fold + '/' + imname + format(i,'03d')+'_'+format(j,'03d')+'.png',mode='L')
+            png[i*step:i*step+size,j*step:j*step+size]=  png[i*step:i*step+size,j*step:j*step+size]+patch 
+            ws[i*step:i*step+size,j*step:j*step+size]=  ws[i*step:i*step+size,j*step:j*step+size]+ 1
+    for i in range(0,ni-1):
+        patch = misc.imread(patch_fold + '/' + imname + format(i,'03d')+'_'+format(nj-1,'03d')+'.png',mode='L')
+        png[i*step:i*step+size,h-size:h] =  png[i*step:i*step+size,h-size:h]+ patch
+        ws[i*step:i*step+size,h-size:h] =  ws[i*step:i*step+size,h-size:h]+ 1
+
+    for j in range(0,nj-1):
+        patch = misc.imread(patch_fold + '/' + imname + format(ni-1,'03d')+'_'+format(j,'03d')+'.png',mode='L')
+        png[w-size:w,j*step:j*step+size]= png[w-size:w,j*step:j*step+size]+ patch
+        ws [w-size:w,j*step:j*step+size]= ws [w-size:w,j*step:j*step+size]+ 1
+   
+    patch = misc.imread(patch_fold + '/' + imname + format(ni-1,'03d')+'_'+format(nj-1,'03d')+'.png',mode='L')
+    png[w-size:w,h-size:h] = png[w-size:w,h-size:h]+ patch
+    ws [w-size:w,h-size:h] = ws [w-size:w,h-size:h]+ 1
+    png = np.divide(png,ws)
+    
+    return png
+
+def patches2png_legacy(patches,w,h,step,size):
     tif = np.zeros((1,w,h))
     ws = np.zeros((1,w,h))
     
     ni = np.int32(np.floor((w- size)/step) +2)
 
     nj = np.int32(np.floor((h- size)/step) +2)
-    
+    print(w,h,ni,nj) 
     for i in range(0,ni-1):
         for j in range(0,nj-1):
             tif[:,i*step:i*step+size,j*step:j*step+size]=  tif[:,i*step:i*step+size,j*step:j*step+size]+ patches[i,j,:,:,:]
@@ -237,40 +267,4 @@ def savepatch_train(png,mask,w,h,step,size,imbasename,patchbasename):
     misc.toimage(png[w-size:w,h-size:h,:]).save(imbasename+format(ni-1,'03d')+'_'+format(nj-1,'03d')+'.png')
 
 
-
-def patches2png(patch_fold,imname,w,h,step,size):
-    imname=imname[:-4]+'#'
-    png = np.zeros((w,h))
-    ws = np.zeros((w,h))
-    
-    ni = np.int32(np.floor((w- size)/step) +2)
-
-    nj = np.int32(np.floor((h- size)/step) +2)
-    print ni,nj    
-    for i in range(0,ni-1):
-        for j in range(0,nj-1):
-            
-            patch = misc.imread(patch_fold + '/' + imname + format(i,'03d')+'_'+format(j,'03d')+'.png',mode='L')
-            patch[patch<50] = 0
-            png[i*step:i*step+size,j*step:j*step+size]=  png[i*step:i*step+size,j*step:j*step+size]+patch 
-            ws[i*step:i*step+size,j*step:j*step+size]=  ws[i*step:i*step+size,j*step:j*step+size]+ 1
-    for i in range(0,ni-1):
-        patch = misc.imread(patch_fold + '/' + imname + format(i,'03d')+'_'+format(nj-1,'03d')+'.png',mode='L')
-        patch[patch<50] = 0
-        png[i*step:i*step+size,h-size:h] =  png[i*step:i*step+size,h-size:h]+ patch
-        ws[i*step:i*step+size,h-size:h] =  ws[i*step:i*step+size,h-size:h]+ 1
-
-    for j in range(0,nj-1):
-        patch = misc.imread(patch_fold + '/' + imname + format(ni-1,'03d')+'_'+format(j,'03d')+'.png',mode='L')
-        patch[patch<50] = 0
-        png[w-size:w,j*step:j*step+size]= png[w-size:w,j*step:j*step+size]+ patch
-        ws [w-size:w,j*step:j*step+size]= ws [w-size:w,j*step:j*step+size]+ 1
-   
-    patch = misc.imread(patch_fold + '/' + imname + format(ni-1,'03d')+'_'+format(nj-1,'03d')+'.png',mode='L')
-    patch[patch<50] = 0
-    png[w-size:w,h-size:h] = png[w-size:w,h-size:h]+ patch
-    ws [w-size:w,h-size:h] = ws [w-size:w,h-size:h]+ 1
-    png = np.divide(png,ws)
-    
-    return png
 

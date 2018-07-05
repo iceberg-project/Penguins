@@ -38,9 +38,9 @@ def visdir(imdir,maskdir,visdir,pimlist=[]):
     sdmkdir(visdir)    
     imlist=[]
     imnamelist=[]
-    print imdir
+    print(imdir)
     for root,_,fnames in sorted(os.walk(maskdir)):
-        print root,fnames
+        print(root,fnames)
         for fname in fnames:
             if fname.endswith('.png'):
                 if len(pimlist) == 0 or fname[:-4] in pimlist:
@@ -67,7 +67,7 @@ def visdir2(imdir,GT,maskdir,visdir,pimlist=[]):
                     pathmask = os.path.join(maskdir,fname)
                     imlist.append((pathA,pathGT,pathmask,fname))
                     imnamelist.append(fname)
-    print imlist
+    print(imlist)
     sz = 1500 
     count=0
     for pathA,pathB,pathmask,fname in imlist:
