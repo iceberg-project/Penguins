@@ -2,6 +2,7 @@
 check/
 bak_test_results/
 test_train_all/
+report/
 debug*
 datasets/
 checkpoints/
