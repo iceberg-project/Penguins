@@ -113,7 +113,6 @@ def patches2png_legacy(patches,w,h,step,size):
     ni = np.int32(np.floor((w- size)/step) +2)
 
     nj = np.int32(np.floor((h- size)/step) +2)
-    print(w,h,ni,nj) 
     for i in range(0,ni-1):
         for j in range(0,nj-1):
             tif[:,i*step:i*step+size,j*step:j*step+size]=  tif[:,i*step:i*step+size,j*step:j*step+size]+ patches[i,j,:,:,:]

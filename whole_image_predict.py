@@ -78,6 +78,7 @@ out = np.reshape(out,outshape)
 out = np.reshape(out,(orishape[0],orishape[1],outshape[3],outshape[1],outshape[2]))
 
 print(out.shape)
+print('check')
 outpng = patches2png_legacy(out,w,h,opt.step,opt.size)
 outpng = np.transpose(outpng,(1,2,0))
 outpng = np.squeeze(outpng) 
