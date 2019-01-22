@@ -7,8 +7,8 @@ from data.png_dataset import PngDataset
 from options.train_options import TrainOptions
 from options.test_options import TestOptions
 from data.data_loader import CreateDataLoader
-from tif_handle import TIF_H
-from m_util import *
+from data_processing.tif_handle import TIF_H
+from data_processing.m_util import *
 import time
 import numpy as np
 import rasterio
@@ -21,9 +21,12 @@ class Pipe:
     def import_model(self):
         opt = TestOptions().parse()
         opt.model ='single_unet'
-        opt.checkpoints_dir ='/gpfs/projects/LynchGroup/Penguin_workstation/checkpoints/'
-        opt.name = 'MSEnc3__bias-1_bs128'
-        opt.which_epoch = 15
+        #opt.checkpoints_dir ='/gpfs/projects/LynchGroup/Penguin_workstation/checkpoints/'
+        opt.checkpoints_dir ='/nfs/bigbox/hieule/penguin_data/checkpoints/'
+#        opt.name='MSE_single_unet_train_2_4.txt_bias-1_bs128_do0.8'
+        opt.name='MSEnc3_p2000_train_bias0.5_bs128'
+        #opt.name = 'MSEnc3__bias-1_bs128'
+        opt.which_epoch = 200
         opt.serial_batches = True  # no shuffle
         opt.no_flip = True  # no flip
         opt.no_dropout = True
@@ -43,6 +46,21 @@ class Pipe:
 
         for name in imnamelist :
             self.tif_predict(root+name)
+    def dir_png_predict(self,fold):
+        imlist =[]
+        imnamelist =[]
+        for root,_,fnames in sorted(os.walk(fold)):
+            for fname in fnames:
+                if fname.endswith('.png') and 'M1BS' in fname and not fname.startswith('.'):
+                    path = os.path.join(root,fname)
+                    imlist.append((path,fname))
+                    imnamelist.append(fname)
+        print(imnamelist)
+        for path,name in imlist :
+            print(path)
+            inpng = misc.imread(path)
+            outpng = self.png_predict(inpng)
+            misc.imsave(self.output+'/'+name,outpng)
     def dir_tif_predict(self,fold):
         imlist =[]
         imnamelist =[]
@@ -54,12 +72,10 @@ class Pipe:
                     imnamelist.append(fname)
         print(imnamelist)
         for name in imlist :
-            if not name in ['orthoWV02_11FEB191312281-P1BS-10300100098AAB00_u08rfAEAC.tif']:
-                try:
-
-                    self.tif_predict(name)
-                except:
-                    print('failed')
+            try:
+                self.tif_predict(name)
+            except:
+                print('failed')
     def tif_predict(self,file):
         try:    
             print(file)
@@ -96,7 +112,7 @@ class Pipe:
         patches = np.transpose(patches,(0,3,1,2))
         s = np.asarray(patches.shape)
         s[1] = 1
-        bs = 92
+        bs = 32
         n_patches = patches.shape[0]
         out = np.zeros(s) 
         print('numbers of patches %d'%(n_patches))
@@ -133,9 +149,10 @@ class Pipe:
         return outpng
 
 
+if __name__=='__main__':
 
-a = Pipe('','./test_results_3/')
-a.list_tif_predict('full.txt')
-
+    a = Pipe('','./test_PAUL/')
+ #   a.list_tif_predict('full.txt')
+    a.dir_png_predict('/nfs/bigbox/hieule/penguin_data/Test/PAUL/CROPPED/p300/A')
 #a.tif_predict('/gpfs/projects/LynchGroup/Orthoed/WV02_20160119013349_1030010050B0C500_16JAN19013349-M1BS-500637522050_01_P001_u08rf3031.tif')
 #a.dir_tif_predict('/gpfs/projects/LynchGroup/Penguin_workstation/Train_all/raw/train/')

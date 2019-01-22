@@ -54,3 +54,4 @@ test/data/legacy_serialized.pt
 **/*.tif
 **/*.swn
 *bak
+**/*.swp

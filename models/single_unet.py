@@ -16,11 +16,10 @@ class UnetModel(BaseModel):
         BaseModel.initialize(self, opt)
         self.isTrain = opt.isTrain
         self.opt = opt
-        print(self.opt.dropout_w)
         
         # load/define networks
         self.netG = networks.define_G(opt.input_nc, 1, 64,
-                                      'unet_256', opt.norm, not opt.no_dropout, opt.init_type, self.gpu_ids,dropout_w = self.opt.dropout_w)
+                                      'unet_256', opt.norm, not opt.no_dropout, opt.init_type, self.gpu_ids)
         self.criterionL1 = torch.nn.L1Loss()        
         self.criterionMSE= torch.nn.MSELoss()        
         if self.isTrain:
