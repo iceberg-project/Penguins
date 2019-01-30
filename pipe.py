@@ -9,14 +9,24 @@ from options.test_options import TestOptions
 from data.data_loader import CreateDataLoader
 from data_processing.tif_handle import TIF_H
 from data_processing.m_util import *
+from misc import crf_refine 
+from data_processing.im_vis import *
 import time
 import numpy as np
 import rasterio
 class Pipe:
     def __init__(self,input,output):
         self.import_model()
-        self.output = output
+        self.output = output + self.opt.name + str(self.opt.which_epoch) + '/'
+        self.out_eval = os.path.join(self.output,'eval')
+        self.out_raw = os.path.join(self.output,'raw')
+        self.out_crf = os.path.join(self.output,'crf')
+        self.out_vis = os.path.join(self.output,'vis')
         sdmkdir(self.output)
+        sdmkdir(self.output+'raw/')
+        sdmkdir(self.output+'vis/')
+        sdmkdir(self.output+'eval/')
+        sdmkdir(self.out_crf)
         self.input =  input
     def import_model(self):
         opt = TestOptions().parse()
@@ -25,14 +35,15 @@ class Pipe:
         opt.checkpoints_dir ='/nfs/bigbox/hieule/penguin_data/checkpoints/'
 #        opt.name='MSE_single_unet_train_2_4.txt_bias-1_bs128_do0.8'
         opt.name='MSEnc3_p2000_train_bias0.5_bs128'
+        #MSEnc3_p2000_train_bias0.5_bs128e200
         #opt.name = 'MSEnc3__bias-1_bs128'
         opt.which_epoch = 200
         opt.serial_batches = True  # no shuffle
         opt.no_flip = True  # no flip
         opt.no_dropout = True
-        opt.gpu_ids = [3]
+        opt.gpu_ids = [1]
         self.network = create_model(opt)
-    
+        self.opt = opt 
     def list_tif_predict(self,file):
         root = '/gpfs/projects/LynchGroup/Orthoed/'
         imlist =[]
@@ -46,21 +57,6 @@ class Pipe:
 
         for name in imnamelist :
             self.tif_predict(root+name)
-    def dir_png_predict(self,fold):
-        imlist =[]
-        imnamelist =[]
-        for root,_,fnames in sorted(os.walk(fold)):
-            for fname in fnames:
-                if fname.endswith('.png') and 'M1BS' in fname and not fname.startswith('.'):
-                    path = os.path.join(root,fname)
-                    imlist.append((path,fname))
-                    imnamelist.append(fname)
-        print(imnamelist)
-        for path,name in imlist :
-            print(path)
-            inpng = misc.imread(path)
-            outpng = self.png_predict(inpng)
-            misc.imsave(self.output+'/'+name,outpng)
     def dir_tif_predict(self,fold):
         imlist =[]
         imnamelist =[]
@@ -116,7 +112,7 @@ class Pipe:
         n_patches = patches.shape[0]
         out = np.zeros(s) 
         print('numbers of patches %d'%(n_patches))
-        print('Processing all the patches')
+        print('Processing all patches')
         for i in range(0,n_patches,bs):
             batch  = patches[i:i+bs,:,:,:]
             batch = torch.from_numpy(batch).float().div(255)
@@ -143,16 +139,100 @@ class Pipe:
         print(np.amax(outpng))
         print(np.amin(outpng))
         outpng = (outpng + 1)/2
+        out = outpng
         #outpng[outpng<0.5] = 0
         #outpng[outpng>=0.5] = 1
         outpng = outpng*255
+        #outpng = crf_refine(im.astype(np.uint8),outpng.astype(np.uint8))
+        #outpng = outpng.astype(np.float32)/255        
+        #outpng[outpng<0.9]= 0
         return outpng
+    
+    def dir_png_predict(self,fold):
+        self.input = fold
+        imlist =[]
+        imnamelist =[]
+        for root,_,fnames in sorted(os.walk(fold)):
+            for fname in fnames:
+                if fname.endswith('.png') and 'M1BS' in fname and not fname.startswith('.'):
+                    path = os.path.join(root,fname)
+                    imlist.append((path,fname))
+                    imnamelist.append(fname)
+        print(imnamelist)
+        for path,name in imlist :
+            print(path)
+            inpng = misc.imread(path)
+            outpng = self.png_predict(inpng)
+            outim = show_plainmask_on_image(inpng,outpng)
+            misc.imsave(self.output+'/raw/'+name,outpng)
+            misc.imsave(self.output+'/vis/'+name,outim)
+    
+    def dir_crf_smoothing(self):
+        imlist =[]
+        imnamelist =[]
+        for root,_,fnames in sorted(os.walk(self.input)):
+            for fname in fnames:
+                if fname.endswith('.png') and 'M1BS' in fname and not fname.startswith('.'):
+                    path = os.path.join(root,fname)
+                    imlist.append((path,fname))
+                    imnamelist.append(fname)
+        print(imnamelist)
+        for path,name in imlist :
+            print(path)
+            im = misc.imread(path)
+            raw_pred = misc.imread(os.path.join(self.out_raw,name))
+            raw_pred[raw_pred<240] = 0
+            raw_pred[raw_pred>=240] = 255
+            crf_out = crf_refine(im.astype(np.uint8),raw_pred.astype(np.uint8))
+            
+            misc.imsave(self.output+'/crf/'+name,crf_out)
 
 
+    def eval_dir(self,Outpath,GT):
+        imlist =[]
+        imnamelist =[]
+        for root,_,fnames in sorted(os.walk(GT)):
+            for fname in fnames:
+                if fname.endswith('.png') and 'M1BS' in fname and not fname.startswith('.'):
+                    path = os.path.join(root,fname)
+                    imlist.append((path,fname))
+                    imnamelist.append(fname)
+        with open(os.path.join(Outpath+'/conf_matrix.txt'),'w') as FILE:
+            FILE.write('  TP -  FN   -   FP -  TN  - NAME\n')
+            for path, name in imlist:
+                preds = misc.imread(os.path.join(Outpath,name))
+                print(np.amax(preds))
+                preds = (preds == np.amax(preds)).astype(np.float)
+
+                labs = misc.imread(os.path.join(GT,name))
+                labs = (labs == np.amax(labs)).astype(np.float)
+                
+                tp = np.sum(preds[labs==1] == 1).astype(np.float)
+
+                fn = np.sum(preds[labs==1] == 0).astype(np.float)
+
+                fp = np.sum(preds[labs==0] == 1).astype(np.float)
+
+                tn = np.sum(preds[labs==0] ==0).astype(np.float)
+
+                print(tp,fn,fp,tn)
+                conf_matrix = [tp/(tp+fp),fp/(tp+fp),fn/(fn+tn),tn/(tn+fn)]
+
+                FILE.write('%02.2f |  %02.2f | %02.2f | %02.2f | %s \n'%(conf_matrix[0],conf_matrix[1],conf_matrix[2],conf_matrix[3],name))
+            FILE.close()
+
+        
 if __name__=='__main__':
 
-    a = Pipe('','./test_PAUL/')
+    a = Pipe('','./test_PTS/')
+    a.input ='/nfs/bigbox/hieule/penguin_data/TEST_PTS_MASK/A' 
  #   a.list_tif_predict('full.txt')
-    a.dir_png_predict('/nfs/bigbox/hieule/penguin_data/Test/PAUL/CROPPED/p300/A')
+    #a.dir_png_predict('/nfs/bigbox/hieule/penguin_data/Test/PAUL/CROPPED/p300/A')
+    #a.dir_png_predict('/nfs/bigbox/hieule/penguin_data/TEST_PTS_MASK/A')
+    #a.dir_crf_smoothing()
+    a.eval_dir(a.out_raw,GT='/nfs/bigbox/hieule/penguin_data/TEST_PTS_MASK/B')
+    a.eval_dir(a.out_crf,GT='/nfs/bigbox/hieule/penguin_data/TEST_PTS_MASK/B')
+
+    
 #a.tif_predict('/gpfs/projects/LynchGroup/Orthoed/WV02_20160119013349_1030010050B0C500_16JAN19013349-M1BS-500637522050_01_P001_u08rf3031.tif')
 #a.dir_tif_predict('/gpfs/projects/LynchGroup/Penguin_workstation/Train_all/raw/train/')
