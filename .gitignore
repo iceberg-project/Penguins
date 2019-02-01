@@ -55,3 +55,6 @@ test/data/legacy_serialized.pt
 **/*.swn
 *bak
 **/*.swp
+test_PTS
+checkpoints
+log

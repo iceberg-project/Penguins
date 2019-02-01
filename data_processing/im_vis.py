@@ -8,18 +8,12 @@ from sklearn import metrics
 #from rasterio import mask, features, warp
 
 def show_heatmap_on_image(img,mask):
-    mask = np.float32(mask)/np.max(mask)
-    mask[mask<0] = 0
-#    mask = np.float32(mask)/255
-#    if len(mask.shape) == 2:
-#        mask = np.dstack((mask,mask,mask))
-    heatmap = cv2.applyColorMap(mask, 2)  #Jet is 2, winter is 3 8 = cool
+    mask = np.uint8(mask)
+    heatmap = cv2.applyColorMap(mask, 3)  #Jet is 2, winter is 3 8 = cool
     heatmap = np.float32(heatmap) / 255
     print(heatmap.shape)
-    print heatmap
     img = np.float32(img)/255
     cam = heatmap* 0.5+ np.float32(img)
-    cam = cam / np.max(cam)
     return np.uint8(cam*255)
 def draw(im,ratio): 
     font = cv2.FONT_HERSHEY_SIMPLEX 
@@ -27,18 +21,20 @@ def draw(im,ratio):
     return im 
 
 def show_plainmask_on_image(oim,mask):
-    mask = np.float32(mask)
-
-    mask[mask<0.7] =0
-#    mask[mask>=0.5] =1
-    im = np.float32(oim)
+    #mask = np.float32(mask)/255
+    mask = np.uint8(mask)
+    mask = (mask>=250).astype(np.float)
+    return to_rgb3b(np.uint8(mask*255))
+    #mask[mask>=0.5] =1
+    im = np.float(oim)
     if im.ndim ==2:
         im = to_rgb3b(im)
     im = im * 0.5
     im[:,:,1] = im[:,:,1] + mask*100
     im[im>255] = 255
-    return np.hstack((oim,im.astype(np.uint8)))
+    return im.astype(np.uint8)
 def visdir(imdir,maskdir,visdir,pimlist=[]):
+    
     sdmkdir(visdir)    
     imlist=[]
     imnamelist=[]
@@ -55,8 +51,8 @@ def visdir(imdir,maskdir,visdir,pimlist=[]):
     for pathA,pathB,fname in imlist:
         A = misc.imread(pathA)
         B = misc.imread(pathB)
-        vim = show_heatmap_on_image(A,B)
-        #vim = show_plainmask_on_image(A,B)
+        #vim = show_heatmap_on_image(A,B)
+        vim = show_plainmask_on_image(A,B)
         misc.imsave(os.path.join(visdir,fname),np.append(A,vim,axis=1))
 def visdir2(imdir,GT,maskdir,visdir,pimlist=[]):
     sdmkdir(visdir)    

@@ -14,6 +14,7 @@ from data_processing.im_vis import *
 import time
 import numpy as np
 import rasterio
+from sklearn.metrics import average_precision_score as ap_score
 class Pipe:
     def __init__(self,input,output):
         self.import_model()
@@ -23,9 +24,9 @@ class Pipe:
         self.out_crf = os.path.join(self.output,'crf')
         self.out_vis = os.path.join(self.output,'vis')
         sdmkdir(self.output)
-        sdmkdir(self.output+'raw/')
-        sdmkdir(self.output+'vis/')
-        sdmkdir(self.output+'eval/')
+        sdmkdir(self.output+'raw')
+        sdmkdir(self.output+'vis')
+        sdmkdir(self.output+'eval')
         sdmkdir(self.out_crf)
         self.input =  input
     def import_model(self):
@@ -181,8 +182,8 @@ class Pipe:
             print(path)
             im = misc.imread(path)
             raw_pred = misc.imread(os.path.join(self.out_raw,name))
-            raw_pred[raw_pred<240] = 0
-            raw_pred[raw_pred>=240] = 255
+            #raw_pred[raw_pred<130] = 0
+            #raw_pred[raw_pred>=120] = 255
             crf_out = crf_refine(im.astype(np.uint8),raw_pred.astype(np.uint8))
             
             misc.imsave(self.output+'/crf/'+name,crf_out)
@@ -197,15 +198,17 @@ class Pipe:
                     path = os.path.join(root,fname)
                     imlist.append((path,fname))
                     imnamelist.append(fname)
-        with open(os.path.join(Outpath+'/conf_matrix.txt'),'w') as FILE:
-            FILE.write('  TP -  FN   -   FP -  TN  - NAME\n')
+        with open(os.path.join(Outpath+'/Prec_recall.txt'),'w') as FILE:
+            FILE.write('  Prec - Recall  - NAME\n')
             for path, name in imlist:
                 preds = misc.imread(os.path.join(Outpath,name))
-                print(np.amax(preds))
-                preds = (preds == np.amax(preds)).astype(np.float)
-
                 labs = misc.imread(os.path.join(GT,name))
                 labs = (labs == np.amax(labs)).astype(np.float)
+                
+                preds = preds.astype(np.uint8)
+                AP = ap_score(labs.flatten(),preds.flatten())
+                preds = (preds>=(50)).astype(np.float)
+
                 
                 tp = np.sum(preds[labs==1] == 1).astype(np.float)
 
@@ -216,9 +219,11 @@ class Pipe:
                 tn = np.sum(preds[labs==0] ==0).astype(np.float)
 
                 print(tp,fn,fp,tn)
-                conf_matrix = [tp/(tp+fp),fp/(tp+fp),fn/(fn+tn),tn/(tn+fn)]
-
-                FILE.write('%02.2f |  %02.2f | %02.2f | %02.2f | %s \n'%(conf_matrix[0],conf_matrix[1],conf_matrix[2],conf_matrix[3],name))
+                conf_matrix = [                        tp/(tp+fn),fp/(tp+fp),fn/(fn+tn),tn/(tn+fn)]
+                Prec = tp/(tp+fp)
+                Recall = tp/(tp+fn)
+            
+                FILE.write(' %02.2f  |  %02.2f  |   %02.2f |  %s \n'%(AP,Prec,Recall,name))
             FILE.close()
 
         
@@ -228,11 +233,15 @@ if __name__=='__main__':
     a.input ='/nfs/bigbox/hieule/penguin_data/TEST_PTS_MASK/A' 
  #   a.list_tif_predict('full.txt')
     #a.dir_png_predict('/nfs/bigbox/hieule/penguin_data/Test/PAUL/CROPPED/p300/A')
-    #a.dir_png_predict('/nfs/bigbox/hieule/penguin_data/TEST_PTS_MASK/A')
-    #a.dir_crf_smoothing()
+#    a.dir_png_predict('/nfs/bigbox/hieule/penguin_data/TEST_PTS_MASK/A')
+#    im = a.png_predict(misc.imread('/nfs/bigbox/hieule/penguin_data/TEST_PTS_MASK/A/WV02_20151204195602_103001004F9A8500_15DEC04195602-M1BS-500637515080_01_P006_u08rf3031_fixed.png'))
+#    misc.imsave('chec.png',im)
+#    im = a.png_predict(misc.imread('/nfs/bigbox/hieule/penguin_data/TEST_PTS_MASK/A/corrected.png'))
+#    misc.imsave('corrected.png',im)
+#    a.dir_crf_smoothing()
     a.eval_dir(a.out_raw,GT='/nfs/bigbox/hieule/penguin_data/TEST_PTS_MASK/B')
     a.eval_dir(a.out_crf,GT='/nfs/bigbox/hieule/penguin_data/TEST_PTS_MASK/B')
-
-    
+#    visdir(a.input,a.out_raw,a.out_vis)
+#    visdir(a.input,a.out_crf,a.out_vis+'_crf')   
 #a.tif_predict('/gpfs/projects/LynchGroup/Orthoed/WV02_20160119013349_1030010050B0C500_16JAN19013349-M1BS-500637522050_01_P001_u08rf3031.tif')
 #a.dir_tif_predict('/gpfs/projects/LynchGroup/Penguin_workstation/Train_all/raw/train/')
