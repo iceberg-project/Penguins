@@ -1,7 +1,7 @@
 # U-NET in Pytorch for Image Segmentation
 This repo is an implementation of U-Net for penguin colony detection. It is under active development.
 
-This code is written by [Hieu-Le] (https://lmhieu612.github.io). 
+This code is written by [Hieu-Le](https://lmhieu612.github.io). 
 
 **Note**: The current software works well with PyTorch 0.4.
 
