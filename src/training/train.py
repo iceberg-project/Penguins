@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(0, "./..")
 from models.models import create_model
 import numpy as np
 from PIL import Image 
