@@ -41,7 +41,8 @@ def find_overlap(footprint_shp, points_shp, min_dist, id_columns, output_name, n
     points = gpd.read_file(points_shp)
 
     # check if point and shapefile are using the same CRS
-    assert footprint.crs == points.crs, 'Footprint and points in different coordinate systems.'
+    if footprint.crs != points.crs:
+        points = points.to_crs(footprint.crs)
 
     # get footprint entries that are most reliable for guano detection (DEC 15 - JAN 15)
     footprint = footprint[np.array(footprint.dayofseaso > 197) * np.array(footprint.dayofseaso < 229)]

@@ -4,6 +4,7 @@ from rasterio import windows
 import cv2
 import argparse
 import os
+import numpy as np
 import re
 import geopandas as gpd
 
@@ -44,13 +45,13 @@ def get_crop(raster, location, pnt_crs, crop_size, out):
             bbox = location['geometry'].buffer(0.005).bounds
 
         # extract window
-        window2 = windows.from_bounds(*bbox, src.transform)
-        window2.height = crop_size
-        window2.width = crop_size
+        window = windows.from_bounds(*bbox, src.transform)
+        window.height = crop_size
+        window.width = crop_size
 
         try:
             # get crop
-            cropped = src.read(window=window2)
+            cropped = src.read(window=window)
 
             # get rgb channels
             sensor = re.search(r'[A-Z]{2}\d{2}', raster.split('/')[-1]).group(0)
@@ -64,7 +65,10 @@ def get_crop(raster, location, pnt_crs, crop_size, out):
                 cropped = cropped[(3, 2, 1), :, :]
 
             # write to png -- careful with RGB channels
-            cv2.imwrite(out, cropped.transpose([2, 1, 0]))
+            if cropped.shape[1:] == (crop_size, crop_size) and np.max(cropped) > 0:
+                for i in range(cropped.shape[0]):
+                    cropped[i, :, :] = cropped[i, :, :] / np.max(cropped[i, :, :]) * 255
+                cv2.imwrite(out, cropped.transpose([2, 1, 0]))
 
         except Exception as exc:
             print(f'location out of bounds for {raster}')
@@ -85,7 +89,7 @@ def main():
     for raster in rasters:
         locations = points.loc[points['scene'] == raster]
         for _, row in locations.iterrows():
-            get_crop(f"{rasters_dir}/{raster}", row, points.crs, crop_size=512,
+            get_crop(f"{rasters_dir}/{raster}", row, points.crs, crop_size=702,
                      out=f"{out_dir}/{raster}_{row['site']}.png")
 
 
