@@ -1,5 +1,6 @@
 import argparse
 import os
+import re
 
 import pandas as pd
 import rasterio
@@ -35,38 +36,25 @@ def get_covariate_data(input_scene, covariate_folder):
             covariates['pixel_width'] = [img.transforms[0]]
             covariates['pixel_height'] = [img.transforms[4]]
 
-    # convert input image to basename since we wont need the full path anymore
-    input_scene = os.path.basename(input_scene).split('.')[0]
+    # get rid of path on input_scene
+    input_scene = os.path.basename(input_scene)
+
     # get sensor and time data parsing input image name and add to covariates
-    # image formatting new:
-    #   {sensor}_{year){month}{day}{hour}{minute}{second}_{catalogID}_
-    #   {year[-2:]}{3 letter month}{day}{hour}{minute}{second}-{PAN/MS}P{idx in panel}.tif
-
-    # check if input image uses old formatting and reformat if necessary
-    if not input_scene.split('_')[1][2].isdigit():
-        month_to_numeral = {mth: str(idx + 1) for idx, mth in
-                            enumerate(['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL',
-                                       'AUG', 'OCT', 'NOV', 'DEC'])}
-        sensor, time_stamp = input_scene.split('_')[:2]
-        if 'ortho' in sensor:
-            sensor = sensor[5:]
-        year = '20' + time_stamp[:2]
-        month = month_to_numeral[time_stamp[2:5]]
-
-    else:
-        sensor, time_stamp = input_scene.split('_')[:2]
-        year = time_stamp[:4]
-        month = time_stamp[4:6]
-    season = int(year) - 1 if int(month) < 6 else int(year)
+    sensor = re.search(r'[A-Z]{2}\d{2}', input_scene).group(0)
+    time_stamp = re.search(r'\d{2}[A-Z]{3}\d{6}', input_scene).group(0)
+    year = '20' + time_stamp[:2]
+    month = time_stamp[2:5]
+    season = int(year) - 1 if int(month) <= 5 else int(year)
     month_offset = [1, -1, -1, 0, 0, 1, 2, 3, 3, 4, 4, 5]
-    julian_day = int(month) * 30 + month_offset[int(month) - 1] + (int(year) % 4 == 0)
+    julian_day = int(month) * 30 + month_offset[int(month) - 1] + (int(year) % 4 == 0) + time_stamp[5:7]
+    hour = time_stamp[7:9]
 
     # add covariates
     covariates['sensor'] = [sensor]
     covariates['year'] = [year]
     covariates['season'] = [season]
     covariates['julian_day'] = [julian_day]
-    covariates['hour'] = [time_stamp[8:10]]
+    covariates['hour'] = [hour]
 
     # find site
     scene_to_site = pd.read_csv(f"{covariate_folder}/scene_to_site.csv")
