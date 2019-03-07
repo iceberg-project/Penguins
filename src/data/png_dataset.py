@@ -32,11 +32,7 @@ class PngDataset(BaseDataset):
         self.nim = len(self.imname)
 
     def __len__(self):
-        if not self.opt.isTrain:
-            return self.nim
-        else:
-            return 50000
-        #return self.nim*20
+	    return self.nim
     def name(self):
         return 'PNGDATASET'
     
@@ -52,7 +48,6 @@ class PngDataset(BaseDataset):
     def get_number_of_patches(self,idx):
         return self.nx,self.ny
     def __getitem__(self,index):
-        C_img = []       
         if self.opt.randomSize:
             self.opt.loadSize = np.random.randint(257,300,1)[0]
         if random.random() < self.opt.biased_sampling:
@@ -95,37 +90,27 @@ class PngDataset(BaseDataset):
         A_img = A_img.resize((neww, newh),Image.NEAREST)
         B_img = B_img.resize((neww, newh),Image.NEAREST)
         
-        #C_img = np.copy(B_img).astype(np.uint8)
-        #C_img = cv2.dilate(C_img, np.ones((30,30)))
-        #C_img[C_img>0] = 255
         A_img = np.asarray(A_img)
         B_img = np.asarray(B_img)
         A_img = A_img[:,:,0:3]
-#        C_img = np.copy(B_img).astype(np.uint8)
-
-#        C_img = cv2.dilate(C_img, np.ones((30,30)))
-#        C_img[C_img>0] = 255
-        C_img = np.copy(B_img)
-        C_img[C_img!=0] = 255 
 
         B_img.setflags(write=1)
         B_img[B_img==2] = 255
         B_img[B_img!=255] = 0
         A_img = np.transpose(A_img,(2,0,1))
         B_img = np.expand_dims(B_img, axis=0)
-        C_img = np.expand_dims(C_img, axis=0)
         z,w,h = A_img.shape
         w_offset = random.randint(0,max(0,w-self.opt.fineSize-1))
         h_offset = random.randint(0,max(0,h-self.opt.fineSize-1))
         A_img = A_img[:, w_offset:w_offset + self.opt.fineSize, h_offset:h_offset + self.opt.fineSize] 
         B_img = B_img[:,w_offset:w_offset + self.opt.fineSize, h_offset:h_offset + self.opt.fineSize]
-        C_img = C_img[:,w_offset:w_offset + self.opt.fineSize, h_offset:h_offset + self.opt.fineSize]
         A_img = torch.from_numpy(A_img).float().div(255)
         B_img = torch.from_numpy(B_img).float().div(255)
-        C_img = torch.from_numpy(C_img).float().div(255)
         A_img = A_img - 0.5
         A_img = A_img * 2
 
+        counts = torch.mean(B_img.view(-1,1))
         B_img = B_img - 0.5
         B_img = B_img * 2
-        return  {'A': A_img, 'B': B_img,'C':C_img,'imname':imname}
+        count_ids = 1
+        return  {'A': A_img, 'B': B_img,'imname':imname,'counts':counts, 'count_ids':count_ids}

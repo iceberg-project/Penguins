@@ -1,11 +1,11 @@
 import sys
 sys.path.insert(0, "./..")
-from models.models import create_model
+from models import create_model
 import numpy as np
 from PIL import Image 
 from options.train_options import TrainOptions
 import time
-from data.data_loader import CreateDataLoader
+from data import CreateDataLoader
 
 
 from util.visualizer import Visualizer
@@ -17,7 +17,7 @@ total_steps = 0
 data_loader = CreateDataLoader(opt)
 #dataset = TifDataset(opt)
 dataset = data_loader.load_data()
-#print 'dataset size: ' + str(len(dataset))
+print('dataset size: ' + str(len(dataset)))
 dataset_size = len(data_loader)
 model = create_model(opt)
 
@@ -29,11 +29,11 @@ for epoch in range(opt.epoch_count,opt.niter+opt.niter_decay+1):
 
     for i,data in enumerate(dataset):
         iter_start_time = time.time()
-        total_steps += opt.batchSize
-        epoch_iter += opt.batchSize
+        total_steps += opt.batch_size
+        epoch_iter += opt.batch_size
         model.set_input(data)
         model.optimize_parameters()
-        if i% 10 ==0:
+        if i% 5 ==0:
             visualizer.display_current_results(model.get_current_visuals(), epoch, False)
             errors = model.get_current_errors()
             visualizer.print_current_errors(epoch, epoch_iter, errors,time.time()-iter_start_time)

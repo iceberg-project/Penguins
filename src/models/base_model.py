@@ -1,6 +1,9 @@
 import os
 import torch
-
+import numpy as np
+import util.util as util
+from util.image_pool import ImagePool
+from collections import OrderedDict
 
 class BaseModel():
     def name(self):
@@ -32,6 +35,23 @@ class BaseModel():
     def get_current_visuals(self):
         return self.input
 
+    def get_current_visuals(self):
+       	self.visual_names = ['input','output','GT'] 
+        nim = getattr(self,self.visual_names[0]).shape[0]
+        visual_ret = OrderedDict()
+        all =[]
+        for i in range(0,min(nim-1,5)):
+            row=[]
+            for name in self.visual_names:
+                if isinstance(name, str):
+                    if hasattr(self,name):
+                        im = util.tensor2im(getattr(self, name).data[i:i+1,:,:,:])
+                        row.append(im)
+            row=tuple(row)
+            all.append(np.hstack(row))
+        all = tuple(all)
+        allim = np.vstack(all)
+        return OrderedDict([(self.opt.name,allim)])
     def get_current_errors(self):
         return {}
 

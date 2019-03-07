@@ -69,7 +69,7 @@ class UnetModel(BaseModel):
         self.optimizer_G.step()
 
     def get_current_errors(self):
-        return OrderedDict([('G_Loss_SQRT', np.sqrt(self.loss_G.data[0])),('0', 0)])
+        return OrderedDict([('G_Loss_SQRT', np.sqrt(self.loss_G.detach().cpu()))])
     def get_prediction_tensor(self,input_A):
         if len(self.gpu_ids) > 0:
             input_A = input_A.cuda(self.gpu_ids[0], async=True)
@@ -88,21 +88,6 @@ class UnetModel(BaseModel):
 
 
 
-    def get_current_visuals(self):
-        
-        allll = []
-        for i in range(0,5):
-            inp = util.tensor2im(self.input.data[i:i+1,:,:,:])
-            out = util.tensor2im(self.output.data[i:i+1,:,:,:])
-            GT = util.tensor2im(self.GT.data[i:i+1,:,:,:])
-            alll = np.hstack((inp,GT,out))
-            allll.append(alll)
-        X =  np.vstack((allll[0],allll[1]))
-        for i in range(2,5):
-            X = np.vstack((X,allll[i]))
-            
-        
-        return OrderedDict([(self.opt.name+' input-GT-out'+str(self.gpu_ids[0]),X)])
 
     def save(self, label):
         self.save_network(self.netG, 'G', label, self.gpu_ids)
