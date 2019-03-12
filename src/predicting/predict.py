@@ -4,18 +4,16 @@ import torch
 import os.path
 import argparse
 from scipy import misc
-from models.models import create_model
+from models import create_model
 from data.png_dataset import PngDataset
 from options.train_options import TrainOptions
 from options.test_options import TestOptions
-from data.data_loader import CreateDataLoader
-from data_processing.tif_handle import TIF_H
+from data import CreateDataLoader
 from data_processing.m_util import *
 #from util.misc import crf_refine 
 from data_processing.im_vis import *
 import time
 import numpy as np
-import rasterio
 from sklearn.metrics import average_precision_score as ap_score
 class Pipe:
     def __init__(self,input,output):
@@ -33,17 +31,24 @@ class Pipe:
         self.input =  input
     def import_model(self):
         opt = TestOptions().parse()
-        opt.model ='single_unet'
-        opt.checkpoints_dir ='/nfs/bigbox/hieule/penguin_data/checkpoints/'
-        opt.name='MSEnc3_p2000_train_bias0.5_bs128'
-        opt.which_epoch = 200
+#        opt.model ='single_unet'
+#        opt.checkpoints_dir ='/nfs/bigbox/hieule/penguin_data/checkpoints/'
+#        opt.name='MSEnc3_p2000_train_bias0.5_bs128'
+#        opt.which_epoch = 200
+        opt.model ='unetr'
+        opt.checkpoints_dir='/mnt/checkpoints_hackathon/'
+        #opt.name='unetr_bs96_sampling0.5'
+        opt.name='weakly_unetr_bs64_sampling0.25_9990'
+        opt.which_epoch='latest'
         opt.serial_batches = True  # no shuffle
         opt.no_flip = True  # no flip
         opt.no_dropout = True
-        opt.gpu_ids = [2]
+        opt.gpu_ids = [3]
         self.network = create_model(opt)
         self.opt = opt 
     def list_tif_predict(self,file):
+        import rasterio
+        from data_processing.tif_handle import TIF_H
         root = '/gpfs/projects/LynchGroup/Orthoed/'
         imlist =[]
         imnamelist =[]
@@ -212,7 +217,9 @@ class Pipe:
         
 if __name__=='__main__':
 
-    a = Pipe('','./test_PTS/')
-    a.input ='/nfs/bigbox/hieule/penguin_data/TEST_PTS_MASK/A' 
-    im = a.png_predict(misc.imread('/nfs/bigbox/hieule/penguin_data/TEST_PTS_MASK/A/WV02_20151204195602_103001004F9A8500_15DEC04195602-M1BS-500637515080_01_P006_u08rf3031_fixed.png'))
-    misc.imsave('chec.png',im)
+#    a = Pipe('','./test_PTS/')
+#    a.input ='/nfs/bigbox/hieule/penguin_data/TEST_PTS_MASK/A' 
+#    im = a.png_predict(misc.imread('/nfs/bigbox/hieule/penguin_data/TEST_PTS_MASK/A/WV02_20151204195602_103001004F9A8500_15DEC04195602-M1BS-500637515080_01_P006_u08rf3031_fixed.png'))
+#    misc.imsave('chec.png',im)
+    a = Pipe('','./Test')
+    a.dir_png_predict('/mnt/Testing/A')

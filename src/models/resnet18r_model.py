@@ -7,11 +7,11 @@ import util.util as util
 from util.image_pool import ImagePool
 from .base_model import BaseModel
 from . import networks
-from PIL import ImageOps,Image
+from models.resnet18 import resnet18
 
-class UnetRModel(BaseModel):
+class Resnet18Rmodel(BaseModel):
     def name(self):
-        return 'UnetModelWithRegressionLoss'
+        return 'Resnet18 for regression Model'
 
     def initialize(self, opt):
         BaseModel.initialize(self, opt)
@@ -19,10 +19,11 @@ class UnetRModel(BaseModel):
         self.opt = opt
         
         # load/define networks
-        self.netG = networks.define_G(opt.input_nc, 1, 64,
-                                      'unet_256', opt.norm, not opt.no_dropout, opt.init_type, self.gpu_ids)
-        self.criterionL1 = torch.nn.L1Loss()        
-        self.criterion= torch.nn.MSELoss()        
+        self.netG = resnet18(out_nc= 1,gpu_ids= self.gpu_ids)
+        
+        self.criterionMSE= torch.nn.MSELoss()        
+        bce_logit = torch.nn.BCEWithLogitsLoss().cuda()
+        self.criterion = bce_logit
         if self.isTrain:
             self.old_lr = opt.lr
             # define loss functions
@@ -51,11 +52,9 @@ class UnetRModel(BaseModel):
             input_B = input_B.cuda(self.gpu_ids[0], async=True)
         self.input = Variable(input_A)
         self.GT  = Variable(input_B)
-        self.count=  Variable(input['counts'].cuda(self.gpu_ids[0], async=True))
-        if 'isweak' in input:
-            self.isweak = Variable(input['isweak'].cuda(self.gpu_ids[0], async=True))
-        else:
-            self.isweak = Variable(torch.zeros(self.count.shape).cuda(self.gpu_ids[0],async=True))
+        bGT,tmp = torch.max(self.GT.view(self.GT.shape[0],-1),dim=1)
+        self.binary_GT = Variable(bGT).view(-1,1)
+        self.binary_GT[self.binary_GT==-1]=0
 
 
     def forward(self):
@@ -64,45 +63,8 @@ class UnetRModel(BaseModel):
 
 
     def backward_G(self):
-        #segmentation loss
-
-        num = self.output.shape[0]
-
-        if not hasattr(self.opt,'lambda_segmentation'):
-            self.opt.lambda_segmentation=100
-        self.loss_G_segmentation = self.criterion(self.output[self.isweak==0,:,:,:], self.GT[self.isweak==0,:,:,:]) * self.opt.lambda_segmentation 
-
-        
-        if not hasattr(self.opt,'lambda_regression'):
-            self.opt.lambda_regression=500
-        #regression loss:
-        self.loss_G_regression = self.criterion(self.output.view(num,-1).mean(dim =1)/2+0.5,self.count) * self.opt.lambda_regression
-        self.loss_G = self.loss_G_segmentation + self.loss_G_regression
+        self.loss_G = self.criterion(self.output, self.binary_GT)*100 
         self.loss_G.backward()
-
-    def get_current_visuals(self):
-       	self.visual_names = ['input','output','GT'] 
-        nim = getattr(self,self.visual_names[0]).shape[0]
-        visual_ret = OrderedDict()
-        all =[]
-        for i in range(0,min(nim-1,5)):
-            row=[]
-            for name in self.visual_names:
-                if isinstance(name, str):
-                    if hasattr(self,name):
-                        im = util.tensor2im(getattr(self, name).data[i:i+1,:,:,:])
-                        row.append(im)
-            row=tuple(row)
-            row = np.hstack(row)
-            if self.isweak[i] == 0:
-                row = ImageOps.crop(Image.fromarray(row),border =8)
-                row = ImageOps.expand(row,border=8,fill=(0,200,0))
-                row = np.asarray(row)
-
-            all.append(row)
-        all = tuple(all)
-        allim = np.vstack(all)
-        return OrderedDict([(self.opt.name,allim)])
 
     def optimize_parameters(self):
         self.forward()
@@ -112,10 +74,7 @@ class UnetRModel(BaseModel):
         self.optimizer_G.step()
 
     def get_current_errors(self):
-        
-        return OrderedDict([('G_Loss', self.loss_G.detach().cpu()),
-                            ('G_Regression',self.loss_G_regression.detach().cpu()),
-                            ('G_segmentation',self.loss_G_segmentation.detach().cpu())])
+        return OrderedDict([('G_Loss', self.loss_G.detach().cpu())])
     def get_prediction_tensor(self,input_A):
         if len(self.gpu_ids) > 0:
             input_A = input_A.cuda(self.gpu_ids[0], async=True)
@@ -133,6 +92,29 @@ class UnetRModel(BaseModel):
 
 
 
+    def get_current_visuals(self):
+       	self.visual_names = ['input','GT'] 
+        nim = getattr(self,self.visual_names[0]).shape[0]
+        visual_ret = OrderedDict()
+        all =[]
+        for i in range(0,min(nim-1,5)):
+            row=[]
+            for name in self.visual_names:
+                if isinstance(name, str):
+                    if hasattr(self,name):
+                        im = util.tensor2im(getattr(self, name).data[i:i+1,:,:,:])
+                        row.append(im)
+            row=np.hstack(tuple(row))
+            row = util.drawtext2im(row,'GT: ' +str(self.binary_GT[i].data.cpu().float().numpy()),pos=(10,10),size=25)
+            row = util.drawtext2im(row,'Pr: ' +str(self.output[i].data.cpu().float().numpy()),pos=(266,10),size=25)
+            if self.binary_GT[i]==0 and self.output[i] > 0:
+                row = util.addborder(row,fill=(200,0,0),border=8)
+            if self.binary_GT[i]==1 and self.output[i] < 0:
+                row = util.addborder(row,fill=(200,0,0),border=8)
+            all.append(row)
+        all = tuple(all)
+        allim = np.vstack(all)
+        return OrderedDict([(self.opt.name,allim)])
 
 
     def save(self, label):

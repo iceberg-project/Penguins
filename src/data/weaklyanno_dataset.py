@@ -22,6 +22,11 @@ class WeaklyAnnoDataset(BaseDataset):
         self.pos_only = []
         self.strong_only = []
         self.pos_and_strong_only = []
+        self.pos_and_weak_only = []
+        self.neg_only = []
+        self.weak_only = []
+        self.neg_and_strong_only = []
+        self.neg_and_weak_only = []
         for root,_,fnames in sorted(os.walk(self.A_dir)):
             for fname in fnames:
                 if fname.endswith('.png'):
@@ -37,6 +42,9 @@ class WeaklyAnnoDataset(BaseDataset):
                     if X['ispos']:
                         self.pos_only.append(X)
                         self.pos_and_strong_only.append(X)
+                    else:
+                        self.neg_only.append(X)
+                        self.neg_and_strong_only.append(X)
                     self.all.append(X)
                     self.strong_only.append(X)
 
@@ -61,15 +69,21 @@ class WeaklyAnnoDataset(BaseDataset):
                         X['mask_path'] = 'None'
                     if X['ispos']:
                         self.pos_only.append(X)
+                        self.pos_and_weak_only.append(X)
+                    else:
+                        self.neg_only.append(X)
+                        self.neg_and_weak_only.append(X)
+                    self.weak_only.append(X)
                     self.all.append(X)
          
         self.nim = len(self.all)
+        self.stats()
     def stats(self):
-        print("Dataset type: %s \n"%(self.name()))
-        print("Total Image: %d \n"%(len(self.all)))
-        print("Pos/Neg: %d / %d \n"%(len(self.pos_only),len(self.all)-len(self.pos_only)))
-        print("Accurate Anno / Weak Anno: %d / %d \n"%(len(self.strong_only),len(self.all)-len(self.strong_only)))
-        print("Positive+Accurately Annotated : %d \n"%(len(self.pos_and_strong_only)))
+        print("Dataset type: %s "%(self.name()))
+        print("Total Image: %d "%(len(self.all)))
+        print("Pos/Neg: %d / %d "%(len(self.pos_only),len(self.all)-len(self.pos_only)))
+        print("Accurate Anno / Weak Anno: %d / %d "%(len(self.strong_only),len(self.all)-len(self.strong_only)))
+        print("Positive+Accurately Annotated : %d "%(len(self.pos_and_strong_only)))
     def __len__(self):
 	    return self.nim
     def name(self):
@@ -88,9 +102,26 @@ class WeaklyAnnoDataset(BaseDataset):
         return self.nx,self.ny
     def __getitem__(self,index):
         if self.opt.randomSize:
-            self.opt.loadSize = np.random.randint(257,300,1)[0]
-        r_index = index % len(self.all)
-        data_point = self.all[r_index]
+            self.opt.loadSize = np.random.randint(257,400,1)[0]
+     
+        if not hasattr(self.opt,'s_pos'):
+            self.opt.s_pos = 0.5
+            self.opt.s_strong = 0.5
+        #adaptive sampling:
+        if random.random()<self.opt.s_pos:
+            if random.random()<self.opt.s_strong:
+                choosen_set='pos_and_strong_only'
+            else:
+                choosen_set='pos_and_weak_only'
+        else:
+            if random.random()<self.opt.s_strong:
+                choosen_set='neg_and_strong_only'
+            else:
+                choosen_set='neg_and_weak_only'
+        r_index = index%(len(getattr(self,choosen_set)))
+        data_point = getattr(self,choosen_set)[r_index]       
+        #r_index = index % len(self.all)
+        #data_point = self.all[r_index]
         A_img = Image.open(data_point['im_path'])
         if data_point['ispos']:
             B_img = Image.open(data_point['mask_path'])

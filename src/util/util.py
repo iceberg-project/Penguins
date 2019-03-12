@@ -1,12 +1,27 @@
 from __future__ import print_function
 import torch
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont,ImageOps
 #import Image
 import inspect, re
 import numpy as np
 import os
 import collections
+
+
+def addborder(row,border=8,fill=(0,200,0)):
+    row = ImageOps.crop(Image.fromarray(row),border =8)
+    row = ImageOps.expand(row,border=8,fill=(0,200,0))
+    row = np.asarray(row)
+    return row
+def drawtext2im(image_np,text,pos=(10,10),size=40):
+
+    img = Image.fromarray(image_np)
+    draw = ImageDraw.Draw(img)
+    font = ImageFont.truetype('Pillow/Tests/fonts/FreeMono.ttf', size)
+    #font = ImageFont.truetype("sans-serif.ttf", 16)
+    draw.text(pos,text,(0,200,0),font=font)
+    return np.asarray(img)
 
 # Converts a Tensor into a Numpy array
 # |imtype|: the desired type of the converted numpy array

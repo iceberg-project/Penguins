@@ -6,8 +6,6 @@ from PIL import Image
 from options.train_options import TrainOptions
 import time
 from data import CreateDataLoader
-
-
 from util.visualizer import Visualizer
 
 opt = TrainOptions().parse()
@@ -20,7 +18,7 @@ dataset = data_loader.load_data()
 print('dataset size: ' + str(len(dataset)))
 dataset_size = len(data_loader)
 model = create_model(opt)
-
+print(opt)
 for epoch in range(opt.epoch_count,opt.niter+opt.niter_decay+1):
     epoch_start_time=time.time()
     epoch_iter=0

@@ -10,6 +10,7 @@ import numpy as np
 ###############################################################################
 
 
+
 def weights_init_normal(m):
     classname = m.__class__.__name__
     # print(classname)
@@ -97,6 +98,16 @@ def get_scheduler(optimizer, opt):
     else:
         return NotImplementedError('learning rate policy [%s] is not implemented', opt.lr_policy)
     return scheduler
+
+
+def resnet18(output_nc,gpu_ids=[]):
+    use_gpu = len(gpu_ids) > 0
+    from resnet18 import resnet18
+    net = resnet18(output_nc,gpu_ids=[])
+    if len(gpu_ids) > 0:
+        net.cuda(gpu_ids[0])
+    #init_weights(net, init_type=init_type)
+    return net
 
 
 def define_G(input_nc, output_nc, ngf, which_model_netG, norm='batch', use_dropout=False, init_type='normal', gpu_ids=[]):

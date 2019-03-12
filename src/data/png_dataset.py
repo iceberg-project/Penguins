@@ -10,7 +10,7 @@ import random
 import numpy as np
 import time
 class PngDataset(BaseDataset):
-    def __init__(self, opt):
+    def initialize(self, opt):
         self.opt = opt
         self.root = opt.dataroot
         self.GTroot = opt.dataroot
