@@ -107,7 +107,7 @@ class DatasetFolder(data.Dataset):
             if label == 'guano':
                 area = np.sum(np.array(target).nonzero()).astype(np.float32)
 
-        return sample, target, area, label
+        return sample, target, area
 
     def __len__(self):
         return len(self.samples)

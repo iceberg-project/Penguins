@@ -45,6 +45,33 @@ def save_checkpoint(filename, state, is_best_loss):
         shutil.copyfile(filename + '.tar', filename + '_best_loss.tar')
 
 
+def make_weights_for_balanced_classes(images, nclasses=2):
+    """
+    Generates weights to get balanced classes during training. To be used with weighted random samplers.
+
+    :param images: list of training images in training set.
+    :param nclasses: number of classes on training set.
+    :return: list of weights for each training image.
+    """
+    count = [0] * nclasses
+    for item in images:
+        if item[1] == "empty":
+            count[1] += 1
+        else:
+            count[0] += 1
+    weight_per_class = [0.] * nclasses
+    N = float(sum(count))
+    for i in range(nclasses):
+        weight_per_class[i] = N / float(count[i])
+    weight = [0] * len(images)
+    for idx, val in enumerate(images):
+        if val == "empty":
+            weight[idx] = weight_per_class[1]
+        else:
+            weight[idx] = weight_per_class[0]
+    return weight
+
+
 def train_model(model, dataloader, criterion, optimizer, scheduler, num_epochs, loss_name,
                 model_name, models_dir, learning_rate=1E-3, num_cycles=3, cycle_mult=2):
     """
@@ -107,7 +134,7 @@ def train_model(model, dataloader, criterion, optimizer, scheduler, num_epochs, 
                         scheduler.step()
 
                         # get input data
-                        input_img, target_img, area, _ = data
+                        input_img, target_img, area = data
 
                         if use_gpu:
                             input_img, target_img, area = input_img.cuda(), target_img.cuda(), area.cuda()
@@ -178,9 +205,16 @@ def main():
                                           transform=data_transforms[x])
                       for x in ['training', 'validation']}
 
+    # For unbalanced dataset we create a weighted sampler
+    weights = make_weights_for_balanced_classes(image_datasets['training'].imgs,
+                                                len(image_datasets['training'].classes))
+    weights = torch.DoubleTensor(weights)
+    sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, len(weights))
+
     dataloaders = {"training": torch.utils.data.DataLoader(image_datasets["training"],
                                                            batch_size=
                                                            hyperparameters[hyp_set]['batch_size_train'],
+                                                           sampler=sampler,
                                                            num_workers=
                                                            hyperparameters[hyp_set][
                                                                'num_workers_train']),
