@@ -2,11 +2,14 @@ import torchvision.transforms.functional as TF
 from torchvision import transforms
 import numpy as np
 
+__all__ = ['TransformPair']
+
 
 class TransformPair(object):
     """
     Class to ensure image and locations get the same transformations during training
     """
+
     def __init__(self, output_size, train):
         self.output_size = output_size
         self.train = train
@@ -52,12 +55,10 @@ class TransformPair(object):
                 if np.random.random() > 0.5:
                     adjust_factor = np.random.uniform(0.5, 1.5)
                     image = col_aug(image, adjust_factor)
-                    ground_truth = col_aug(ground_truth, adjust_factor)
 
             if np.random.random() > 0.5:
                 hue_factor = np.random.uniform(-0.15, 0.15)
                 image = TF.adjust_hue(image, hue_factor)
-                ground_truth = TF.adjust_hue(ground_truth, hue_factor)
 
         else:
             center_crop = transforms.CenterCrop(self.output_size)
@@ -65,7 +66,7 @@ class TransformPair(object):
             ground_truth = center_crop(ground_truth)
 
         # change locations to tensor
-        ground_truth = TF.normalize(TF.to_tensor(ground_truth), [0.5] * 3, [0.25] * 3)
-        image = TF.normalize(TF.to_tensor(image), [0.5] * 4, [0.25] * 4)
+        ground_truth = TF.normalize(TF.to_tensor(ground_truth), [0.5], [0.25])
+        image = TF.normalize(TF.to_tensor(image), [0.5] * 3, [0.25] * 3)
 
         return image, ground_truth

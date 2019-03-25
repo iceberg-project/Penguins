@@ -107,16 +107,19 @@ def train_model(model, dataloader, criterion, optimizer, scheduler, num_epochs, 
                         scheduler.step()
 
                         # get input data
-                        input_img, target_img = data
+                        input_img, target_img, area, _ = data
 
                         if use_gpu:
-                            input_img, target_img = input_img.cuda(), target_img.cuda()
+                            input_img, target_img, area = input_img.cuda(), target_img.cuda(), area.cuda()
 
                         # get model predictions
                         preds = model(input_img)
 
                         # get loss
-                        loss = criterion(preds.view(preds.numel()), target_img.view(target_img.numel()))
+                        if "Area" in model_name:
+                            loss = criterion(preds, area)
+                        else:
+                            loss = criterion(preds.view(preds.numel()), target_img.view(target_img.numel()))
                         exp_avg_loss = 0.99 * exp_avg_loss + 0.1 * (loss.item() / len(preds))
 
                         # update parameters
@@ -171,6 +174,7 @@ def main():
 
     # load images
     image_datasets = {x: ImageFolderTrain(root=os.path.join(args.t_dir, x),
+                                          patch_size=patch_size,
                                           transform=data_transforms[x])
                       for x in ['training', 'validation']}
 

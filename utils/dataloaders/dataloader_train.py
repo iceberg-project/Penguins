@@ -1,10 +1,10 @@
 import torch.utils.data as data
+import numpy as np
 
 from PIL import Image
 
 import os
 import os.path
-import sys
 
 
 def has_file_allowed_extension(filename, extensions):
@@ -34,7 +34,10 @@ def make_dataset(dir, extensions):
     dir = os.path.expanduser(dir)
     for root, dirs, files in os.walk(dir):
         for fname in files:
-            if has_file_allowed_extension(fname, extensions) and 'x' in root:
+            if has_file_allowed_extension(fname, extensions) and 'background' in root:
+                path_x = os.path.join(root, fname)
+                images.append([path_x, 'empty'])
+            elif has_file_allowed_extension(fname, extensions) and 'x' in root:
                 path_x = os.path.join(root, fname)
                 path_y = path_x.replace('x', 'y')
                 images.append([path_x, path_y])
@@ -66,7 +69,7 @@ class DatasetFolder(data.Dataset):
         targets (list): The class_index value for each image in the dataset
     """
 
-    def __init__(self, root, loader, extensions, transform=None):
+    def __init__(self, root, loader, extensions, patch_size, transform=None):
         samples = make_dataset(root, extensions)
         if len(samples) == 0:
             raise(RuntimeError("Found 0 files in subfolders of: " + root + "\n"
@@ -79,6 +82,7 @@ class DatasetFolder(data.Dataset):
         self.samples = samples
         self.targets = [s[1] for s in samples]
 
+        self.patch_size = patch_size
         self.transform = transform
 
     def __getitem__(self, index):
@@ -90,11 +94,20 @@ class DatasetFolder(data.Dataset):
         """
         path_x, path_y = self.samples[index]
         sample = self.loader(path_x)
-        target = self.loader(path_y)
+        if path_y != 'empty':
+            target = self.loader(path_y)
+            label = 'guano'
+            area = np.sum(np.array(target).nonzero()).astype(np.float32)
+        else:
+            target = Image.fromarray(np.zeros([self.patch_size, self.patch_size], dtype=np.uint8))
+            label = 'non-guano'
+            area = np.array(0).astype(np.float32)
         if self.transform is not None:
             sample, target = self.transform(sample, target)
+            if label == 'guano':
+                area = np.sum(np.array(target).nonzero()).astype(np.float32)
 
-        return sample, target
+        return sample, target, area, label
 
     def __len__(self):
         return len(self.samples)
@@ -116,9 +129,9 @@ def pil_loader(path):
     with open(path, 'rb') as f:
         img = Image.open(f)
         if 'y' in path:
-            return img.convert('RGB')
+            return img.convert('L')
         else:
-            return img.convert('RGBA')
+            return img.convert('RGB')
 
 
 def accimage_loader(path):
@@ -158,7 +171,7 @@ class ImageFolderTrain(DatasetFolder):
         class_to_idx (dict): Dict with items (class_name, class_index).
         imgs (list): List of (image path, class_index) tuples
     """
-    def __init__(self, root, transform=None, loader=default_loader):
-        super(ImageFolderTrain, self).__init__(root, loader, IMG_EXTENSIONS,
+    def __init__(self, root, patch_size, transform=None, loader=default_loader):
+        super(ImageFolderTrain, self).__init__(root, loader, IMG_EXTENSIONS, patch_size,
                                                transform=transform)
         self.imgs = self.samples
