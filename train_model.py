@@ -31,6 +31,7 @@ def parse_args():
     parser.add_argument('--cycle_mult', type=int, nargs='?', help='multiplier for cycle length from the '
                                                                   'second cycle onwards')
     parser.add_argument('--loss_func', type=str, default='MSE')
+    parser.add_argument('--binary_target', type=int, default=0)
     return parser.parse_args()
 
 
@@ -45,35 +46,8 @@ def save_checkpoint(filename, state, is_best_loss):
         shutil.copyfile(filename + '.tar', filename + '_best_loss.tar')
 
 
-def make_weights_for_balanced_classes(images, nclasses=2):
-    """
-    Generates weights to get balanced classes during training. To be used with weighted random samplers.
-
-    :param images: list of training images in training set.
-    :param nclasses: number of classes on training set.
-    :return: list of weights for each training image.
-    """
-    count = [0] * nclasses
-    for item in images:
-        if item[1] == "empty":
-            count[1] += 1
-        else:
-            count[0] += 1
-    weight_per_class = [0.] * nclasses
-    N = float(sum(count))
-    for i in range(nclasses):
-        weight_per_class[i] = N / float(count[i])
-    weight = [0] * len(images)
-    for idx, val in enumerate(images):
-        if val == "empty":
-            weight[idx] = weight_per_class[1]
-        else:
-            weight[idx] = weight_per_class[0]
-    return weight
-
-
 def train_model(model, dataloader, criterion, optimizer, scheduler, num_epochs, loss_name,
-                model_name, models_dir, learning_rate=1E-3, num_cycles=3, cycle_mult=2):
+                model_name, models_dir, binary_target, learning_rate=1E-3, num_cycles=3, cycle_mult=2):
     """
 
     :param model:
@@ -93,9 +67,6 @@ def train_model(model, dataloader, criterion, optimizer, scheduler, num_epochs, 
     model_name = f"{model_name}_loss-{loss_name}_lr-{learning_rate}_ep-{num_epochs}_nc-{num_cycles}"
     model_path = f"{models_dir}/{model_name}"
     os.makedirs(model_path, exist_ok=True)
-
-    # keep track of training time
-    since = time.time()
 
     # create summary writer with tensorboardX
     writer = SummaryWriter(log_dir='./tensorboard_logs/{}_{}'.format(model_name, str(datetime.datetime.now())))
@@ -136,6 +107,10 @@ def train_model(model, dataloader, criterion, optimizer, scheduler, num_epochs, 
                         # get input data
                         input_img, target_img, area = data
 
+                        # change area to binary
+                        if binary_target:
+                            area = torch.Tensor([cnt > 0 for cnt in area])
+
                         if use_gpu:
                             input_img, target_img, area = input_img.cuda(), target_img.cuda(), area.cuda()
 
@@ -161,17 +136,25 @@ def train_model(model, dataloader, criterion, optimizer, scheduler, num_epochs, 
                     else:
                         with torch.no_grad():
                             # get input data
-                            input_img, target_img = data
+                            input_img, target_img, area = data
+
+                            # set target to binary
+                            if binary_target:
+                                area = torch.Tensor([cnt > 0 for cnt in area])
 
                             # cuda
                             if use_gpu:
-                                input_img, target_img = input_img.cuda(), target_img.cuda()
+                                input_img, target_img, area = input_img.cuda(), target_img.cuda(), area.cuda()
 
                             # get model predictions
                             preds = model(input_img)
 
                             # get loss
-                            loss = criterion(preds, target_img)
+                            if "Area" in model_name:
+                                loss = criterion(preds, area)
+                            else:
+                                loss = criterion(preds.view(preds.numel()), target_img.view(target_img.numel()))
+
                             epoch_loss += loss.item() / len(preds)
 
             if phase == "validation":
@@ -206,9 +189,10 @@ def main():
                       for x in ['training', 'validation']}
 
     # For unbalanced dataset we create a weighted sampler
-    weights = make_weights_for_balanced_classes(image_datasets['training'].imgs,
-                                                len(image_datasets['training'].classes))
-    weights = torch.DoubleTensor(weights)
+    classes_trn = [int(ele[2] > 0) for ele in image_datasets['training']]
+    pos_weight = len(classes_trn) / sum(classes_trn)
+    neg_weight = len(classes_trn) / (len(classes_trn) - sum(classes_trn))
+    weights = [pos_weight * ele + neg_weight * (1 - ele) for ele in classes_trn]
     sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, len(weights))
 
     dataloaders = {"training": torch.utils.data.DataLoader(image_datasets["training"],
@@ -229,8 +213,11 @@ def main():
     model = model_defs[args.model_arch]
     model_name = args.model_arch
     criterion = loss_functions[args.loss_func]
-    optimizer = torch.optim.Adam(model.parameters(), lr=10E-2, weight_decay=0.1)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=0.1)
     scheduler = lr_scheduler.CosineAnnealingLR(optimizer, len(dataloaders["training"]))
+
+    #scheduler = lr_scheduler.StepLR(optimizer, step_size=hyperparameters[args.hyperparameter_set]['step_size']
+    #                                       , gamma=hyperparameters[args.hyperparameter_set]['gamma'])
 
     if use_gpu:
         model = model.cuda()
@@ -240,7 +227,7 @@ def main():
     train_model(model=model, dataloader=dataloaders, criterion=criterion,
                 optimizer=optimizer, scheduler=scheduler, num_cycles=args.num_cycles,
                 num_epochs=args.num_epochs, model_name=model_name, loss_name=args.loss_func,
-                models_dir=args.models_dir)
+                models_dir=args.models_dir, binary_target=args.binary_target)
 
 
 if __name__ == "__main__":
