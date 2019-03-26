@@ -188,17 +188,11 @@ def main():
                                           transform=data_transforms[x])
                       for x in ['training', 'validation']}
 
-    # For unbalanced dataset we create a weighted sampler
-    classes_trn = [int(ele[2] > 0) for ele in image_datasets['training']]
-    pos_weight = len(classes_trn) / sum(classes_trn)
-    neg_weight = len(classes_trn) / (len(classes_trn) - sum(classes_trn))
-    weights = [pos_weight * ele + neg_weight * (1 - ele) for ele in classes_trn]
-    sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, len(weights))
+    #TODO add weighted sampler 
 
     dataloaders = {"training": torch.utils.data.DataLoader(image_datasets["training"],
                                                            batch_size=
                                                            hyperparameters[hyp_set]['batch_size_train'],
-                                                           sampler=sampler,
                                                            num_workers=
                                                            hyperparameters[hyp_set][
                                                                'num_workers_train']),

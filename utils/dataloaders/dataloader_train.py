@@ -80,8 +80,7 @@ class DatasetFolder(data.Dataset):
         self.extensions = extensions
 
         self.samples = samples
-        self.targets = [s[1] for s in samples]
-
+        
         self.patch_size = patch_size
         self.transform = transform
 
