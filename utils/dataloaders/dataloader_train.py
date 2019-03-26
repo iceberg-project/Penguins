@@ -80,7 +80,8 @@ class DatasetFolder(data.Dataset):
         self.extensions = extensions
 
         self.samples = samples
-        
+        self.classes = [int(ele[1] != 'empty') for ele in samples]
+
         self.patch_size = patch_size
         self.transform = transform
 
@@ -96,15 +97,15 @@ class DatasetFolder(data.Dataset):
         if path_y != 'empty':
             target = self.loader(path_y)
             label = 'guano'
-            area = np.sum(np.array(target).nonzero()).astype(np.float32)
+            area = np.float32(np.sum(np.array(target).nonzero()))
         else:
             target = Image.fromarray(np.zeros([self.patch_size, self.patch_size], dtype=np.uint8))
             label = 'non-guano'
-            area = np.array(0).astype(np.float32)
+            area = np.float32(0)
         if self.transform is not None:
             sample, target = self.transform(sample, target)
             if label == 'guano':
-                area = np.sum(np.array(target).nonzero()).astype(np.float32)
+                area = np.float32(np.sum(np.array(target).nonzero()))
 
         return sample, target, area
 
@@ -174,3 +175,4 @@ class ImageFolderTrain(DatasetFolder):
         super(ImageFolderTrain, self).__init__(root, loader, IMG_EXTENSIONS, patch_size,
                                                transform=transform)
         self.imgs = self.samples
+        self.classes = self.classes

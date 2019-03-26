@@ -6,10 +6,11 @@ Author: Bento Goncalves
 License: MIT
 Copyright: 2019-2020
 """
-__all__ = ['model_archs', 'model_defs', 'hyperparameters', 'loss_functions']
+__all__ = ['model_archs', 'model_defs', 'hyperparameters', 'loss_functions', 'schedulers']
 from utils.model_architectures import *
 from utils.loss_functions import *
 import torch.nn as nn
+import torch
 
 model_archs = {'U-Net': 256,
                'U-Net_Area': 256,
@@ -17,9 +18,9 @@ model_archs = {'U-Net': 256,
                'U-Net-Res_Area': 256,
                'DynamicU-Net': 256}
 
-model_defs = {'U-Net': UNet(scale=32, n_channels=3, n_classes=1, res=False),
-              'U-Net_Area': UNet_Area(scale=32, n_channels=3, n_classes=1, res=False),
-              'U-Net-Res': UNet(scale=32, n_channels=4, n_classes=3, res=True),
+model_defs = {'U-Net': UNet(scale=32, n_channels=3, n_classes=1, drop_rate=0.3, res=False),
+              'U-Net_Area': UNet_Area(scale=32, n_channels=3, n_classes=1, drop_rate=0.3, res=False),
+              'U-Net-Res': UNet(scale=32, n_channels=3, n_classes=1, drop_rate=0.3, res=True),
               'U-Net-Res_Area': UNet_Area(scale=32, n_channels=3, n_classes=1, drop_rate=0.3, res=True)}
 
 hyperparameters = {'A': {'learning_rate': 1E-3, 'batch_size_train': 32, 'batch_size_val': 8, 'batch_size_test': 64,
@@ -39,6 +40,11 @@ loss_functions = {'BCE': nn.BCEWithLogitsLoss(),
                   'SL1': nn.SmoothL1Loss(),
                   'Dice': DiceLoss(),
                   'Focal': FocalLoss(gamma=2)}
+
+schedulers = {'Cosine': lambda x, y: torch.optim.lr_scheduler.CosineAnnealingLR(x, len(y)),
+              'Step': lambda x, y: torch.optim.lr_scheduler.StepLR(x, hyperparameters[y]['step_size'],
+                                                                   hyperparameters[y]['gamma'])}
+
 
 
 

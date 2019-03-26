@@ -32,6 +32,7 @@ def parse_args():
                                                                   'second cycle onwards')
     parser.add_argument('--loss_func', type=str, default='MSE')
     parser.add_argument('--binary_target', type=int, default=0)
+    parser.add_argument('--scheduler', type=str, default='Cosine')
     return parser.parse_args()
 
 
@@ -64,7 +65,7 @@ def train_model(model, dataloader, criterion, optimizer, scheduler, num_epochs, 
     :return:
     """
     # set model name and path
-    model_name = f"{model_name}_loss-{loss_name}_lr-{learning_rate}_ep-{num_epochs}_nc-{num_cycles}"
+    model_name = f"{model_name}_binary-{binary_target}_loss-{loss_name}_lr-{learning_rate}_ep-{num_epochs}_nc-{num_cycles}"
     model_path = f"{models_dir}/{model_name}"
     os.makedirs(model_path, exist_ok=True)
 
@@ -110,6 +111,7 @@ def train_model(model, dataloader, criterion, optimizer, scheduler, num_epochs, 
                         # change area to binary
                         if binary_target:
                             area = torch.Tensor([cnt > 0 for cnt in area])
+                            area.requires_grad = True
 
                         if use_gpu:
                             input_img, target_img, area = input_img.cuda(), target_img.cuda(), area.cuda()
@@ -122,6 +124,7 @@ def train_model(model, dataloader, criterion, optimizer, scheduler, num_epochs, 
                             loss = criterion(preds, area)
                         else:
                             loss = criterion(preds.view(preds.numel()), target_img.view(target_img.numel()))
+
                         exp_avg_loss = 0.99 * exp_avg_loss + 0.1 * (loss.item() / len(preds))
 
                         # update parameters
@@ -188,14 +191,19 @@ def main():
                                           transform=data_transforms[x])
                       for x in ['training', 'validation']}
 
-    #TODO add weighted sampler 
+    #TODO add weighted sampler
+    classes = image_datasets['training'].classes
+    pos_weight, neg_weight = len(classes) / sum(classes), len(classes) / (len(classes) - sum(classes))
+    weights = [pos_weight * ele + neg_weight * (1 - ele) for ele in classes]
+    sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, len(weights))
 
     dataloaders = {"training": torch.utils.data.DataLoader(image_datasets["training"],
                                                            batch_size=
                                                            hyperparameters[hyp_set]['batch_size_train'],
                                                            num_workers=
                                                            hyperparameters[hyp_set][
-                                                               'num_workers_train']),
+                                                               'num_workers_train'],
+                                                           sampler=sampler),
                    "validation": torch.utils.data.DataLoader(image_datasets["validation"],
                                                              batch_size=
                                                              hyperparameters[hyp_set]['batch_size_val'],
@@ -208,10 +216,11 @@ def main():
     model_name = args.model_arch
     criterion = loss_functions[args.loss_func]
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=0.1)
-    scheduler = lr_scheduler.CosineAnnealingLR(optimizer, len(dataloaders["training"]))
-
-    #scheduler = lr_scheduler.StepLR(optimizer, step_size=hyperparameters[args.hyperparameter_set]['step_size']
-    #                                       , gamma=hyperparameters[args.hyperparameter_set]['gamma'])
+    sched = args.scheduler
+    if sched == 'Cosine':
+        scheduler = schedulers[sched](optimizer, dataloaders['training'])
+    elif sched == 'Step':
+        scheduler = schedulers[sched](optimizer, args.hyp_set)
 
     if use_gpu:
         model = model.cuda()

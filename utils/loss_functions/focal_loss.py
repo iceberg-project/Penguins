@@ -13,4 +13,4 @@ class FocalLoss(nn.Module):
 
         max_val = (-input).clamp(min=0)
         loss = input - input * target + max_val + ((-max_val).exp() + (-input - max_val).exp()).log()
-        return loss
+        return loss.mean()
