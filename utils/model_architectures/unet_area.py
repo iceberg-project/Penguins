@@ -142,6 +142,7 @@ class UNet_Area(nn.Module):
         x = self.up3(x, x2)
         x = self.up4(x, x1)
         x = self.outc(x)
+        hm = x
 
         # regression to area
         x = self.down5(x)
@@ -153,4 +154,4 @@ class UNet_Area(nn.Module):
         x = self.fc(x)
 
         # return heatmap and real number
-        return torch.squeeze(x)
+        return hm, torch.squeeze(x)

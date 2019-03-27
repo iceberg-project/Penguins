@@ -273,7 +273,7 @@ def main():
     train_model(model=model, dataloader=dataloaders, criterion_seg=criterion_seg,
                 criterion_reg=criterion_reg,
                 optimizer=optimizer, scheduler=scheduler, num_epochs=args.num_epochs,
-                model_name=model_name, loss_name=args.loss_func,
+                model_name=model_name, loss_name=args.loss_funcs,
                 models_dir=args.models_dir, binary_target=args.binary_target)
 
 
