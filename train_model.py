@@ -46,7 +46,7 @@ def save_checkpoint(filename, state, is_best_loss):
 
 
 def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, scheduler, num_epochs, loss_name,
-                model_name, models_dir, binary_target, learning_rate=1E-3):
+                model_name, models_dir, binary_target, ts_name, learning_rate=1E-3):
     """
 
     :param model:
@@ -65,7 +65,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
     :return:
     """
     # set model name and path
-    model_name = f"{model_name}_binary-{binary_target}_loss-{loss_name}_lr-{learning_rate}_ep-{num_epochs}"
+    model_name = f"{model_name}_ts-{ts_name}_binary-{binary_target}_loss-{loss_name}_lr-{learning_rate}_ep-{num_epochs}"
     model_path = f"{models_dir}/{model_name}"
     os.makedirs(model_path, exist_ok=True)
     print(f'\n Training {model_name}')
@@ -204,7 +204,10 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                             n_masks += sum(is_mask)
 
         if phase == "validation":
-            epoch_dice /= n_masks
+            if n_masks:
+                epoch_dice /= n_masks
+            else:
+                epoch_dice = 9999
             epoch_loss /= (len(dataloader["validation"]))
             writer.add_scalar("validation loss", epoch_loss, global_step)
             writer.add_scalar("validation DICE", epoch_dice, global_step)
@@ -276,7 +279,7 @@ def main():
         criterion_reg = criterion_reg.cuda()
 
     train_model(model=model, dataloader=dataloaders, criterion_seg=criterion_seg,
-                criterion_reg=criterion_reg,
+                criterion_reg=criterion_reg, ts_name=args.t_dir.split('_')[-1],
                 optimizer=optimizer, scheduler=scheduler, num_epochs=args.num_epochs,
                 model_name=model_name, loss_name=args.loss_funcs,
                 models_dir=args.models_dir, binary_target=args.binary_target)
