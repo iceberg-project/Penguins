@@ -183,7 +183,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
 
                         # cuda
                         if use_gpu:
-                            input_img, target_img, area = input_img.cuda(), target_img.cuda(), area.cuda()
+                            input_img, target_img, area, is_mask = input_img.cuda(), target_img.cuda(), area.cuda(), is_mask.cuda()
 
                         # get model predictions
                         pred_mask, pred_area = model(input_img)
