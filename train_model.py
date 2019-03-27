@@ -120,7 +120,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         area = torch.Tensor(area)
 
                     is_mask = is_mask.to(torch.float32)
-                    is_mask.reshape([len(is_mask), 1, 1, 1])
+                    is_mask = is_mask.reshape([len(is_mask), 1, 1, 1])
 
                     if use_gpu:
                         input_img, target_img, area, is_mask = input_img.cuda(), target_img.cuda(), area.cuda(), is_mask.cuda()
@@ -179,6 +179,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
 
                         is_mask = is_mask.to(torch.float32)
                         is_mask = is_mask.reshape([len(is_mask), 1, 1, 1])
+
 
                         # cuda
                         if use_gpu:
