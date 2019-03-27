@@ -28,7 +28,7 @@ def parse_args():
     parser.add_argument('--models_dir', type=str, default='saved_models', help='folder where the model will be saved')
     parser.add_argument('--lr', type=float, nargs='?', help='learning rate for training')
     parser.add_argument('--num_epochs', type=int, nargs='?', help='number of epochs per training cycle')
-    parser.add_argument('--loss_funcs', type=str, default='MSE-BCE')
+    parser.add_argument('--loss_funcs', type=str, default='BCE-MSE')
     parser.add_argument('--binary_target', type=int, default=0)
     parser.add_argument('--scheduler', type=str, default='Cosine')
     return parser.parse_args()
@@ -254,8 +254,9 @@ def main():
 
     model = model_defs[args.model_arch]
     model_name = args.model_arch
-    criterion_seg = loss_functions[args.loss_funcs[0]]
-    criterion_reg = loss_functions[args.loss_funcs[1]]
+    loss_funcs = args.loss_funcs.split('-')
+    criterion_seg = loss_functions[loss_funcs[0]]
+    criterion_reg = loss_functions[loss_funcs[1]]
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=0.1)
     sched = args.scheduler
     if sched == 'Cosine':
