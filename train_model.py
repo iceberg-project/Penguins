@@ -68,6 +68,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
     model_name = f"{model_name}_binary-{binary_target}_loss-{loss_name}_lr-{learning_rate}_ep-{num_epochs}"
     model_path = f"{models_dir}/{model_name}"
     os.makedirs(model_path, exist_ok=True)
+    print('\n Training {model_name}')
 
     # keep track of iterations
     global_step = 0
@@ -88,11 +89,15 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
 
     # each cycle has n epochs
     for epoch in range(num_epochs):
+        print('Epoch {}/{}'.format(epoch + 1, num_epochs))
+        print('-' * 10)
+
         epoch_loss = 0
         epoch_dice = 0
         exp_avg_loss = 0
         # training and validation loops
         for phase in ["training", "validation"]:
+            print('\n{} \n'.format(phase))
             for iter, data in enumerate(dataloader[phase]):
                 if phase == "training":
                     # add global step
