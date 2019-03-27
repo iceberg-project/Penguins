@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 
 class DiceLoss(nn.Module):
@@ -11,7 +10,7 @@ class DiceLoss(nn.Module):
         if not (target.size() == inp.size()):
             raise ValueError("Target size ({}) must be the same as input size ({})".format(target.size(), input.size()))
 
-        inp = F.sigmoid(inp)
+        inp = torch.sigmoid(inp)
         smooth = 1.
 
         iflat = inp.view(-1)
