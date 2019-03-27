@@ -13,6 +13,7 @@ from PIL import ImageFile
 from utils.dataloaders.dataloader_train import ImageFolderTrain
 from utils.dataloaders.transforms import TransformPair
 from utils.model_library import *
+from utils.loss_functions import DiceLoss
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -26,11 +27,8 @@ def parse_args():
                                                     'hyperparameters dictionary')
     parser.add_argument('--models_dir', type=str, default='saved_models', help='folder where the model will be saved')
     parser.add_argument('--lr', type=float, nargs='?', help='learning rate for training')
-    parser.add_argument('--num_cycles', type=int, nargs='?', help='number of training cycles')
     parser.add_argument('--num_epochs', type=int, nargs='?', help='number of epochs per training cycle')
-    parser.add_argument('--cycle_mult', type=int, nargs='?', help='multiplier for cycle length from the '
-                                                                  'second cycle onwards')
-    parser.add_argument('--loss_func', type=str, default='MSE')
+    parser.add_argument('--loss_functions', type=str, default='MSE-BCE')
     parser.add_argument('--binary_target', type=int, default=0)
     parser.add_argument('--scheduler', type=str, default='Cosine')
     return parser.parse_args()
@@ -48,7 +46,7 @@ def save_checkpoint(filename, state, is_best_loss):
 
 
 def train_model(model, dataloader, criterion, optimizer, scheduler, num_epochs, loss_name,
-                model_name, models_dir, binary_target, learning_rate=1E-3, num_cycles=3, cycle_mult=2):
+                model_name, models_dir, binary_target, learning_rate=1E-3):
     """
 
     :param model:
@@ -60,112 +58,154 @@ def train_model(model, dataloader, criterion, optimizer, scheduler, num_epochs, 
     :param loss_name:
     :param model_name:
     :param models_dir:
+    # create summary writer with tensorboardX
+    writer = SummaryWriter(log_dir='./tensorboard_logs/{}_{}'.format(model_name, str(datetime.datetime.now())))
     :param learning_rate:
     :param num_cycles:
     :return:
     """
     # set model name and path
-    model_name = f"{model_name}_binary-{binary_target}_loss-{loss_name}_lr-{learning_rate}_ep-{num_epochs}_nc-{num_cycles}"
+    model_name = f"{model_name}_binary-{binary_target}_loss-{loss_name}_lr-{learning_rate}_ep-{num_epochs}"
     model_path = f"{models_dir}/{model_name}"
     os.makedirs(model_path, exist_ok=True)
-
-    # create summary writer with tensorboardX
-    writer = SummaryWriter(log_dir='./tensorboard_logs/{}_{}'.format(model_name, str(datetime.datetime.now())))
 
     # keep track of iterations
     global_step = 0
 
-    # keep track of best loss
+    # keep track of best dice loss
+    dice_loss = 0
+    n_masks = 0
     best_loss = 10E8
+
+    # validation metric -- DICE loss
+    dice_metric = DiceLoss()
 
     # set cuda
     use_gpu = torch.cuda.is_available()
 
-    # run training cycles
-    for cycle in range(num_cycles):
-        # reset learning rate
-        optim_cycle = optimizer
-        sched_cycle = scheduler
-        sched_cycle.T_max = scheduler.T_max * max(1, (cycle_mult * cycle))
+    # setup tensorboard
+    writer = SummaryWriter(log_dir='./tensorboard_logs/{}_{}'.format(model_name, str(datetime.datetime.now())))
 
-        # each cycle has n epochs
-        for epoch in range(num_epochs * max(1, (cycle_mult * cycle))):
-            epoch_loss = 0
-            exp_avg_loss = 0
-            # training and validation loops
-            for phase in ["training", "validation"]:
-                for iter, data in enumerate(dataloader[phase]):
-                    if phase == "training":
-                        # add global step
-                        global_step += 1
+    # each cycle has n epochs
+    for epoch in range(num_epochs):
+        epoch_loss = 0
+        epoch_dice = 0
+        exp_avg_loss = 0
+        # training and validation loops
+        for phase in ["training", "validation"]:
+            for iter, data in enumerate(dataloader[phase]):
+                if phase == "training":
+                    # add global step
+                    global_step += 1
 
-                        # zero gradients
-                        optim_cycle.zero_grad()
+                    # zero gradients
+                    optimizer.zero_grad()
 
-                        # step with scheduler
-                        scheduler.step()
+                    # step with scheduler
+                    scheduler.step()
 
+                    # get input data
+                    input_img, target_img, area, is_mask = data
+
+                    # transform area to tensor
+                    if binary_target:
+                        area = torch.Tensor([cnt > 0 for cnt in area])
+
+                    else:
+                        area = torch.Tensor(area)
+
+                    if use_gpu:
+                        input_img, target_img, area = input_img.cuda(), target_img.cuda(), area.cuda()
+
+                    # get model predictions
+                    pred_mask, pred_area = model(input_img)
+
+                    # get loss
+                    if "Area" in model_name:
+                        loss_area = criterion(pred_area, area)
+                    else:
+                        loss_area = False
+
+                    # keep only true mask entries for segmentation loss
+                    pred_mask = [ele for idx, ele in enumerate(pred_mask) if is_mask[idx]]
+                    target_img = [ele for idx, ele in enumerate(target_img) if is_mask[idx]]
+
+                    if pred_mask:
+                        loss_seg = criterion(pred_mask.view(pred_mask.numel()), target_img.view(target_img.numel()))
+                    else:
+                        loss_seg = False
+
+                    # add up losses and update parameters
+                    loss = 0
+                    if loss_area:
+                        loss = loss + loss_area
+                    elif loss_seg:
+                        loss = loss + loss_seg
+
+                    if loss:
+                        loss.backward()
+                    else:
+                        loss = torch.Tensor([0])
+
+                    optimizer.step()
+
+                    # store loss
+                    exp_avg_loss = 0.99 * exp_avg_loss + 0.1 * loss.item()
+
+                    # save stats
+                    if iter > 0 and iter % 100 == 0:
+                        writer.add_scalar("training loss", exp_avg_loss, global_step)
+                        writer.add_scalar("learning rate", optimizer.param_groups[-1]['lr'], global_step)
+
+                else:
+                    with torch.no_grad():
                         # get input data
-                        input_img, target_img, area = data
+                        input_img, target_img, area, is_mask = data
 
-                        # change area to binary
+                        # set target to binary
                         if binary_target:
                             area = torch.Tensor([cnt > 0 for cnt in area])
-                            area.requires_grad = True
 
+                        else:
+                            area = torch.Tensor(area)
+
+                        # cuda
                         if use_gpu:
                             input_img, target_img, area = input_img.cuda(), target_img.cuda(), area.cuda()
 
                         # get model predictions
-                        preds = model(input_img)
+                        pred_mask, pred_area = model(input_img)
 
                         # get loss
                         if "Area" in model_name:
-                            loss = criterion(preds, area)
+                            loss_area = criterion(pred_area, area)
                         else:
-                            loss = criterion(preds.view(preds.numel()), target_img.view(target_img.numel()))
+                            loss_area = torch.Tensor(0.)
 
-                        exp_avg_loss = 0.99 * exp_avg_loss + 0.1 * (loss.item() / len(preds))
+                        # filter images to keep masks
+                        pred_mask = [ele for idx, ele in pred_mask if is_mask[idx]]
+                        target_img = [ele for idx, ele in target_img if is_mask[idx]]
 
-                        # update parameters
-                        loss.backward()
-                        optim_cycle.step()
+                        if pred_mask:
+                            loss_seg = criterion(pred_mask.view(pred_mask.numel()), target_img.view(target_img.numel()))
+                        else:
+                            loss_seg = torch.Tensor(0.)
 
-                        # save stats
-                        if iter > 0 and iter % 500 == 0:
-                            writer.add_scalar("training loss", exp_avg_loss, global_step)
-                            writer.add_scalar("learning rate", optim_cycle.param_groups[-1]['lr'], global_step)
+                        # get epoch loss and DICE for segmentation
+                        loss = loss_area + loss_seg
+                        epoch_loss += loss.item()
+                        if pred_mask:
+                            epoch_dice += dice_metric(pred_mask, target_img).item() * sum(is_mask)
+                            n_masks += sum(is_mask)
 
-                    else:
-                        with torch.no_grad():
-                            # get input data
-                            input_img, target_img, area = data
-
-                            # set target to binary
-                            if binary_target:
-                                area = torch.Tensor([cnt > 0 for cnt in area])
-
-                            # cuda
-                            if use_gpu:
-                                input_img, target_img, area = input_img.cuda(), target_img.cuda(), area.cuda()
-
-                            # get model predictions
-                            preds = model(input_img)
-
-                            # get loss
-                            if "Area" in model_name:
-                                loss = criterion(preds, area)
-                            else:
-                                loss = criterion(preds.view(preds.numel()), target_img.view(target_img.numel()))
-
-                            epoch_loss += loss.item() / len(preds)
-
-            if phase == "validation":
-                epoch_loss /= (len(dataloader["validation"]))
-                writer.add_scalar("validation loss", epoch_loss, global_step)
-                is_best_loss = epoch_loss < best_loss
-                best_loss = min(epoch_loss, best_loss)
-                save_checkpoint(model_name, model.state_dict(), is_best_loss)
+        if phase == "validation":
+            epoch_dice /= n_masks
+            epoch_loss /= (len(dataloader["validation"]))
+            writer.add_scalar("validation loss", epoch_loss, global_step)
+            writer.add_scalar("validation DICE", epoch_dice, global_step)
+            is_best_loss = epoch_dice < best_loss
+            best_loss = min(epoch_loss, best_loss)
+            save_checkpoint(model_name, model.state_dict(), is_best_loss)
 
     return model
 
@@ -191,7 +231,7 @@ def main():
                                           transform=data_transforms[x])
                       for x in ['training', 'validation']}
 
-    #TODO add weighted sampler
+    # weighted sampler
     classes = image_datasets['training'].classes
     pos_weight, neg_weight = len(classes) / sum(classes), len(classes) / (len(classes) - sum(classes))
     weights = [pos_weight * ele + neg_weight * (1 - ele) for ele in classes]
@@ -219,7 +259,7 @@ def main():
     sched = args.scheduler
     if sched == 'Cosine':
         scheduler = schedulers[sched](optimizer, dataloaders['training'])
-    elif sched == 'Step':
+    else:
         scheduler = schedulers[sched](optimizer, args.hyp_set)
 
     if use_gpu:
@@ -228,8 +268,8 @@ def main():
         criterion = criterion.cuda()
 
     train_model(model=model, dataloader=dataloaders, criterion=criterion,
-                optimizer=optimizer, scheduler=scheduler, num_cycles=args.num_cycles,
-                num_epochs=args.num_epochs, model_name=model_name, loss_name=args.loss_func,
+                optimizer=optimizer, scheduler=scheduler, num_epochs=args.num_epochs,
+                model_name=model_name, loss_name=args.loss_func,
                 models_dir=args.models_dir, binary_target=args.binary_target)
 
 

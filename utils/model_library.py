@@ -32,7 +32,7 @@ hyperparameters = {'A': {'learning_rate': 1E-3, 'batch_size_train': 32, 'batch_s
                    'D': {'learning_rate': 1E-5, 'batch_size_train': 4, 'batch_size_val': 4, 'batch_size_test': 4,
                          'step_size': 1, 'gamma': 0.95, 'epochs': 1, 'num_workers_train': 2, 'num_workers_val': 2},
                    'E': {'learning_rate': 1E-5, 'batch_size_train': 64, 'batch_size_val': 128, 'batch_size_test': 128,
-                         'step_size': 1, 'gamma': 0.95, 'epochs': 1, 'num_workers_train': 16, 'num_workers_val': 32}
+                         'step_size': 1, 'gamma': 0.95, 'epochs': 1, 'num_workers_train': 64, 'num_workers_val': 64}
                    }
 
 loss_functions = {'BCE': nn.BCEWithLogitsLoss(),

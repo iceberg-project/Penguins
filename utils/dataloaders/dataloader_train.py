@@ -36,11 +36,14 @@ def make_dataset(dir, extensions):
         for fname in files:
             if has_file_allowed_extension(fname, extensions) and 'background' in root:
                 path_x = os.path.join(root, fname)
-                images.append([path_x, 'empty'])
+                images.append([path_x, 'empty', 0])
             elif has_file_allowed_extension(fname, extensions) and 'x' in root:
                 path_x = os.path.join(root, fname)
                 path_y = path_x.replace('x', 'y')
-                images.append([path_x, path_y])
+                if 'TrueMask' in root:
+                    images.append([path_x, path_y, 1])
+                else:
+                    images.append([path_x, path_y, 0])
 
     return images
 
@@ -92,12 +95,12 @@ class DatasetFolder(data.Dataset):
         Returns:
             tuple: (sample, target) where target is class_index of the target class.
         """
-        path_x, path_y = self.samples[index]
+        path_x, path_y, is_mask = self.samples[index]
         sample = self.loader(path_x)
         if path_y != 'empty':
             target = self.loader(path_y)
             label = 'guano'
-            area = np.float32(np.sum(np.array(target).nonzero()))
+            area = np.sum(np.array(target).nonzero()).astype(np.float32)
         else:
             target = Image.fromarray(np.zeros([self.patch_size, self.patch_size], dtype=np.uint8))
             label = 'non-guano'
@@ -105,9 +108,9 @@ class DatasetFolder(data.Dataset):
         if self.transform is not None:
             sample, target = self.transform(sample, target)
             if label == 'guano':
-                area = np.float32(np.sum(np.array(target).nonzero()))
+                area = np.sum(np.array(target).nonzero()).astype(np.float32)
 
-        return sample, target, area
+        return sample, target, area, is_mask
 
     def __len__(self):
         return len(self.samples)

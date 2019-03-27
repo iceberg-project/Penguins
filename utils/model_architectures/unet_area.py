@@ -151,4 +151,6 @@ class UNet_Area(nn.Module):
         x = self.avg_pool(x)
         x = x.view(x.size(0), -1)
         x = self.fc(x)
+
+        # return heatmap and real number
         return torch.squeeze(x)

@@ -8,7 +8,7 @@ class DiceLoss(nn.Module):
         super().__init__()
 
     def forward(self, inp, target):
-        if not (target.size() == input.size()):
+        if not (target.size() == inp.size()):
             raise ValueError("Target size ({}) must be the same as input size ({})".format(target.size(), input.size()))
 
         inp = F.sigmoid(inp)
