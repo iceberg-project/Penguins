@@ -180,6 +180,9 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         is_mask = is_mask.reshape([len(is_mask), 1, 1, 1])
                         is_mask = is_mask.to(torch.float32)
 
+                        print(is_mask.shape)
+                        print(target_img.shape)
+
                         # cuda
                         if use_gpu:
                             input_img, target_img, area = input_img.cuda(), target_img.cuda(), area.cuda()
