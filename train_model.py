@@ -45,7 +45,7 @@ def save_checkpoint(filename, state, is_best_loss):
         shutil.copyfile(filename + '.tar', filename + '_best_loss.tar')
 
 
-def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, scheduler, num_epochs, loss_name,
+def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, scheduler, sched_name, num_epochs, loss_name,
                 model_name, models_dir, binary_target, ts_name, learning_rate=1E-3):
     """
 
@@ -74,8 +74,6 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
     global_step = 0
 
     # keep track of best dice loss
-    dice_loss = 0
-    n_masks = 0
     best_loss = 10E8
 
     # validation metric -- DICE loss
@@ -92,6 +90,10 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
         print('Epoch {}/{}'.format(epoch + 1, num_epochs))
         print('-' * 10)
 
+        if sched_name == "Step":
+            scheduler.step()
+
+        n_masks = 0
         epoch_loss = 0
         epoch_dice = 0
         exp_avg_loss = 0
@@ -107,7 +109,8 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                     optimizer.zero_grad()
 
                     # step with scheduler
-                    scheduler.step()
+                    if sched_name == 'Cosine':
+                        scheduler.step()
 
                     # get input data
                     input_img, target_img, area, is_mask = data
@@ -162,7 +165,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                     exp_avg_loss = 0.99 * exp_avg_loss + 0.1 * loss.item() / len(is_mask)
 
                     # save stats
-                    if iter > 0 and iter % 100 == 0:
+                    if iter > 0 and iter % 10 == 0:
                         writer.add_scalar("training loss", exp_avg_loss, global_step)
                         writer.add_scalar("learning rate", optimizer.param_groups[-1]['lr'], global_step)
 
@@ -291,7 +294,7 @@ def main():
     train_model(model=model, dataloader=dataloaders, criterion_seg=criterion_seg,
                 criterion_reg=criterion_reg, ts_name=args.t_dir.split('_')[-1],
                 optimizer=optimizer, scheduler=scheduler, num_epochs=args.num_epochs,
-                model_name=model_name, loss_name=args.loss_funcs,
+                sched_name=sched, model_name=model_name, loss_name=args.loss_funcs,
                 models_dir=args.models_dir, binary_target=args.binary_target)
 
 
