@@ -138,7 +138,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                     target_img = target_img * is_mask
 
                     if pred_mask:
-                        loss_seg = criterion_seg(pred_mask.view(pred_mask.numel()), target_img.view(target_img.numel()))
+                        loss_seg = criterion_seg(pred_mask.view(pred_mask.numel()), target_img.view(target_img.numel())) * sum(is_mask) / len(pred_mask)
                     else:
                         loss_seg = False
 
@@ -192,12 +192,12 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                             loss_area = torch.Tensor([0])
 
                         # filter images to keep masks
-                        pred_mask = [ele for idx, ele in enumerate(pred_mask) if is_mask[idx]]
-                        target_img = [ele for idx, ele in enumerate(target_img) if is_mask[idx]]
+                        pred_mask = pred_mask * is_mask
+                        target_img = target_img * is_mask
 
                         if pred_mask:
                             loss_seg = criterion_seg(pred_mask.view(pred_mask.numel()),
-                                                     target_img.view(target_img.numel()))
+                                                     target_img.view(target_img.numel())) * sum(is_mask) / len(pred_mask)
                         else:
                             loss_seg = torch.Tensor([0])
 
@@ -205,7 +205,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         loss = loss_area + loss_seg
                         epoch_loss += loss.item()
                         if pred_mask:
-                            epoch_dice += dice_metric(pred_mask, target_img).item() * sum(is_mask)
+                            epoch_dice += dice_metric(pred_mask, target_img).item() * sum(is_mask) / len(pred_mask)
                             n_masks += sum(is_mask)
 
         if phase == "validation":
