@@ -41,9 +41,9 @@ def make_dataset(dir, extensions):
                 path_x = os.path.join(root, fname)
                 path_y = path_x.replace('x', 'y')
                 if 'TrueMask' in root:
-                    images.append([path_x, path_y, 1.0])
+                    images.append([path_x, path_y, np.float32(1)])
                 else:
-                    images.append([path_x, path_y, 0.0])
+                    images.append([path_x, path_y, np.float32(0)])
 
     return images
 
