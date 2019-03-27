@@ -28,7 +28,7 @@ def parse_args():
     parser.add_argument('--models_dir', type=str, default='saved_models', help='folder where the model will be saved')
     parser.add_argument('--lr', type=float, nargs='?', help='learning rate for training')
     parser.add_argument('--num_epochs', type=int, nargs='?', help='number of epochs per training cycle')
-    parser.add_argument('--loss_functions', type=str, default='MSE-BCE')
+    parser.add_argument('--loss_funcs', type=str, default='MSE-BCE')
     parser.add_argument('--binary_target', type=int, default=0)
     parser.add_argument('--scheduler', type=str, default='Cosine')
     return parser.parse_args()
@@ -45,7 +45,7 @@ def save_checkpoint(filename, state, is_best_loss):
         shutil.copyfile(filename + '.tar', filename + '_best_loss.tar')
 
 
-def train_model(model, dataloader, criterion, optimizer, scheduler, num_epochs, loss_name,
+def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, scheduler, num_epochs, loss_name,
                 model_name, models_dir, binary_target, learning_rate=1E-3):
     """
 
@@ -122,7 +122,7 @@ def train_model(model, dataloader, criterion, optimizer, scheduler, num_epochs, 
 
                     # get loss
                     if "Area" in model_name:
-                        loss_area = criterion(pred_area, area)
+                        loss_area = criterion_reg(pred_area, area)
                     else:
                         loss_area = False
 
@@ -131,7 +131,7 @@ def train_model(model, dataloader, criterion, optimizer, scheduler, num_epochs, 
                     target_img = [ele for idx, ele in enumerate(target_img) if is_mask[idx]]
 
                     if pred_mask:
-                        loss_seg = criterion(pred_mask.view(pred_mask.numel()), target_img.view(target_img.numel()))
+                        loss_seg = criterion_seg(pred_mask.view(pred_mask.numel()), target_img.view(target_img.numel()))
                     else:
                         loss_seg = False
 
@@ -178,7 +178,7 @@ def train_model(model, dataloader, criterion, optimizer, scheduler, num_epochs, 
 
                         # get loss
                         if "Area" in model_name:
-                            loss_area = criterion(pred_area, area)
+                            loss_area = criterion_reg(pred_area, area)
                         else:
                             loss_area = torch.Tensor(0.)
 
@@ -187,7 +187,7 @@ def train_model(model, dataloader, criterion, optimizer, scheduler, num_epochs, 
                         target_img = [ele for idx, ele in target_img if is_mask[idx]]
 
                         if pred_mask:
-                            loss_seg = criterion(pred_mask.view(pred_mask.numel()), target_img.view(target_img.numel()))
+                            loss_seg = criterion_seg(pred_mask.view(pred_mask.numel()), target_img.view(target_img.numel()))
                         else:
                             loss_seg = torch.Tensor(0.)
 
@@ -254,7 +254,8 @@ def main():
 
     model = model_defs[args.model_arch]
     model_name = args.model_arch
-    criterion = loss_functions[args.loss_func]
+    criterion_seg = loss_functions[args.loss_funcs[0]]
+    criterion_reg = loss_functions[args.loss_funcs[1]]
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=0.1)
     sched = args.scheduler
     if sched == 'Cosine':
@@ -265,9 +266,11 @@ def main():
     if use_gpu:
         model = model.cuda()
         model = nn.DataParallel(model)
-        criterion = criterion.cuda()
+        criterion_seg = criterion_seg.cuda()
+        criterion_reg = criterion_reg.cuda()
 
-    train_model(model=model, dataloader=dataloaders, criterion=criterion,
+    train_model(model=model, dataloader=dataloaders, criterion_seg=criterion_seg,
+                criterion_reg=criterion_reg,
                 optimizer=optimizer, scheduler=scheduler, num_epochs=args.num_epochs,
                 model_name=model_name, loss_name=args.loss_func,
                 models_dir=args.models_dir, binary_target=args.binary_target)
