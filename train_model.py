@@ -68,7 +68,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
     model_name = f"{model_name}_binary-{binary_target}_loss-{loss_name}_lr-{learning_rate}_ep-{num_epochs}"
     model_path = f"{models_dir}/{model_name}"
     os.makedirs(model_path, exist_ok=True)
-    print('\n Training {model_name}')
+    print(f'\n Training {model_name}')
 
     # keep track of iterations
     global_step = 0
@@ -188,8 +188,8 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                             loss_area = torch.Tensor(0.)
 
                         # filter images to keep masks
-                        pred_mask = [ele for idx, ele in pred_mask if is_mask[idx]]
-                        target_img = [ele for idx, ele in target_img if is_mask[idx]]
+                        pred_mask = [ele for idx, ele in enumerate(pred_mask) if is_mask[idx]]
+                        target_img = [ele for idx, ele in enumerate(target_img) if is_mask[idx]]
 
                         if pred_mask:
                             loss_seg = criterion_seg(pred_mask.view(pred_mask.numel()), target_img.view(target_img.numel()))
@@ -210,7 +210,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
             writer.add_scalar("validation DICE", epoch_dice, global_step)
             is_best_loss = epoch_dice < best_loss
             best_loss = min(epoch_loss, best_loss)
-            save_checkpoint(model_name, model.state_dict(), is_best_loss)
+            save_checkpoint(model_path, model.state_dict(), is_best_loss)
 
     return model
 
