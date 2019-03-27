@@ -185,7 +185,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         if "Area" in model_name:
                             loss_area = criterion_reg(pred_area, area)
                         else:
-                            loss_area = torch.Tensor(0.)
+                            loss_area = torch.Tensor(0)
 
                         # filter images to keep masks
                         pred_mask = [ele for idx, ele in enumerate(pred_mask) if is_mask[idx]]
@@ -194,7 +194,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         if pred_mask:
                             loss_seg = criterion_seg(pred_mask.view(pred_mask.numel()), target_img.view(target_img.numel()))
                         else:
-                            loss_seg = torch.Tensor(0.)
+                            loss_seg = torch.Tensor(0)
 
                         # get epoch loss and DICE for segmentation
                         loss = loss_area + loss_seg
