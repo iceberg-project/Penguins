@@ -45,7 +45,8 @@ def save_checkpoint(filename, state, is_best_loss):
         shutil.copyfile(filename + '.tar', filename + '_best_loss.tar')
 
 
-def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, scheduler, sched_name, num_epochs, loss_name,
+def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, scheduler, sched_name, num_epochs,
+                loss_name,
                 model_name, models_dir, binary_target, ts_name, learning_rate=1E-3):
     """
 
@@ -65,7 +66,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
     :return:
     """
     # set model name and path
-    model_name = f"{model_name}_ts-{ts_name}_binary-{binary_target}_loss-{loss_name}_lr-{learning_rate}_ep-{num_epochs}"
+    model_name = f"{model_name}_ts-{ts_name}_binary-{binary_target}_loss-{loss_name}_lr-{learning_rate}_schd-{sched_name}_ep-{num_epochs}"
     model_path = f"{models_dir}/{model_name}"
     os.makedirs(model_path, exist_ok=True)
     print(f'\n Training {model_name}')
