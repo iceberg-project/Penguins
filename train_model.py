@@ -207,7 +207,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         # get epoch loss and DICE for segmentation
                         loss = loss_area + loss_seg
                         epoch_loss += loss.item()
-                        if pred_mask:
+                        if torch.sum(pred_mask).item() > 0:
                             epoch_dice += dice_metric(pred_mask, target_img).item() * sum(is_mask) / len(pred_mask)
                             n_masks += sum(is_mask)
 
