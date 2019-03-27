@@ -137,7 +137,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                     pred_mask = pred_mask * is_mask
                     target_img = target_img * is_mask
 
-                    if pred_mask:
+                    if sum(pred_mask) > 0:
                         loss_seg = criterion_seg(pred_mask.view(pred_mask.numel()), target_img.view(target_img.numel())) * sum(is_mask) / len(pred_mask)
                     else:
                         loss_seg = False
@@ -195,7 +195,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         pred_mask = pred_mask * is_mask
                         target_img = target_img * is_mask
 
-                        if pred_mask:
+                        if sum(pred_mask) > 0:
                             loss_seg = criterion_seg(pred_mask.view(pred_mask.numel()),
                                                      target_img.view(target_img.numel())) * sum(is_mask) / len(pred_mask)
                         else:
