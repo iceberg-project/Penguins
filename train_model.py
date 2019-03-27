@@ -119,8 +119,10 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                     else:
                         area = torch.Tensor(area)
 
+                    is_mask = torch.Tensor(is_mask).reshape([len(is_mask), 1, 1, 1])
+
                     if use_gpu:
-                        input_img, target_img, area = input_img.cuda(), target_img.cuda(), area.cuda()
+                        input_img, target_img, area, is_mask = input_img.cuda(), target_img.cuda(), area.cuda(), is_mask.cuda()
 
                     # get model predictions
                     pred_mask, pred_area = model(input_img)
@@ -132,8 +134,8 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         loss_area = False
 
                     # keep only true mask entries for segmentation loss
-                    pred_mask = [ele for idx, ele in enumerate(pred_mask) if is_mask[idx]]
-                    target_img = [ele for idx, ele in enumerate(target_img) if is_mask[idx]]
+                    pred_mask = pred_mask * is_mask
+                    target_img = target_img * is_mask
 
                     if pred_mask:
                         loss_seg = criterion_seg(pred_mask.view(pred_mask.numel()), target_img.view(target_img.numel()))
@@ -174,6 +176,8 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         else:
                             area = torch.Tensor(area)
 
+                        is_mask = torch.Tensor(is_mask).reshape([len(is_mask), 1, 1, 1])
+
                         # cuda
                         if use_gpu:
                             input_img, target_img, area = input_img.cuda(), target_img.cuda(), area.cuda()
@@ -192,7 +196,8 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         target_img = [ele for idx, ele in enumerate(target_img) if is_mask[idx]]
 
                         if pred_mask:
-                            loss_seg = criterion_seg(pred_mask.view(pred_mask.numel()), target_img.view(target_img.numel()))
+                            loss_seg = criterion_seg(pred_mask.view(pred_mask.numel()),
+                                                     target_img.view(target_img.numel()))
                         else:
                             loss_seg = torch.Tensor([0])
 
