@@ -112,6 +112,8 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                     # get input data
                     input_img, target_img, area, is_mask = data
 
+                    print(is_mask)
+
                     # transform area to tensor
                     if binary_target:
                         area = torch.Tensor([cnt > 0 for cnt in area])
