@@ -140,4 +140,4 @@ class UNet(nn.Module):
         x = self.outc(x)
 
         # tensor added as output dummy
-        return x, torch.Tensor([0])
+        return x, torch.Tensor([0]).cuda()
