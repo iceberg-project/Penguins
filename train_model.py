@@ -205,14 +205,14 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         epoch_dice += dice_metric(pred_mask, target_img).item()
                         n_masks += len(input_img)
 
-    if phase == "validation":
-        epoch_dice /= n_masks
-        epoch_loss /= len(dataloader["validation"])
-        writer.add_scalar("validation loss", epoch_loss, global_step)
-        writer.add_scalar("validation DICE", epoch_dice, global_step)
-        is_best_loss = epoch_dice < best_loss
-        best_loss = min(epoch_dice, best_loss)
-        save_checkpoint(model_path, model.state_dict(), is_best_loss)
+        if phase == "validation":
+            epoch_dice /= n_masks
+            epoch_loss /= len(dataloader["validation"])
+            writer.add_scalar("validation loss", epoch_loss, global_step)
+            writer.add_scalar("validation DICE", epoch_dice, global_step)
+            is_best_loss = epoch_dice < best_loss
+            best_loss = min(epoch_dice, best_loss)
+            save_checkpoint(model_path, model.state_dict(), is_best_loss)
 
 
     return model
