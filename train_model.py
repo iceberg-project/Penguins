@@ -163,7 +163,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                     optimizer.step()
 
                     # store loss
-                    exp_avg_loss = 0.99 * exp_avg_loss + 0.1 * loss.item() / len(is_mask)
+                    exp_avg_loss = 0.99 * exp_avg_loss + 0.1 * loss.item()
 
                     # save stats
                     if iter > 0 and iter % 10 == 0:
@@ -201,9 +201,8 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                     # get epoch loss and DICE for segmentation
                     loss = loss_area + loss_seg
                     epoch_loss += loss.item()
-                    if torch.sum(pred_mask).item() > 0:
-                        epoch_dice += dice_metric(pred_mask, target_img).item()
-                        n_masks += len(input_img)
+                    epoch_dice += dice_metric(pred_mask, target_img).item()
+                    n_masks += len(input_img)
 
         if phase == "validation":
             epoch_dice /= n_masks
