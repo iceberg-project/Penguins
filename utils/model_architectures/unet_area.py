@@ -126,6 +126,7 @@ class UNet_Area(nn.Module):
         self.final_conv = outconv(scale * 4, n_classes)
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
         self.fc = nn.Linear(1, 1)
+        self.out_relu = nn.ReLU(inplace=True)
 
     def forward(self, x):
         # initial convolution
@@ -152,6 +153,6 @@ class UNet_Area(nn.Module):
         x = self.avg_pool(x)
         x = x.view(x.size(0), -1)
         x = self.fc(x)
-
+        x = self.out_relu(x)
         # return heatmap and real number
         return hm, torch.squeeze(x)

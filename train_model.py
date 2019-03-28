@@ -172,8 +172,8 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
 
                 else:
                     with torch.no_grad():
-                        # get input data
-                        input_img, target_img, area, is_mask = data
+                        # get input data -- we only care about segmentation here, so all images are true masks
+                        input_img, target_img, area, _ = data
 
                         # set target to binary
                         if binary_target:
@@ -182,12 +182,9 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         else:
                             area = torch.Tensor(area)
 
-                        is_mask = is_mask.to(torch.float32)
-                        is_mask = is_mask.reshape([len(is_mask), 1, 1, 1])
-
                         # cuda
                         if use_gpu:
-                            input_img, target_img, area, is_mask = input_img.cuda(), target_img.cuda(), area.cuda(), is_mask.cuda()
+                            input_img, target_img, area = input_img.cuda(), target_img.cuda(), area.cuda()
 
                         # get model predictions
                         pred_mask, pred_area = model(input_img)
@@ -198,36 +195,25 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         else:
                             loss_area = torch.Tensor([0])
 
-                        # filter images to keep masks
-                        pred_mask = pred_mask * is_mask
-                        target_img = target_img * is_mask
+                        loss_seg = criterion_seg(pred_mask.view(pred_mask.numel()),
+                                                 target_img.view(target_img.numel()))
 
-                        if torch.sum(pred_mask).item() > 0:
-                            loss_seg = criterion_seg(pred_mask.view(pred_mask.numel()),
-                                                     target_img.view(target_img.numel())) * sum(is_mask) / len(
-                                pred_mask)
-                        else:
-                            loss_seg = torch.Tensor([0])
+                    # get epoch loss and DICE for segmentation
+                    loss = loss_area + loss_seg
+                    epoch_loss += loss.item()
+                    if torch.sum(pred_mask).item() > 0:
+                        epoch_dice += dice_metric(pred_mask, target_img).item()
+                        n_masks += len(input_img)
 
-                        # get epoch loss and DICE for segmentation
-                        loss = loss_area + loss_seg
-                        epoch_loss += loss.item() / len(is_mask)
-                        if torch.sum(pred_mask).item() > 0:
-                            epoch_dice += dice_metric(pred_mask, target_img).item() * sum(is_mask) / len(
-                                pred_mask)
-                            n_masks += sum(is_mask)
+    if phase == "validation":
+        epoch_dice /= n_masks
+        epoch_loss /= len(dataloader["validation"])
+        writer.add_scalar("validation loss", epoch_loss, global_step)
+        writer.add_scalar("validation DICE", epoch_dice, global_step)
+        is_best_loss = epoch_dice < best_loss
+        best_loss = min(epoch_dice, best_loss)
+        save_checkpoint(model_path, model.state_dict(), is_best_loss)
 
-        if phase == "validation":
-            if n_masks > 0:
-                epoch_dice /= n_masks
-            else:
-                epoch_dice = 9999
-            epoch_loss /= (len(dataloader["validation"]))
-            writer.add_scalar("validation loss", epoch_loss, global_step)
-            writer.add_scalar("validation DICE", epoch_dice, global_step)
-            is_best_loss = epoch_dice < best_loss
-            best_loss = min(epoch_loss, best_loss)
-            save_checkpoint(model_path, model.state_dict(), is_best_loss)
 
     return model
 
