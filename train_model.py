@@ -218,7 +218,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                             n_masks += sum(is_mask)
 
         if phase == "validation":
-            if n_masks:
+            if n_masks > 0:
                 epoch_dice /= n_masks
             else:
                 epoch_dice = 9999
@@ -257,7 +257,7 @@ def main():
     classes = image_datasets['training'].classes
     pos_weight, neg_weight = len(classes) / sum(classes), len(classes) / (len(classes) - sum(classes))
     weights = [pos_weight * ele + neg_weight * (1 - ele) for ele in classes]
-    sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, 1000)
+    sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, 3000)
 
     dataloaders = {"training": torch.utils.data.DataLoader(image_datasets["training"],
                                                            batch_size=
