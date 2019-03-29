@@ -129,8 +129,8 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         input_img, target_img, area, label = data
 
                         # only keep target images with the correct class for segmentation
-                        target_img = torch.Tensor([ele for ele, idx in enumerate(target_img) if label[idx] == 2])
-                        target_img = TF.normalize(target_img, [0.5], [0.25])
+                        target_img = torch.Tensor(
+                            [ele for ele, idx in enumerate(target_img.numpy()) if label[idx] == 2])
 
                         # transform area to tensor
                         if binary_target:
@@ -167,11 +167,11 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
 
                     elif phase == "training" and 'Area' not in model_name:
                         # get inputs for segmentation
-                        input_img, target_img, _, _ = data
+                        input_img, target_img, _, label = data
 
                         # only keep target images with the correct class for segmentation
-                        target_img = torch.Tensor([ele for ele, idx in enumerate(target_img) if label[idx] == 2])
-                        target_img = TF.normalize(target_img, [0.5], [0.25])
+                        target_img = torch.Tensor(
+                            [ele for ele, idx in enumerate(target_img.numpy()) if label[idx] == 2])
 
                         if use_gpu:
                             input_img, target_img = input_img.cuda(), target_img.cuda()
@@ -199,7 +199,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                 else:
                     with torch.no_grad():
                         # get input data -- we only care about segmentation here, so all images are true masks
-                        input_img, target_img, area = data
+                        input_img, target_img, area, _ = data
 
                         # set target to binary
                         if binary_target:
@@ -269,12 +269,12 @@ def main():
     sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, 3000)
 
     dataloaders = {"training": torch.utils.data.DataLoader(image_datasets["training"],
-                                                                batch_size=
-                                                                hyperparameters[hyp_set]['batch_size_train'],
-                                                                num_workers=
-                                                                hyperparameters[hyp_set][
-                                                                    'num_workers_train'],
-                                                                sampler=sampler),
+                                                           batch_size=
+                                                           hyperparameters[hyp_set]['batch_size_train'],
+                                                           num_workers=
+                                                           hyperparameters[hyp_set][
+                                                               'num_workers_train'],
+                                                           sampler=sampler),
                    "validation": torch.utils.data.DataLoader(image_datasets["validation"],
                                                              batch_size=
                                                              hyperparameters[hyp_set]['batch_size_val'],
