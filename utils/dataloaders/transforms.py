@@ -66,7 +66,8 @@ class TransformPair(object):
             ground_truth = center_crop(ground_truth)
 
         # change locations to tensor
-        ground_truth = TF.normalize(TF.to_tensor(ground_truth), [0.5], [0.25])
+        #ground_truth = TF.normalize(TF.to_tensor(ground_truth), [0.5], [0.25])
+        ground_truth = np.array(ground_truth)
         image = TF.normalize(TF.to_tensor(image), [0.5] * 3, [0.25] * 3)
 
         return image, ground_truth

@@ -80,7 +80,7 @@ class DatasetFolder(data.Dataset):
         self.extensions = extensions
 
         self.samples = samples
-        self.classes = [int(ele[1] != 'empty') for ele in samples]
+        self.classes = [int(ele[1] == 'empty') * (1 + int('True' in ele[1])) for ele in samples]
 
         self.patch_size = patch_size
         self.transform = transform
@@ -94,10 +94,11 @@ class DatasetFolder(data.Dataset):
         """
         path_x, path_y = self.samples[index]
         sample = self.loader(path_x)
+        label = self.classes[index]
         if path_y != 'empty':
             target = self.loader(path_y)
             label = 'guano'
-            area = np.sum(np.array(target).nonzero()).astype(np.float32)
+            area = np.sum(np.array(target).nonzero()).astype(np.float32) / np.array(target).size
         else:
             target = Image.fromarray(np.zeros([self.patch_size, self.patch_size], dtype=np.uint8))
             label = 'non-guano'
@@ -105,9 +106,9 @@ class DatasetFolder(data.Dataset):
         if self.transform is not None:
             sample, target = self.transform(sample, target)
             if label == 'guano':
-                area = np.sum(np.array(target).nonzero()).astype(np.float32)
+                area = np.sum(np.array(target).nonzero()).astype(np.float32) / np.array(target).size
 
-        return sample, target, area
+        return sample, target, area, label
 
     def __len__(self):
         return len(self.samples)

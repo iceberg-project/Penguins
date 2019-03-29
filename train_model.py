@@ -6,6 +6,7 @@ import shutil
 
 import torch
 import torch.nn as nn
+import torchvision.transforms.functional as TF
 from tensorboardX import SummaryWriter
 from torch.optim import lr_scheduler
 from PIL import ImageFile
@@ -40,10 +41,19 @@ def save_checkpoint(filename, state, is_best_loss):
         shutil.copyfile(filename + '.tar', filename + '_best_loss.tar')
 
 
-def get_iou(pred, target, thresh):
-    # change to cpu
-    pred_thresh = torch.Tensor([thresh]).cuda()
-    pred = pred.cpu().numpy()
+# def get_iou(pred, target, thresh):
+#    SMOOTH = 1E-6
+#
+#    pred = torch.
+#
+#     intersection = (pred & target).float().sum((1, 2))  # Will be zero if Truth=0 or Prediction=0
+#     union = (pred | target).float().sum((1, 2))  # Will be zzero if both are 0
+#
+#     iou = (intersection + SMOOTH) / (union + SMOOTH)  # We smooth our devision to avoid 0/0
+#
+#     thresholded = torch.clamp(20 * (iou - 0.5), 0, 10).ceil() / 10  # This is equal to comparing with thresolds
+#
+#     return thresholded.mean()
 
 
 def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, scheduler, sched_name, num_epochs,
@@ -100,7 +110,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
         exp_avg_loss_area = 0
         exp_avg_loss_mask = 0
         # training and validation loops
-        for phase in ["training_mask", "training_area", "validation"]:
+        for phase in ["training", "validation"]:
             print('\n{} \n'.format(phase))
             for iter, data in enumerate(dataloader[phase]):
                 if "training" in phase:
@@ -114,9 +124,13 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                     if sched_name == 'Cosine':
                         scheduler.step()
 
-                    if phase == "training_area" and 'Area' in model_name:
+                    if phase == "training" and 'Area' in model_name:
                         # get input data for area
-                        input_img, _, area = data
+                        input_img, target_img, area, label = data
+
+                        # only keep target images with the correct class for segmentation
+                        target_img = torch.Tensor([ele for ele, idx in enumerate(target_img) if label[idx] == 2])
+                        target_img = TF.normalize(target_img, [0.5], [0.25])
 
                         # transform area to tensor
                         if binary_target:
@@ -126,20 +140,24 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                             area = torch.Tensor(area)
 
                         if use_gpu:
-                            input_img, area = input_img.cuda(), area.cuda()
+                            input_img, target_img, area = input_img.cuda(), target_img.cuda(), area.cuda()
 
                         # get model predictions
-                        _, pred_area = model(input_img)
+                        optimizer.zero_grad()
+                        pred_mask, pred_area = model(input_img)
 
-                        # get loss
+                        # get loss for regression and segmentation
                         loss = criterion_reg(pred_area, area)
-
-                        # backprop
-                        loss.backward()
-                        optimizer.step()
+                        loss_seg = criterion_seg(pred_mask, target_img)
 
                         # store loss
                         exp_avg_loss_area = 0.99 * exp_avg_loss_area + 0.1 * loss.item()
+                        exp_avg_loss_mask = 0.99 * exp_avg_loss_mask + 0.1 * loss.item()
+
+                        # backprop
+                        loss = loss + loss_seg
+                        loss.backward()
+                        optimizer.step()
 
                         # save stats
                         if iter > 0 and iter % 10 == 0:
@@ -147,25 +165,31 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                                               global_step)
                             writer.add_scalar("learning rate", optimizer.param_groups[-1]['lr'], global_step)
 
-                    elif phase == "training_mask":
+                    elif phase == "training" and 'Area' not in model_name:
                         # get inputs for segmentation
-                        input_img, target_img, _ = data
+                        input_img, target_img, _, _ = data
+
+                        # only keep target images with the correct class for segmentation
+                        target_img = torch.Tensor([ele for ele, idx in enumerate(target_img) if label[idx] == 2])
+                        target_img = TF.normalize(target_img, [0.5], [0.25])
 
                         if use_gpu:
                             input_img, target_img = input_img.cuda(), target_img.cuda()
 
                         # get model predicitions
+                        optimizer.zero_grad()
                         pred_mask, _ = model(input_img)
 
                         # loss
                         loss = criterion_seg(pred_mask.view(pred_mask.numel()),
                                              target_img.view(target_img.numel()))
-                        # backprop
-                        loss.backward()
-                        optimizer.step()
 
                         # store loss
                         exp_avg_loss_mask = 0.99 * exp_avg_loss_mask + 0.1 * loss.item()
+
+                        # backprop
+                        loss.backward()
+                        optimizer.step()
 
                         if iter > 0 and iter % 10 == 0:
                             writer.add_scalar(f"training loss {loss_name.split('-')[0]}", exp_avg_loss_mask,
@@ -193,17 +217,17 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
 
                         # get loss
                         if "Area" in model_name:
-                            loss_area = criterion_reg(pred_area, area)
+                            loss = criterion_reg(pred_area, area)
                         else:
-                            loss_area = torch.Tensor([0])
+                            loss = torch.Tensor([0])
 
                         loss_seg = criterion_seg(pred_mask.view(pred_mask.numel()),
                                                  target_img.view(target_img.numel()))
 
-                    # get epoch loss and DICE for segmentation
-                    loss = loss_area + loss_seg
-                    epoch_loss += loss.item()
-                    epoch_dice += dice_metric(pred_mask, target_img).item()
+                        # get epoch loss and DICE for segmentation
+                        loss = loss + loss_seg
+                        epoch_loss += loss.item()
+                        epoch_dice += dice_metric(pred_mask, target_img).item()
 
         if phase == "validation":
             epoch_dice /= len(dataloader["validation"])
@@ -228,8 +252,7 @@ def main():
     # augmentation
     patch_size = model_archs[args.model_arch]
     data_transforms = {
-        'training_mask': TransformPair(patch_size, train=True),
-        'training_area': TransformPair(patch_size, train=True),
+        'training': TransformPair(patch_size, train=True),
         'validation': TransformPair(patch_size, train=False)
     }
 
@@ -237,22 +260,15 @@ def main():
     image_datasets = {x: ImageFolderTrain(root=os.path.join(args.t_dir, x),
                                           patch_size=patch_size,
                                           transform=data_transforms[x])
-                      for x in ['training_mask', 'training_area', 'validation']}
+                      for x in ['training', 'validation']}
 
     # weighted sampler
-    classes = image_datasets['training_mask'].classes
+    classes = image_datasets['training'].classes
     pos_weight, neg_weight = len(classes) / sum(classes), len(classes) / (len(classes) - sum(classes))
     weights = [pos_weight * ele + neg_weight * (1 - ele) for ele in classes]
     sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, 3000)
 
-    dataloaders = {"training_mask": torch.utils.data.DataLoader(image_datasets["training_mask"],
-                                                                batch_size=
-                                                                hyperparameters[hyp_set]['batch_size_train'],
-                                                                num_workers=
-                                                                hyperparameters[hyp_set][
-                                                                    'num_workers_train'],
-                                                                sampler=sampler),
-                   "training_area": torch.utils.data.DataLoader(image_datasets["training_mask"],
+    dataloaders = {"training": torch.utils.data.DataLoader(image_datasets["training"],
                                                                 batch_size=
                                                                 hyperparameters[hyp_set]['batch_size_train'],
                                                                 num_workers=
