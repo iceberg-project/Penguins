@@ -92,7 +92,7 @@ class DatasetFolder(data.Dataset):
         Returns:
             tuple: (sample, target) where target is class_index of the target class.
         """
-        path_x, path_y, is_mask = self.samples[index]
+        path_x, path_y = self.samples[index]
         sample = self.loader(path_x)
         if path_y != 'empty':
             target = self.loader(path_y)
