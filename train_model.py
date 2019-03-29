@@ -130,7 +130,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
 
                         # only keep target images with the correct class for segmentation
                         target_img = torch.Tensor(
-                            [ele for ele, idx in enumerate(target_img.numpy()) if label[idx] == 2])
+                            [ele for idx, ele in enumerate(target_img.numpy()) if label[idx] == 2])
 
                         # transform area to tensor
                         if binary_target:
@@ -171,7 +171,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
 
                         # only keep target images with the correct class for segmentation
                         target_img = torch.Tensor(
-                            [ele for ele, idx in enumerate(target_img.numpy()) if label[idx] == 2])
+                            [ele for idx, ele in enumerate(target_img.numpy()) if label[idx] == 2])
 
                         if use_gpu:
                             input_img, target_img = input_img.cuda(), target_img.cuda()
