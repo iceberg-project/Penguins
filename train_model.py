@@ -174,7 +174,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                 else:
                     with torch.no_grad():
                         # get input data -- we only care about segmentation here, so all images are true masks
-                        input_img, target_img, area, _ = data
+                        input_img, target_img, area = data
 
                         # set target to binary
                         if binary_target:
