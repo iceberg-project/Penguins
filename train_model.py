@@ -94,15 +94,15 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
         if sched_name == "Step":
             scheduler.step()
 
-        n_masks = 0
         epoch_loss = 0
         epoch_dice = 0
-        exp_avg_loss = 0
+        exp_avg_loss_area = 0
+        exp_avg_loss_mask = 0
         # training and validation loops
-        for phase in ["training", "validation"]:
+        for phase in ["training_mask", "training_area", "validation"]:
             print('\n{} \n'.format(phase))
             for iter, data in enumerate(dataloader[phase]):
-                if phase == "training":
+                if "training" in phase:
                     # add global step
                     global_step += 1
 
@@ -113,62 +113,63 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                     if sched_name == 'Cosine':
                         scheduler.step()
 
-                    # get input data
-                    input_img, target_img, area, is_mask = data
+                    if phase == "training_area" and 'Area' in model_name:
+                        # get input data for area
+                        input_img, _, area = data
 
-                    # transform area to tensor
-                    if binary_target:
-                        area = torch.Tensor([cnt > 0 for cnt in area])
+                        # transform area to tensor
+                        if binary_target:
+                            area = torch.Tensor([cnt > 0 for cnt in area])
 
-                    else:
-                        area = torch.Tensor(area)
+                        else:
+                            area = torch.Tensor(area)
 
-                    is_mask = is_mask.to(torch.float32)
-                    is_mask = is_mask.reshape([len(is_mask), 1, 1, 1])
+                        if use_gpu:
+                            input_img, area = input_img.cuda(), area.cuda()
 
-                    if use_gpu:
-                        input_img, target_img, area, is_mask = input_img.cuda(), target_img.cuda(), area.cuda(), is_mask.cuda()
+                        # get model predictions
+                        _, pred_area = model(input_img)
 
-                    # get model predictions
-                    pred_mask, pred_area = model(input_img)
+                        # get loss
+                        loss = criterion_reg(pred_area, area)
 
-                    # get loss
-                    if "Area" in model_name:
-                        loss_area = criterion_reg(pred_area, area)
-                    else:
-                        loss_area = False
-
-                    # keep only true mask entries for segmentation loss
-                    pred_mask = pred_mask * is_mask
-                    target_img = target_img * is_mask
-
-                    if torch.sum(pred_mask).item() > 0:
-                        loss_seg = criterion_seg(pred_mask.view(pred_mask.numel()),
-                                                 target_img.view(target_img.numel())) * sum(is_mask) / len(pred_mask)
-                    else:
-                        loss_seg = False
-
-                    # add up losses and update parameters
-                    loss = 0
-                    if loss_area:
-                        loss = loss + loss_area
-                    elif loss_seg:
-                        loss = loss + loss_seg
-
-                    if loss:
+                        # backprop
                         loss.backward()
-                    else:
-                        loss = torch.Tensor([0])
+                        optimizer.step()
 
-                    optimizer.step()
+                        # store loss
+                        exp_avg_loss_area = 0.99 * exp_avg_loss_area + 0.1 * loss.item()
 
-                    # store loss
-                    exp_avg_loss = 0.99 * exp_avg_loss + 0.1 * loss.item()
+                        # save stats
+                        if iter > 0 and iter % 10 == 0:
+                            writer.add_scalar(f"training loss {loss_name.split('-')[-1]}", exp_avg_loss_area,
+                                              global_step)
+                            writer.add_scalar("learning rate", optimizer.param_groups[-1]['lr'], global_step)
 
-                    # save stats
-                    if iter > 0 and iter % 10 == 0:
-                        writer.add_scalar("training loss", exp_avg_loss, global_step)
-                        writer.add_scalar("learning rate", optimizer.param_groups[-1]['lr'], global_step)
+                    elif phase == "training_mask":
+                        # get inputs for segmentation
+                        input_img, target_img, _ = data
+
+                        if use_gpu:
+                            input_img, target_img = input_img.cuda(), target_img.cuda()
+
+                        # get model predicitions
+                        pred_mask, _ = model(input_img)
+
+                        # loss
+                        loss = criterion_seg(pred_mask.view(pred_mask.numel()),
+                                             target_img.view(target_img.numel()))
+                        # backprop
+                        loss.backward()
+                        optimizer.step()
+
+                        # store loss
+                        exp_avg_loss_mask = 0.99 * exp_avg_loss_mask + 0.1 * loss.item()
+
+                        if iter > 0 and iter % 10 == 0:
+                            writer.add_scalar(f"training loss {loss_name.split('-')[0]}", exp_avg_loss_mask,
+                                              global_step)
+                            writer.add_scalar("learning rate", optimizer.param_groups[-1]['lr'], global_step)
 
                 else:
                     with torch.no_grad():
@@ -202,17 +203,15 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                     loss = loss_area + loss_seg
                     epoch_loss += loss.item()
                     epoch_dice += dice_metric(pred_mask, target_img).item()
-                    n_masks += len(input_img)
 
         if phase == "validation":
-            epoch_dice /= n_masks
+            epoch_dice /= len(dataloader["validation"])
             epoch_loss /= len(dataloader["validation"])
             writer.add_scalar("validation loss", epoch_loss, global_step)
             writer.add_scalar("validation DICE", epoch_dice, global_step)
             is_best_loss = epoch_dice < best_loss
             best_loss = min(epoch_dice, best_loss)
             save_checkpoint(model_path, model.state_dict(), is_best_loss)
-
 
     return model
 
@@ -236,7 +235,7 @@ def main():
     image_datasets = {x: ImageFolderTrain(root=os.path.join(args.t_dir, x),
                                           patch_size=patch_size,
                                           transform=data_transforms[x])
-                      for x in ['training', 'validation']}
+                      for x in ['training_mask', 'training_area', 'validation']}
 
     # weighted sampler
     classes = image_datasets['training'].classes
@@ -244,13 +243,20 @@ def main():
     weights = [pos_weight * ele + neg_weight * (1 - ele) for ele in classes]
     sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, 3000)
 
-    dataloaders = {"training": torch.utils.data.DataLoader(image_datasets["training"],
-                                                           batch_size=
-                                                           hyperparameters[hyp_set]['batch_size_train'],
-                                                           num_workers=
-                                                           hyperparameters[hyp_set][
-                                                               'num_workers_train'],
-                                                           sampler=sampler),
+    dataloaders = {"training_mask": torch.utils.data.DataLoader(image_datasets["training_mask"],
+                                                                batch_size=
+                                                                hyperparameters[hyp_set]['batch_size_train'],
+                                                                num_workers=
+                                                                hyperparameters[hyp_set][
+                                                                    'num_workers_train'],
+                                                                sampler=sampler),
+                   "training_area": torch.utils.data.DataLoader(image_datasets["training_mask"],
+                                                                batch_size=
+                                                                hyperparameters[hyp_set]['batch_size_train'],
+                                                                num_workers=
+                                                                hyperparameters[hyp_set][
+                                                                    'num_workers_train'],
+                                                                sampler=sampler),
                    "validation": torch.utils.data.DataLoader(image_datasets["validation"],
                                                              batch_size=
                                                              hyperparameters[hyp_set]['batch_size_val'],

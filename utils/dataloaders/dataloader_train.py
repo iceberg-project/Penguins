@@ -36,14 +36,11 @@ def make_dataset(dir, extensions):
         for fname in files:
             if has_file_allowed_extension(fname, extensions) and 'background' in root:
                 path_x = os.path.join(root, fname)
-                images.append([path_x, 'empty', 0])
+                images.append([path_x, 'empty'])
             elif has_file_allowed_extension(fname, extensions) and 'x' in root:
                 path_x = os.path.join(root, fname)
                 path_y = path_x.replace('x', 'y')
-                if 'TrueMask' in root:
-                    images.append([path_x, path_y, np.float32(1)])
-                else:
-                    images.append([path_x, path_y, np.float32(0)])
+                images.append([path_x, path_y])
 
     return images
 
@@ -110,7 +107,7 @@ class DatasetFolder(data.Dataset):
             if label == 'guano':
                 area = np.sum(np.array(target).nonzero()).astype(np.float32)
 
-        return sample, target, area, is_mask
+        return sample, target, area
 
     def __len__(self):
         return len(self.samples)
