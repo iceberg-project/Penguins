@@ -128,10 +128,10 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         # get input data for area
                         input_img, target_img, area, label = data
 
-                        # only keep target images with the correct class for segmentation
-                        target_img = torch.Tensor(
-                            [ele for idx, ele in enumerate(target_img.numpy()) if label[idx] == 2])
 
+                        # only keep target images with the correct class for segmentation
+                        idcs = [idx for idx, ele in enumerate(label) if ele == 2]
+                        target_img = target_img[idcs, :, :, :]
                         # transform area to tensor
                         if binary_target:
                             area = torch.Tensor([cnt > 0 for cnt in area])
@@ -147,10 +147,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         pred_mask, pred_area = model(input_img)
                         
                         # filter true masks
-                        pred_mask = pred_mask.cpu()
-                        pred_mask = torch.Tensor(
-                            [ele for idx, ele in enumerate(pred_mask.numpy()) if label[idx] == 2])
-                        pred_mask = pred_mask.cuda()
+                        pred_mask = pred_mask[idcs, :, : , :]
 
                         # get loss for regression and segmentation
                         loss = criterion_reg(pred_area, area)
@@ -176,8 +173,8 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         input_img, target_img, _, label = data
 
                         # only keep target images with the correct class for segmentation
-                        target_img = torch.Tensor(
-                            [ele for idx, ele in enumerate(target_img.numpy()) if label[idx] == 2])
+                        idcs = [idx for idx, ele in enumerate(label) if ele == 2]
+                        target_img = target_img[idcs, :, :, :]
 
                         if use_gpu:
                             input_img, target_img = input_img.cuda(), target_img.cuda()
@@ -187,10 +184,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         pred_mask, _ = model(input_img)
 
                         # filter true masks
-                        pred_mask = pred_mask.cpu()
-                        pred_mask = torch.Tensor(
-                            [ele for idx, ele in enumerate(pred_mask.numpy()) if label[idx] == 2])
-                        pred_mask = pred_mask.cuda()
+                        pred_mask = pred_mask[idcs, :, :, :]
 
                         # loss
                         loss = criterion_seg(pred_mask.view(pred_mask.numel()),
@@ -276,8 +270,28 @@ def main():
 
     # weighted sampler
     classes = image_datasets['training'].classes
-    pos_weight, neg_weight = len(classes) / sum(classes), len(classes) / (len(classes) - sum(classes))
-    weights = [pos_weight * ele + neg_weight * (1 - ele) for ele in classes]
+
+    def make_weights_for_balanced_classes(labels, nclasses):
+        """
+        Generates weights to get balanced classes during training. To be used with weighted random samplers.
+
+        :param images: list of training images in training set.
+        :param nclasses: number of classes on training set.
+        :return: list of weights for each training image.
+        """
+        count = [0] * nclasses
+        for lbl in labels:
+            count[lbl] += 1
+        weight_per_class = [0.] * nclasses
+        N = float(sum(count))
+        for i in range(nclasses):
+            weight_per_class[i] = N / float(count[i])
+        weight = [0] * len(labels)
+        for idx, val in enumerate(labels):
+            weight[idx] = weight_per_class[val]
+        return weight
+
+    weights = make_weights_for_balanced_classes(classes, len(set(classes)))
     sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, 3000)
 
     dataloaders = {"training": torch.utils.data.DataLoader(image_datasets["training"],
