@@ -239,7 +239,7 @@ def main():
                       for x in ['training_mask', 'training_area', 'validation']}
 
     # weighted sampler
-    classes = image_datasets['training'].classes
+    classes = image_datasets['training_mask'].classes
     pos_weight, neg_weight = len(classes) / sum(classes), len(classes) / (len(classes) - sum(classes))
     weights = [pos_weight * ele + neg_weight * (1 - ele) for ele in classes]
     sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, 3000)
