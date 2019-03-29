@@ -145,6 +145,12 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         # get model predictions
                         optimizer.zero_grad()
                         pred_mask, pred_area = model(input_img)
+                        
+                        # filter true masks
+                        pred_mask = pred_mask.cpu()
+                        pred_mask = torch.Tensor(
+                            [ele for idx, ele in enumerate(pred_mask.numpy()) if label[idx] == 2])
+                        pred_mask = pred_mask.cuda()
 
                         # get loss for regression and segmentation
                         loss = criterion_reg(pred_area, area)
@@ -179,6 +185,12 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         # get model predicitions
                         optimizer.zero_grad()
                         pred_mask, _ = model(input_img)
+
+                        # filter true masks
+                        pred_mask = pred_mask.cpu()
+                        pred_mask = torch.Tensor(
+                            [ele for idx, ele in enumerate(pred_mask.numpy()) if label[idx] == 2])
+                        pred_mask = pred_mask.cuda()
 
                         # loss
                         loss = criterion_seg(pred_mask.view(pred_mask.numel()),
