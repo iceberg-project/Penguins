@@ -34,15 +34,16 @@ def parse_args():
     return parser.parse_args()
 
 
-def lr_find(model, dataloader, optimizer):
-    return None
-    # TODO learning rate finder
-
-
 def save_checkpoint(filename, state, is_best_loss):
     torch.save(state, filename + '.tar')
     if is_best_loss:
         shutil.copyfile(filename + '.tar', filename + '_best_loss.tar')
+
+
+def get_iou(pred, target, thresh):
+    # change to cpu
+    pred_thresh = torch.Tensor([thresh]).cuda()
+    pred = pred.cpu().numpy()
 
 
 def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, scheduler, sched_name, num_epochs,
