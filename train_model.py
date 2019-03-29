@@ -227,7 +227,8 @@ def main():
     # augmentation
     patch_size = model_archs[args.model_arch]
     data_transforms = {
-        'training': TransformPair(patch_size, train=True),
+        'training_mask': TransformPair(patch_size, train=True),
+        'training_area': TransformPair(patch_size, train=True),
         'validation': TransformPair(patch_size, train=False)
     }
 
