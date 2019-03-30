@@ -151,8 +151,10 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         pred_mask = pred_mask[idcs, :, :, :]
 
                         # get loss for regression and segmentation
-                        loss = criterion_reg(pred_area, area)
                         loss_seg = criterion_seg(pred_mask.view(-1), target_img.view(-1))
+                        if loss_name.split('-')[-1] == 'BCE':
+                            criterion_reg.weight = (torch.ones(area.size)).cuda()
+                        loss_reg = criterion_reg(pred_area, area)
 
                         # save stats
                         if iter > 0 and iter % 75 == 0:
@@ -163,11 +165,10 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                             writer.add_scalar("learning rate", optimizer.param_groups[-1]['lr'], global_step)
 
                         # backprop
-                        loss = loss + loss_seg
-                        loss.backward()
+                        loss_total = loss_reg + loss_seg
+                        loss_total.backward()
                         optimizer.step()
                         optimizer.zero_grad()
-
 
                     elif phase == "training" and 'Area' not in model_name:
                         # get inputs for segmentation
