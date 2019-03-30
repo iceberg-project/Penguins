@@ -3,6 +3,7 @@ import datetime
 import os
 import time
 import shutil
+import numpy as np
 
 import torch
 import torch.nn as nn
@@ -106,7 +107,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
 
         # store intersection and union for IoU 50, 75 and 90
         iou_treshs = [0.25, 0.5, 0.75, 0.9]
-        epoch_iou = [0] * len(iou_treshs)
+        epoch_iou = np.array([0] * len(iou_treshs))
 
         # training and validation loops
         for phase in ["training", "validation"]:
