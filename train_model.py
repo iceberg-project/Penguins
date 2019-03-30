@@ -238,10 +238,9 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         epoch_loss += loss.item()
                         epoch_dice += dice_metric(pred_mask, target_img).item()
 
-                        # get iou at 50, 75 and 90
+                        # get iou at 25, 50, 75 and 90
                         for idx, ele in enumerate(iou_treshs):
-                            epoch_iou += get_iou(torch.sigmoid(pred_mask), target_img, ele)
-
+                            epoch_iou[idx] += get_iou(torch.sigmoid(pred_mask), target_img, ele).item()
 
         if phase == "validation":
             epoch_dice /= len(dataloader["validation"])
@@ -250,7 +249,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
             writer.add_scalar("validation loss", epoch_loss, global_step)
             writer.add_scalar("validation DICE", epoch_dice, global_step)
             for idx, ele in enumerate(iou_treshs):
-                writer.add_scalar(f"validation IoU-{ele}", epoch_iou, global_step)
+                writer.add_scalar(f"validation IoU-{ele}", epoch_iou[idx], global_step)
             is_best_loss = epoch_dice < best_loss
             best_loss = min(epoch_dice, best_loss)
             save_checkpoint(model_path, model.state_dict(), is_best_loss)
