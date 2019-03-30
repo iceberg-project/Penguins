@@ -153,8 +153,6 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
 
                         # get loss for regression and segmentation
                         loss_seg = criterion_seg(pred_mask.view(-1), target_img.view(-1))
-                        if loss_name.split('-')[-1] == 'BCE':
-                            criterion_reg.weight = (torch.ones(area.size())).cuda()
                         loss_reg = criterion_reg(pred_area, area)
 
                         # save stats
@@ -196,7 +194,6 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         # loss
                         loss = criterion_seg(pred_mask.view(-1),
                                              target_img.view(-1))
-
 
                         if iter > 0 and iter % 75 == 0:
                             writer.add_scalar(f"training loss mask {loss_name.split('-')[0]}", loss,
