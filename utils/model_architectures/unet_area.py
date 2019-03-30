@@ -120,6 +120,7 @@ class UNet_Area(nn.Module):
         self.up3 = up(scale * 4, scale, drop_rate, res)
         self.up4 = up(scale * 2, scale, drop_rate, res)
         self.outc = outconv(scale, n_classes)
+        self.inc2 = inconv(n_classes, scale, res)
         self.down5 = down(1, scale, drop_rate, res)
         self.down6 = down(scale, scale * 2, drop_rate, res)
         self.down7 = down(scale * 2, scale * 4, drop_rate, res)
@@ -146,6 +147,7 @@ class UNet_Area(nn.Module):
         hm = x
 
         # regression to area
+        x = self.inc2(x)
         x = self.down5(x)
         x = self.down6(x)
         x = self.down7(x)
