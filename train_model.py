@@ -129,7 +129,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         input_img, target_img, area, label = data
 
                         # only keep target images with the correct class for segmentation
-                        idcs = [idx for idx, ele in enumerate(label) if ele == 2]
+                        idcs = [idx for idx, ele in enumerate(label) if ele != 1]
                         target_img = target_img[idcs, :, :, :]
                         # transform area to tensor
                         if binary_target:
@@ -175,7 +175,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         input_img, target_img, _, label = data
 
                         # only keep target images with the correct class for segmentation
-                        idcs = [idx for idx, ele in enumerate(label) if ele == 2]
+                        idcs = [idx for idx, ele in enumerate(label) if ele != 1]
                         target_img = target_img[idcs, :, :, :]
 
                         if use_gpu:

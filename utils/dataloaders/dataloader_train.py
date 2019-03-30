@@ -108,6 +108,8 @@ class DatasetFolder(data.Dataset):
             area = np.float32(0)
         if self.transform is not None:
             sample, target, area = self.transform(sample, target)
+            if area == 0:
+                label = 0
 
         return sample, target, area, label
 
