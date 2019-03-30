@@ -42,7 +42,7 @@ def save_checkpoint(filename, state, is_best_loss):
 
 def get_iou(pred, target, thresh):
     pred = (pred > thresh)
-    target.to(torch.uint8)
+    target = target.to(torch.uint8)
 
     intersection = torch.sum(pred & target)
     union = torch.sum(pred | target)
