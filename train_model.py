@@ -53,7 +53,7 @@ def get_iou(pred, target, thresh):
 
 def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, scheduler, sched_name, num_epochs,
                 loss_name,
-                model_name, models_dir, binary_target, ts_name, learning_rate=1E-3):
+                model_name, models_dir, binary_target, learning_rate=1E-3, BCE_weight=1000):
     """
 
     :param model:
@@ -72,7 +72,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
     :return:
     """
     # set model name and path
-    model_name = f"{model_name}_ts-{ts_name}_binary-{binary_target}_loss-{loss_name}_lr-{learning_rate}_schd-{sched_name}_ep-{num_epochs}"
+    model_name = f"{model_name}_binary-{binary_target}_loss-{loss_name}_lr-{learning_rate}_schd-{sched_name}_ep-{num_epochs}"
     model_path = f"{models_dir}/{model_name}"
     os.makedirs(model_path, exist_ok=True)
     print(f'\n Training {model_name}')
@@ -102,8 +102,6 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
 
         epoch_loss = 0
         epoch_dice = 0
-        exp_avg_loss_area = 0
-        exp_avg_loss_mask = 0
 
         # store intersection and union for IoU 50, 75 and 90
         iou_treshs = [0.25, 0.5, 0.75, 0.9]
@@ -124,11 +122,17 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                     if sched_name == 'Cosine':
                         scheduler.step()
 
+
                     if phase == "training" and 'Area' in model_name:
                         # get input data for area
                         input_img, target_img, area, label = data
 
-                        # only keep target images with the correct class for segmentation
+                        # get pixel weights for BCE
+                        if loss_name.split('-')[0] == 'BCE':
+                            batch_weights = ((target_img.view(-1) * BCE_weight) + 1).cuda()
+                            criterion_seg.weight = batch_weights
+
+                            # only keep target images with the correct class for segmentation
                         idcs = [idx for idx, ele in enumerate(label) if ele != 1]
                         target_img = target_img[idcs, :, :, :]
                         # transform area to tensor
@@ -173,6 +177,11 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                     elif phase == "training" and 'Area' not in model_name:
                         # get inputs for segmentation
                         input_img, target_img, _, label = data
+
+                        # get pixel weights for BCE
+                        if loss_name.split('-')[0] == 'BCE':
+                            batch_weights = ((target_img.view(-1) * BCE_weight) + 1).cuda()
+                            criterion_seg.weight = batch_weights
 
                         # only keep target images with the correct class for segmentation
                         idcs = [idx for idx, ele in enumerate(label) if ele != 1]
