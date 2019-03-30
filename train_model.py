@@ -240,7 +240,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
 
                         # get iou at 25, 50, 75 and 90
                         for idx, ele in enumerate(iou_treshs):
-                            epoch_iou[idx] += get_iou(torch.sigmoid(pred_mask), target_img, ele).item()
+                            epoch_iou[idx] += get_iou(torch.sigmoid(pred_mask), target_img, ele)
 
         if phase == "validation":
             epoch_dice /= len(dataloader["validation"])
