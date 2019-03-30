@@ -151,8 +151,8 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         loss_seg = criterion_seg(pred_mask, target_img)
 
                         # store loss
-                        exp_avg_loss_area = 0.99 * exp_avg_loss_area + 0.1 * loss.item()
-                        exp_avg_loss_mask = 0.99 * exp_avg_loss_mask + 0.1 * loss.item()
+                        exp_avg_loss_area = 0.99 * exp_avg_loss_area + 0.01 * loss.item()
+                        exp_avg_loss_mask = 0.99 * exp_avg_loss_mask + 0.01 * loss.item()
 
                         # backprop
                         loss = loss + loss_seg
@@ -188,7 +188,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                                              target_img.view(target_img.numel()))
 
                         # store loss
-                        exp_avg_loss_mask = 0.99 * exp_avg_loss_mask + 0.1 * loss.item()
+                        exp_avg_loss_mask = 0.99 * exp_avg_loss_mask + 0.01 * loss.item()
 
                         # backprop
                         loss.backward()
