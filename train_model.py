@@ -302,7 +302,7 @@ def main():
         return weight
 
     weights = make_weights_for_balanced_classes(classes, len(set(classes)))
-    sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, 3000)
+    sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, len(weights))
 
     dataloaders = {"training": torch.utils.data.DataLoader(image_datasets["training"],
                                                            batch_size=
