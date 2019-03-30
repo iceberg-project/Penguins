@@ -126,14 +126,15 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         # get input data for area
                         input_img, target_img, area, label = data
 
+                        # only keep target images with the correct class for segmentation
+                        idcs = [idx for idx, ele in enumerate(label) if ele != 1]
+                        target_img = target_img[idcs, :, :, :]
+
                         # get pixel weights for BCE
                         if loss_name.split('-')[0] == 'BCE':
                             batch_weights = ((target_img.view(-1) * BCE_weight) + 1).cuda()
                             criterion_seg.weight = batch_weights
 
-                            # only keep target images with the correct class for segmentation
-                        idcs = [idx for idx, ele in enumerate(label) if ele != 1]
-                        target_img = target_img[idcs, :, :, :]
                         # transform area to tensor
                         if binary_target:
                             area = torch.Tensor([cnt > 0 for cnt in area])
@@ -153,12 +154,12 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         # get loss for regression and segmentation
                         loss_seg = criterion_seg(pred_mask.view(-1), target_img.view(-1))
                         if loss_name.split('-')[-1] == 'BCE':
-                            criterion_reg.weight = (torch.ones(area.size)).cuda()
+                            criterion_reg.weight = (torch.ones(area.size())).cuda()
                         loss_reg = criterion_reg(pred_area, area)
 
                         # save stats
                         if iter > 0 and iter % 75 == 0:
-                            writer.add_scalar(f"training loss area {loss_name.split('-')[-1]}", loss,
+                            writer.add_scalar(f"training loss area {loss_name.split('-')[-1]}", loss_reg,
                                               global_step)
                             writer.add_scalar(f"training loss mask {loss_name.split('-')[0]}", loss_seg,
                                               global_step)
@@ -174,14 +175,14 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         # get inputs for segmentation
                         input_img, target_img, _, label = data
 
+                        # only keep target images with the correct class for segmentation
+                        idcs = [idx for idx, ele in enumerate(label) if ele != 1]
+                        target_img = target_img[idcs, :, :, :]
+
                         # get pixel weights for BCE
                         if loss_name.split('-')[0] == 'BCE':
                             batch_weights = ((target_img.view(-1) * BCE_weight) + 1).cuda()
                             criterion_seg.weight = batch_weights
-
-                        # only keep target images with the correct class for segmentation
-                        idcs = [idx for idx, ele in enumerate(label) if ele != 1]
-                        target_img = target_img[idcs, :, :, :]
 
                         if use_gpu:
                             input_img, target_img = input_img.cuda(), target_img.cuda()
