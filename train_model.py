@@ -6,7 +6,6 @@ import shutil
 
 import torch
 import torch.nn as nn
-import torchvision.transforms.functional as TF
 from tensorboardX import SummaryWriter
 from torch.optim import lr_scheduler
 from PIL import ImageFile
@@ -128,7 +127,6 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         # get input data for area
                         input_img, target_img, area, label = data
 
-
                         # only keep target images with the correct class for segmentation
                         idcs = [idx for idx, ele in enumerate(label) if ele == 2]
                         target_img = target_img[idcs, :, :, :]
@@ -143,11 +141,10 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                             input_img, target_img, area = input_img.cuda(), target_img.cuda(), area.cuda()
 
                         # get model predictions
-                        optimizer.zero_grad()
                         pred_mask, pred_area = model(input_img)
-                        
+
                         # filter true masks
-                        pred_mask = pred_mask[idcs, :, : , :]
+                        pred_mask = pred_mask[idcs, :, :, :]
 
                         # get loss for regression and segmentation
                         loss = criterion_reg(pred_area, area)
@@ -161,6 +158,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         loss = loss + loss_seg
                         loss.backward()
                         optimizer.step()
+                        optimizer.zero_grad()
 
                         # save stats
                         if iter > 0 and iter % 10 == 0:
@@ -180,7 +178,6 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                             input_img, target_img = input_img.cuda(), target_img.cuda()
 
                         # get model predicitions
-                        optimizer.zero_grad()
                         pred_mask, _ = model(input_img)
 
                         # filter true masks
@@ -196,6 +193,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         # backprop
                         loss.backward()
                         optimizer.step()
+                        optimizer.zero_grad()
 
                         if iter > 0 and iter % 10 == 0:
                             writer.add_scalar(f"training loss {loss_name.split('-')[0]}", exp_avg_loss_mask,

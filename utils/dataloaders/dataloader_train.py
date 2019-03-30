@@ -36,11 +36,16 @@ def make_dataset(dir, extensions):
         for fname in files:
             if has_file_allowed_extension(fname, extensions) and 'background' in root:
                 path_x = os.path.join(root, fname)
-                images.append([path_x, 'empty'])
+                images.append([path_x, 'empty', 0])
             elif has_file_allowed_extension(fname, extensions) and 'x' in root:
-                path_x = os.path.join(root, fname)
-                path_y = path_x.replace('x', 'y')
-                images.append([path_x, path_y])
+                if "True" in root:
+                    path_x = os.path.join(root, fname)
+                    path_y = path_x.replace('x', 'y')
+                    images.append([path_x, path_y, 2])
+                else:
+                    path_x = os.path.join(root, fname)
+                    path_y = path_x.replace('x', 'y')
+                    images.append([path_x, path_y, 1])
 
     return images
 
@@ -79,8 +84,8 @@ class DatasetFolder(data.Dataset):
         self.loader = loader
         self.extensions = extensions
 
-        self.samples = samples
-        self.classes = [int(ele[1] == 'empty') * (1 + int('True' in ele[1])) for ele in samples]
+        self.classes = [int(ele[2]) for ele in samples]
+        self.samples = [ele[:2] for ele in samples]
 
         self.patch_size = patch_size
         self.transform = transform
