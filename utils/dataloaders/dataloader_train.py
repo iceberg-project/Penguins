@@ -102,14 +102,14 @@ class DatasetFolder(data.Dataset):
         label = self.classes[index]
         if path_y != 'empty':
             target = self.loader(path_y)
-            area = np.sum(np.array(target).nonzero()).astype(np.float32) / np.array(target).size
+            area = np.sum(np.array(target) > 0).astype(np.float32) / np.array(target).size
         else:
             target = Image.fromarray(np.zeros([self.patch_size, self.patch_size], dtype=np.uint8))
             area = np.float32(0)
         if self.transform is not None:
             sample, target = self.transform(sample, target)
             if label != 0:
-                area = np.sum(np.array(target).nonzero()).astype(np.float32) / np.array(target).size
+                area = np.sum(np.array(target) > 0).astype(np.float32) / np.array(target).size
 
         return sample, target, area, label
 

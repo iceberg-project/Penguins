@@ -163,9 +163,9 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
 
                         # save stats
                         if iter > 0 and iter % 10 == 0:
-                            writer.add_scalar(f"training loss {loss_name.split('-')[-1]}", exp_avg_loss_area,
+                            writer.add_scalar(f"training loss area {loss_name.split('-')[-1]}", exp_avg_loss_area,
                                               global_step)
-                            writer.add_scalar(f"training loss {loss_name.split('-')[0]}", exp_avg_loss_mask,
+                            writer.add_scalar(f"training loss mask {loss_name.split('-')[0]}", exp_avg_loss_mask,
                                               global_step)
                             writer.add_scalar("learning rate", optimizer.param_groups[-1]['lr'], global_step)
 
