@@ -152,7 +152,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
 
                         # get loss for regression and segmentation
                         loss = criterion_reg(pred_area, area)
-                        loss_seg = criterion_seg(pred_mask, target_img)
+                        loss_seg = criterion_seg(pred_mask.view(-1), target_img.view(-1))
 
                         # save stats
                         if iter > 0 and iter % 75 == 0:
@@ -161,10 +161,6 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                             writer.add_scalar(f"training loss mask {loss_name.split('-')[0]}", loss_seg,
                                               global_step)
                             writer.add_scalar("learning rate", optimizer.param_groups[-1]['lr'], global_step)
-
-                        # store loss
-                        exp_avg_loss_area = 0.99 * exp_avg_loss_area + 0.01 * loss.item()
-                        exp_avg_loss_mask = 0.99 * exp_avg_loss_mask + 0.01 * loss_seg.item()
 
                         # backprop
                         loss = loss + loss_seg
@@ -196,11 +192,9 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         pred_mask = pred_mask[idcs, :, :, :]
 
                         # loss
-                        loss = criterion_seg(pred_mask.view(pred_mask.numel()),
-                                             target_img.view(target_img.numel()))
+                        loss = criterion_seg(pred_mask.view(-1),
+                                             target_img.view(-1))
 
-                        # store loss
-                        exp_avg_loss_mask = 0.99 * exp_avg_loss_mask + 0.01 * loss.item()
 
                         if iter > 0 and iter % 75 == 0:
                             writer.add_scalar(f"training loss mask {loss_name.split('-')[0]}", loss,
