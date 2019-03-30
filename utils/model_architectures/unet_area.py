@@ -56,7 +56,7 @@ class inconv(nn.Module):
 
 
 class down(nn.Module):
-    def __init__(self, in_ch, out_ch, res, drop_rate=0.3):
+    def __init__(self, in_ch, out_ch, drop_rate=0.3, res=False):
         super(down, self).__init__()
         self.mpconv = nn.Sequential(
             nn.Dropout(drop_rate),
@@ -70,7 +70,7 @@ class down(nn.Module):
 
 
 class up(nn.Module):
-    def __init__(self, in_ch, out_ch, res, drop_rate=0.3, bilinear=False):
+    def __init__(self, in_ch, out_ch, drop_rate=0.3, res=False, bilinear=True):
         super(up, self).__init__()
 
         #  would be a nice idea if the upsampling could be learned too,
@@ -120,11 +120,11 @@ class UNet_Area(nn.Module):
         self.up3 = up(scale * 4, scale, drop_rate, res)
         self.up4 = up(scale * 2, scale, drop_rate, res)
         self.outc = outconv(scale, n_classes)
-        self.inc2 = inconv(n_classes, scale, res)
-        self.down5 = down(scale, scale * 2, drop_rate, res)
-        self.down6 = down(scale * 2, scale * 4, drop_rate, res)
-        self.down7 = down(scale * 4, scale * 8, drop_rate, res)
-        self.down8 = down(scale * 8, scale * 8, res)
+        self.inc2 = inconv(n_classes, scale, res=True)
+        self.down5 = down(scale, scale * 2, drop_rate, res=True)
+        self.down6 = down(scale * 2, scale * 4, drop_rate, res=True)
+        self.down7 = down(scale * 4, scale * 8, drop_rate, res=True)
+        self.down8 = down(scale * 8, scale * 8, res=True)
         self.final_conv = outconv(scale * 8, n_classes)
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
         self.fc = nn.Linear(1, 1)
