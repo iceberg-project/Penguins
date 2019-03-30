@@ -44,10 +44,10 @@ def get_iou(pred, target, thresh):
     pred = (pred > thresh)
     target = target.to(torch.uint8)
 
-    intersection = torch.sum(pred & target)
-    union = torch.sum(pred | target)
+    intersection = torch.sum(pred & target).item()
+    union = torch.sum(pred | target).item()
 
-    return intersection, union
+    return (intersection + 1E-6) / (union + 1E-6)
 
 
 def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, scheduler, sched_name, num_epochs,
@@ -105,9 +105,8 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
         exp_avg_loss_mask = 0
 
         # store intersection and union for IoU 50, 75 and 90
-        iou_treshs = [0.5, 0.75, 0.9]
-        epoch_intersection = [0, 0, 0]
-        epoch_union = [0, 0, 0]
+        iou_treshs = [0.25, 0.5, 0.75, 0.9]
+        epoch_iou = [0] * len(iou_treshs)
 
         # training and validation loops
         for phase in ["training", "validation"]:
@@ -241,17 +240,17 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
 
                         # get iou at 50, 75 and 90
                         for idx, ele in enumerate(iou_treshs):
-                            intersection, union = get_iou(torch.sigmoid(pred_mask), target_img, ele)
-                            epoch_intersection[idx] += intersection
-                            epoch_union[idx] += union
+                            epoch_iou += get_iou(torch.sigmoid(pred_mask), target_img, ele)
+
 
         if phase == "validation":
             epoch_dice /= len(dataloader["validation"])
             epoch_loss /= len(dataloader["validation"])
+            epoch_iou /= len(dataloader["validation"])
             writer.add_scalar("validation loss", epoch_loss, global_step)
             writer.add_scalar("validation DICE", epoch_dice, global_step)
             for idx, ele in enumerate(iou_treshs):
-                writer.add_scalar(f"validation IoU-{ele}", epoch_intersection[idx] / epoch_union[idx], global_step)
+                writer.add_scalar(f"validation IoU-{ele}", epoch_iou, global_step)
             is_best_loss = epoch_dice < best_loss
             best_loss = min(epoch_dice, best_loss)
             save_checkpoint(model_path, model.state_dict(), is_best_loss)
