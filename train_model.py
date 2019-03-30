@@ -246,11 +246,10 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
         if phase == "validation":
             epoch_dice /= len(dataloader["validation"])
             epoch_loss /= len(dataloader["validation"])
-            epoch_iou /= len(dataloader["validation"])
             writer.add_scalar("validation loss", epoch_loss, global_step)
             writer.add_scalar("validation DICE", epoch_dice, global_step)
             for idx, ele in enumerate(iou_treshs):
-                writer.add_scalar(f"validation IoU-{ele}", epoch_iou[idx], global_step)
+                writer.add_scalar(f"validation IoU-{ele}", epoch_iou[idx] / len(dataloader["validation"]), global_step)
             is_best_loss = epoch_dice < best_loss
             best_loss = min(epoch_dice, best_loss)
             save_checkpoint(model_path, model.state_dict(), is_best_loss)
