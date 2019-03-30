@@ -40,19 +40,14 @@ def save_checkpoint(filename, state, is_best_loss):
         shutil.copyfile(filename + '.tar', filename + '_best_loss.tar')
 
 
-# def get_iou(pred, target, thresh):
-#    SMOOTH = 1E-6
-#
-#    pred = torch.
-#
-#     intersection = (pred & target).float().sum((1, 2))  # Will be zero if Truth=0 or Prediction=0
-#     union = (pred | target).float().sum((1, 2))  # Will be zzero if both are 0
-#
-#     iou = (intersection + SMOOTH) / (union + SMOOTH)  # We smooth our devision to avoid 0/0
-#
-#     thresholded = torch.clamp(20 * (iou - 0.5), 0, 10).ceil() / 10  # This is equal to comparing with thresolds
-#
-#     return thresholded.mean()
+def get_iou(pred, target, thresh):
+    pred = (pred > thresh)
+    target.to(torch.uint8)
+
+    intersection = torch.sum(pred & target)
+    union = torch.sum(pred | target)
+
+    return intersection, union
 
 
 def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, scheduler, sched_name, num_epochs,
@@ -108,6 +103,12 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
         epoch_dice = 0
         exp_avg_loss_area = 0
         exp_avg_loss_mask = 0
+
+        # store intersection and union for IoU 50, 75 and 90
+        iou_treshs = [0.5, 0.75, 0.9]
+        epoch_intersection = [0, 0, 0]
+        epoch_union = [0, 0, 0]
+
         # training and validation loops
         for phase in ["training", "validation"]:
             print('\n{} \n'.format(phase))
@@ -152,7 +153,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
 
                         # store loss
                         exp_avg_loss_area = 0.99 * exp_avg_loss_area + 0.01 * loss.item()
-                        exp_avg_loss_mask = 0.99 * exp_avg_loss_mask + 0.01 * loss.item()
+                        exp_avg_loss_mask = 0.99 * exp_avg_loss_mask + 0.01 * loss_seg.item()
 
                         # backprop
                         loss = loss + loss_seg
@@ -163,6 +164,8 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         # save stats
                         if iter > 0 and iter % 10 == 0:
                             writer.add_scalar(f"training loss {loss_name.split('-')[-1]}", exp_avg_loss_area,
+                                              global_step)
+                            writer.add_scalar(f"training loss {loss_name.split('-')[0]}", exp_avg_loss_mask,
                                               global_step)
                             writer.add_scalar("learning rate", optimizer.param_groups[-1]['lr'], global_step)
 
@@ -202,6 +205,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
 
                 else:
                     with torch.no_grad():
+                        # store iou
                         # get input data -- we only care about segmentation here, so all images are true masks
                         input_img, target_img, area, _ = data
 
@@ -233,11 +237,19 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                         epoch_loss += loss.item()
                         epoch_dice += dice_metric(pred_mask, target_img).item()
 
+                        # get iou at 50, 75 and 90
+                        for idx, ele in enumerate(iou_treshs):
+                            intersection, union = get_iou(pred_mask, target_img, ele)
+                            epoch_intersection[idx] += intersection
+                            epoch_union[idx] += union
+
         if phase == "validation":
             epoch_dice /= len(dataloader["validation"])
             epoch_loss /= len(dataloader["validation"])
             writer.add_scalar("validation loss", epoch_loss, global_step)
             writer.add_scalar("validation DICE", epoch_dice, global_step)
+            for idx, ele in enumerate(iou_treshs):
+                writer.add_scalar(f"validation IoU-{ele}", epoch_intersection[idx] / epoch_union[idx])
             is_best_loss = epoch_dice < best_loss
             best_loss = min(epoch_dice, best_loss)
             save_checkpoint(model_path, model.state_dict(), is_best_loss)
