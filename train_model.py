@@ -42,7 +42,7 @@ def save_checkpoint(filename, state, is_best_loss):
 
 def get_iou(pred, target, thresh):
     pred = (pred > thresh)
-    target = target.to(torch.uint8)
+    target = (target > torch.min(target))
 
     intersection = torch.sum(pred & target)
     union = torch.sum(pred | target)
@@ -249,7 +249,7 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
             writer.add_scalar("validation loss", epoch_loss, global_step)
             writer.add_scalar("validation DICE", epoch_dice, global_step)
             for idx, ele in enumerate(iou_treshs):
-                writer.add_scalar(f"validation IoU-{ele}", epoch_intersection[idx] / epoch_union[idx])
+                writer.add_scalar(f"validation IoU-{ele}", epoch_intersection[idx] / epoch_union[idx], global_step)
             is_best_loss = epoch_dice < best_loss
             best_loss = min(epoch_dice, best_loss)
             save_checkpoint(model_path, model.state_dict(), is_best_loss)
