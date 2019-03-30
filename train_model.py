@@ -122,7 +122,6 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                     if sched_name == 'Cosine':
                         scheduler.step()
 
-
                     if phase == "training" and 'Area' in model_name:
                         # get input data for area
                         input_img, target_img, area, label = data
@@ -347,7 +346,7 @@ def main():
         criterion_reg = criterion_reg.cuda()
 
     train_model(model=model, dataloader=dataloaders, criterion_seg=criterion_seg,
-                criterion_reg=criterion_reg, ts_name=args.t_dir.split('_')[-1],
+                criterion_reg=criterion_reg,
                 optimizer=optimizer, scheduler=scheduler, num_epochs=args.num_epochs,
                 sched_name=sched, model_name=model_name, loss_name=args.loss_funcs,
                 models_dir=args.models_dir, binary_target=args.binary_target)
