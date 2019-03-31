@@ -68,7 +68,7 @@ class TransformPair(object):
 
         # change locations to tensor
         ground_truth = (np.array(ground_truth) > 0).astype(np.float32)
-        area = np.sum(ground_truth) / len(ground_truth.flatten())
+        area = (np.sum(ground_truth) / len(ground_truth.flatten())).astype(np.float32)
         ground_truth = torch.Tensor(ground_truth.reshape([1, self.output_size, self.output_size]))
         image = TF.normalize(TF.to_tensor(image), [0.5] * 3, [0.25] * 3)
 
