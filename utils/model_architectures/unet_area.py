@@ -147,10 +147,6 @@ class UNet_Area(nn.Module):
 
         # regression to area
         x = self.inc2(x)
-        x = self.down5(x)
-        x = self.down6(x)
-        x = self.down7(x)
-        x = self.down8(x)
         x = self.final_conv(x)
         x = self.avg_pool(x)
         x = x.view(x.size(0), -1)
