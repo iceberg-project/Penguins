@@ -164,7 +164,10 @@ def train_model(model, dataloader, criterion_seg, criterion_reg, optimizer, sche
                             writer.add_scalar("learning rate", optimizer.param_groups[-1]['lr'], global_step)
 
                         # backprop
-                        loss_total = loss_reg + loss_seg
+                        if epoch > 5:
+                            loss_total = loss_reg + loss_seg
+                        else:
+                            loss_total = loss_reg
                         loss_total.backward()
                         optimizer.step()
                         optimizer.zero_grad()
