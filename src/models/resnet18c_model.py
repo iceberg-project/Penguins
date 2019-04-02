@@ -7,12 +7,13 @@ import util.util as util
 from util.image_pool import ImagePool
 from .base_model import BaseModel
 from . import networks
-from models.resnet18 import resnet18
+from resnet18 import resnet18
 
-class Resnet18Rmodel(BaseModel):
+class Resnet18Cmodel(BaseModel):
     def name(self):
-        return 'Resnet18 for regression Model'
-
+        return 'Resnet18 for Classification Model'
+    def eval(self):
+        self.netG.eval()
     def initialize(self, opt):
         BaseModel.initialize(self, opt)
         self.isTrain = opt.isTrain
@@ -59,6 +60,9 @@ class Resnet18Rmodel(BaseModel):
 
     def forward(self):
         self.output = self.netG(self.input)
+        batchsize = self.output.shape[0]
+        nc = self.output.shape[1]
+        self.output = torch.mean(self.output.view([batchsize,nc,-1]),dim=2)
 
 
 

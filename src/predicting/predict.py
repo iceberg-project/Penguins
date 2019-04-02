@@ -15,10 +15,13 @@ from data_processing.im_vis import *
 import time
 import numpy as np
 from sklearn.metrics import average_precision_score as ap_score
+from sklearn.metrics import jaccard_similarity_score as iou_score
 class Pipe:
-    def __init__(self,input,output):
+    def __init__(self,name,epoch,testset,output):
+        self.m_name = name
+        self.epoch = epoch
         self.import_model()
-        self.output = output + self.opt.name + str(self.opt.which_epoch) + '/'
+        self.output = output +'/' + self.m_name+'/' + str(self.opt.which_epoch) + '/' +testset +'/'
         self.out_eval = os.path.join(self.output,'eval')
         self.out_raw = os.path.join(self.output,'raw')
         #self.out_crf = os.path.join(self.output,'crf')
@@ -27,24 +30,26 @@ class Pipe:
         sdmkdir(self.output+'raw')
         sdmkdir(self.output+'vis')
         sdmkdir(self.output+'eval')
+        sdmkdir(self.output+'tmp')
         #sdmkdir(self.out_crf)
         self.input =  input
     def import_model(self):
         opt = TestOptions().parse()
-#        opt.model ='single_unet'
-#        opt.checkpoints_dir ='/nfs/bigbox/hieule/penguin_data/checkpoints/'
-#        opt.name='MSEnc3_p2000_train_bias0.5_bs128'
-#        opt.which_epoch = 200
-        opt.model ='unetr'
-        opt.checkpoints_dir='/mnt/checkpoints_hackathon/'
-        #opt.name='unetr_bs96_sampling0.5'
-        opt.name='weakly_unetr_bs64_sampling0.25_9990'
-        opt.which_epoch='latest'
+        opt.checkpoints_dir='/nfs/bigdisk/hieule/checkpoints_CVPR19W/'
+        #opt.name='unet_bs96_sampling0.5'
+        #opt.name='unet_bs96_sampling0.5_baseline'
+        opt.name = self.m_name
+        if 'unetr' in opt.name:
+            opt.model='unetr'
+        elif 'unet' in opt.name:
+            opt.model = 'unet'
+        opt.which_epoch=self.epoch
         opt.serial_batches = True  # no shuffle
         opt.no_flip = True  # no flip
         opt.no_dropout = True
-        opt.gpu_ids = [3]
+        opt.gpu_ids = [0]
         self.network = create_model(opt)
+        self.network.eval()
         self.opt = opt 
     def list_tif_predict(self,file):
         import rasterio
@@ -56,7 +61,7 @@ class Pipe:
         while True:
             line = f.readline()
             if not line:break
-            imnamelist.append(line.split()[0] )
+            imnamelist.append(line.split()[0] ) 
         print(imnamelist)
 
         for name in imnamelist :
@@ -94,7 +99,7 @@ class Pipe:
         last = time.time()
         parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
         opt = parser.parse_args()
-        opt.step = 92
+        opt.step = 128
         opt.size = 256
         w,h,c = im.shape
         patches = png2patches(im,opt.step,opt.size)
@@ -159,26 +164,45 @@ class Pipe:
             outim = show_plainmask_on_image(inpng,outpng)
             misc.imsave(self.output+'/raw/'+name,outpng)
             misc.imsave(self.output+'/vis/'+name,outim)
-#    
-#    def dir_crf_smoothing(self):
-#        imlist =[]
-#        imnamelist =[]
-#        for root,_,fnames in sorted(os.walk(self.input)):
-#            for fname in fnames:
-#                if fname.endswith('.png') and 'M1BS' in fname and not fname.startswith('.'):
-#                    path = os.path.join(root,fname)
-#                    imlist.append((path,fname))
-#                    imnamelist.append(fname)
-#        print(imnamelist)
-#        for path,name in imlist :
-#            print(path)
-#            im = misc.imread(path)
-#            raw_pred = misc.imread(os.path.join(self.out_raw,name))
-#            crf_out = crf_refine(im.astype(np.uint8),raw_pred.astype(np.uint8))
-#            misc.imsave(self.output+'/crf/'+name,crf_out)
+    def eval_dir_J(self,GT):
+        imlist =[]
+        imnamelist =[]
+        for root,_,fnames in sorted(os.walk(self.out_raw)):
+            for fname in fnames:
+                if fname.endswith('.png') and 'M1BS' in fname and not fname.startswith('.'):
+                    path = os.path.join(root,fname)
+                    imlist.append((path,fname))
+                    imnamelist.append(fname)
+        with open(os.path.join(self.out_raw+'/iou.txt'),'w') as FILE:
+            iou_all =[]
+            for path, name in imlist:
+                preds = misc.imread(os.path.join(self.out_raw,name))
+#                preds = (preds>150)
+                preds = (preds>50)
+                labs = misc.imread(os.path.join(GT,name))
+                labs = (labs >0.5)
+                misc.imsave(self.output+'/tmp/'+name,preds.astype(np.uint8)*255)
+#                preds = preds.astype(np.uint8)
+                target= labs.flatten()
+                prediction = preds.flatten()
+                intersection = np.logical_and(target, prediction)
+                union = np.logical_or(target, prediction)
+                iou = np.sum(intersection.astype(np.float)) / np.sum(union.astype(np.float))
+#                k = l+p
+#                union = sum(k>=1)
+#                intersection = sum(k==2)
+#                iou = float(intersection)/float(union)
+#                print(sum(l==1 &p==1))
+#                iou = iou_score(labs.flatten(),preds.flatten(),normalize=True)
+                print(iou)
+                iou_all.append(iou)
+                FILE.write(' %02.2f   %s\n'%(iou,name))
+            m_iou = sum(iou_all)/len(iou_all)
+            print("Mean IOU: %f"%m_iou)
+            FILE.write(' %02.2f  \n'%(m_iou))
+            FILE.close()
 
-
-    def eval_dir(self,Outpath,GT):
+    def eval_dir_AP(self,Outpath,GT):
         imlist =[]
         imnamelist =[]
         for root,_,fnames in sorted(os.walk(GT)):
@@ -212,14 +236,33 @@ class Pipe:
                 FILE.write(' %02.2f  |  %02.2f  |   %02.2f |  %s \n'%(AP,Prec,Recall,name))
             FILE.close()
 
-
+    def testset1(self):
+#        self.dir_png_predict('/nfs/bigbox/hieule/GAN/data/Penguins/Test/A')
+        self.eval_dir_J('/nfs/bigbox/hieule/GAN/data/Penguins/Test/B')
 
         
 if __name__=='__main__':
 
-#    a = Pipe('','./test_PTS/')
-#    a.input ='/nfs/bigbox/hieule/penguin_data/TEST_PTS_MASK/A' 
-#    im = a.png_predict(misc.imread('/nfs/bigbox/hieule/penguin_data/TEST_PTS_MASK/A/WV02_20151204195602_103001004F9A8500_15DEC04195602-M1BS-500637515080_01_P006_u08rf3031_fixed.png'))
-#    misc.imsave('chec.png',im)
-    a = Pipe('','./Test')
-    a.dir_png_predict('/mnt/Testing/A')
+    name = sys.argv[1]        
+    print(sys.argv)
+    if len(sys.argv) ==3:
+        epoch = sys.argv[2] 
+        del sys.argv[2]
+    else:
+        epoch ='best'
+    del sys.argv[1]
+    
+#    a = Pipe(name,epoch,'hope','./Test')
+#    a.dir_png_predict('/nfs/bigbox/hieule/GAN/data/Penguins/WL_Train/shannon5_padding400/RP_hopebay_guanoarea/A')
+#    a.dir_png_predict('/nfs/bigbox/hieule/GAN/data/Penguins/Test_300/A')
+#    a = Pipe(name,epoch,'paulet','./Test')
+#    a.dir_png_predict('/nfs/bigbox/hieule/GAN/data/Penguins/WL_Train/shannon5_padding400/RP_paulet_guanoarea/A')
+#    a = Pipe(name,epoch,'crozier','./Test')
+#    a.dir_png_predict('/nfs/bigbox/hieule/GAN/data/Penguins/WL_Train/shannon5_padding400/RP_crozier_guanoarea/A')
+#    a = Pipe(name,epoch,'arth','./Test')
+#    a.dir_png_predict('/nfs/bigbox/hieule/GAN/data/Penguins/WL_Train/shannon5_padding400/RP_arthurson_guanoarea/A')
+#    a = Pipe(name,epoch,'test300','./Test')
+#    a.dir_png_predict('/nfs/bigbox/hieule/GAN/data/Penguins/Test_300/A')
+#    a.eval_dir_J('/nfs/bigbox/hieule/GAN/data/Penguins/Test_300/B')
+    a = Pipe(name,epoch,'test','./Test')
+    a.testset1()

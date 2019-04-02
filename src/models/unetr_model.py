@@ -12,7 +12,8 @@ from PIL import ImageOps,Image
 class UnetRModel(BaseModel):
     def name(self):
         return 'UnetModelWithRegressionLoss'
-
+    def eval(self):
+        self.netG.eval()
     def initialize(self, opt):
         BaseModel.initialize(self, opt)
         self.isTrain = opt.isTrain
@@ -37,9 +38,9 @@ class UnetRModel(BaseModel):
                 self.schedulers.append(networks.get_scheduler(optimizer, opt))
         else:
             self.load_network(self.netG, 'G', opt.which_epoch)
-        print('---------- Networks initialized -------------')
-        networks.print_network(self.netG)
-        print('-----------------------------------------------')
+#        print('---------- Networks initialized -------------')
+#        networks.print_network(self.netG)
+#        print('-----------------------------------------------')
         
 
     def set_input(self, input):
@@ -56,6 +57,12 @@ class UnetRModel(BaseModel):
             self.isweak = Variable(input['isweak'].cuda(self.gpu_ids[0], async=True))
         else:
             self.isweak = Variable(torch.zeros(self.count.shape).cuda(self.gpu_ids[0],async=True))
+ 
+ 
+        if 'isfixed' in input:
+            self.isfixed = Variable(input['isfixed'].cuda(self.gpu_ids[0], async=True))
+        else:
+            self.isfixed = Variable(torch.zeros(self.count.shape).cuda(self.gpu_ids[0],async=True))
 
 
     def forward(self):
@@ -98,6 +105,11 @@ class UnetRModel(BaseModel):
                 row = ImageOps.crop(Image.fromarray(row),border =8)
                 row = ImageOps.expand(row,border=8,fill=(0,200,0))
                 row = np.asarray(row)
+            elif self.isfixed[i] == 1:
+                row = ImageOps.crop(Image.fromarray(row),border =4)
+                row = ImageOps.expand(row,border=4,fill=(0,0,200))
+                row = np.asarray(row)
+
 
             all.append(row)
         all = tuple(all)

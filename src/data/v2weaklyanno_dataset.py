@@ -11,7 +11,7 @@ from pdb import set_trace as st
 import random
 import numpy as np
 import time
-class WeaklyAnnoDataset(BaseDataset):
+class v2WeaklyAnnoDataset(BaseDataset):
     def initialize(self, opt):
         self.opt = opt
         self.root = opt.dataroot
@@ -34,6 +34,7 @@ class WeaklyAnnoDataset(BaseDataset):
                     X['im_path'] = os.path.join(root,fname)
                     X['mask_path'] = os.path.join(self.B_dir,fname)
                     X['ispos'] = True
+                    X['isfixed'] = False
                     X['imname'] = fname
                     X['isstrong'] = True
                     if not os.path.isfile(X['mask_path']):
@@ -54,6 +55,11 @@ class WeaklyAnnoDataset(BaseDataset):
 
         self.wA_dir = opt.wdataroot + '/A/'
         self.wB_dir = opt.wdataroot + '/B/'
+        self.wC_dir = opt.wdataroot + '/C/'
+        self.pos_pos = 0
+        self.pos_neg = 0
+        self.neg_pos = 0
+        self.neg_neg = 0
 
         for root,_,fnames in sorted(os.walk(self.wA_dir)):
             for fname in fnames:
@@ -62,15 +68,31 @@ class WeaklyAnnoDataset(BaseDataset):
                     X['im_path'] = os.path.join(root,fname)
                     X['mask_path'] = os.path.join(self.wB_dir,fname)
                     X['ispos'] = True
+                    X['isfixed'] = False
                     X['imname'] = fname
                     X['isstrong'] = False
+                    sparam = open(os.path.join(self.wC_dir,fname+'.txt'))
+                    line = sparam.read()
+                    X['classifier_score'] = float(line)
                     if not os.path.isfile(X['mask_path']):
                         X['ispos'] = False
                         X['mask_path'] = 'None'
-                    if X['ispos']:
+                        if X['classifier_score'] < 0:
+                            self.neg_neg = self.neg_neg +1
+                        else:
+                            self.neg_pos = self.neg_pos +1
+
+                     
+                    
+                    if X['ispos'] and X['classifier_score'] > 0:
                         self.pos_only.append(X)
                         self.pos_and_weak_only.append(X)
+                        self.pos_pos = self.pos_pos +1
                     else:
+                        if X['ispos']:
+                            self.pos_neg = self.pos_neg +1
+                            X['ispos'] = False
+                            X['isfixed'] = True
                         self.neg_only.append(X)
                         self.neg_and_weak_only.append(X)
                     self.weak_only.append(X)
@@ -84,6 +106,7 @@ class WeaklyAnnoDataset(BaseDataset):
         print("Pos/Neg: %d / %d "%(len(self.pos_only),len(self.all)-len(self.pos_only)))
         print("Accurate Anno / Weak Anno: %d / %d "%(len(self.strong_only),len(self.all)-len(self.strong_only)))
         print("Positive+Accurately Annotated : %d "%(len(self.pos_and_strong_only)))
+        print("++/+-/-+/--: %d/%d/%d/%d"%(self.pos_pos,self.pos_neg,self.neg_pos,self.neg_neg))
     def __len__(self):
 	    return len(self.strong_only)*2 
     def name(self):
@@ -186,7 +209,8 @@ class WeaklyAnnoDataset(BaseDataset):
         B_img = B_img - 0.5
         B_img = B_img * 2
         isweak = 0 if data_point['isstrong'] else 1
-        return  {'A': A_img, 'B': B_img,'imname':imname,'counts':counts, 'isweak':isweak}
+        isfixed = 1 if data_point['isfixed'] else 0
+        return  {'A': A_img, 'B': B_img,'imname':imname,'counts':counts, 'isweak':isweak,'isfixed':isfixed}
 def main():
     import argparse
     opt = argparse.ArgumentParser()
@@ -194,8 +218,9 @@ def main():
     opt.randomSize=True
     opt.keep_ratio=True
     opt.fineSize = 256
-    opt.dataroot ='/mnt/train_ori/PATCHES/128_386/'
-    A = WeaklyAnnoDataset()
+    opt.dataroot ='/nfs/bigbox/hieule/GAN/data/Penguins/Train/PATCHES/256_384/'
+    opt.wdataroot ='/nfs/bigbox/hieule/GAN/data/Penguins/WL_Train/merged/PATCHES/192_384/'
+    A = v2WeaklyAnnoDataset()
     A.initialize(opt)
     A.stats()
     

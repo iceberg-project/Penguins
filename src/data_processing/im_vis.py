@@ -23,14 +23,13 @@ def draw(im,ratio):
 def show_plainmask_on_image(oim,mask):
     #mask = np.float32(mask)/255
     mask = np.uint8(mask)
-    mask = (mask>=250).astype(np.float)
-    return to_rgb3b(np.uint8(mask*255))
+    mask = (mask>=150).astype(np.float)
     #mask[mask>=0.5] =1
-    im = np.float(oim)
+    im = oim.astype(np.float)
     if im.ndim ==2:
         im = to_rgb3b(im)
-    im = im * 0.5
-    im[:,:,1] = im[:,:,1] + mask*100
+    im = im * 0.75
+    im[:,:,1] = im[:,:,1] + mask*200
     im[im>255] = 255
     return im.astype(np.uint8)
 def visdir(imdir,maskdir,visdir,pimlist=[]):

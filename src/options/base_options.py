@@ -12,6 +12,7 @@ class BaseOptions():
     def initialize(self):
         self.parser.add_argument('--root', help='path to images (should have subfolders trainA, trainB, valA, valB, etc)')
         self.parser.add_argument('--dataroot', help='path to images (should have subfolders trainA, trainB, valA, valB, etc)')
+        self.parser.add_argument('--wdataroot', help='path to images (should have subfolders trainA, trainB, valA, valB, etc)')
         self.parser.add_argument('--batch_size', type=int, default=64, help='input batch size')
         self.parser.add_argument('--loadSize', type=int, default=286, help='scale images to this size')
         self.parser.add_argument('--fineSize', type=int, default=256, help='then crop to this size')
@@ -39,7 +40,7 @@ class BaseOptions():
         self.parser.add_argument('--display_port', type=int, default=8097, help='visdom port of the web display')
         self.parser.add_argument('--tw', type=int, default=512, help='visdom port of the web display')
         self.parser.add_argument('--th', type=int, default=512, help='visdom port of the web display')
-        self.parser.add_argument('--display_host', type=str, default='http://localhost')
+        self.parser.add_argument('--display_host', type=str, default='http://bigeye.cs.stonybrook.edu')
         self.parser.add_argument('--no_dropout', action='store_true', help='no dropout for the generator')
         self.parser.add_argument('--max_dataset_size', type=int, default=float("inf"), help='Maximum number of samples allowed per dataset. If the dataset directory contains more than max_dataset_size, only a subset is loaded.')
         self.parser.add_argument('--todolist', type=str, default='None', help='selects model to use for netD')

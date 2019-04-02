@@ -12,6 +12,8 @@ class UnetModel(BaseModel):
     def name(self):
         return 'UnetModel'
 
+    def eval(self):
+        self.netG.eval()
     def initialize(self, opt):
         BaseModel.initialize(self, opt)
         self.isTrain = opt.isTrain
@@ -36,9 +38,6 @@ class UnetModel(BaseModel):
                 self.schedulers.append(networks.get_scheduler(optimizer, opt))
         else:
             self.load_network(self.netG, 'G', opt.which_epoch)
-        print('---------- Networks initialized -------------')
-        networks.print_network(self.netG)
-        print('-----------------------------------------------')
         
 
     def set_input(self, input):

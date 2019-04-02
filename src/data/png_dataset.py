@@ -32,7 +32,8 @@ class PngDataset(BaseDataset):
         self.nim = len(self.imname)
 
     def __len__(self):
-	    return self.nim
+        return 5000
+	#return self.nim
     def name(self):
         return 'PNGDATASET'
     
@@ -86,6 +87,16 @@ class PngDataset(BaseDataset):
         if self.opt.tsize:
             neww = self.opt.tw
             newh = self.opt.th
+        t =[Image.FLIP_LEFT_RIGHT,Image.ROTATE_90]
+        for i in range(0,2):
+            c = np.random.randint(0,3,1,dtype=np.int)[0]
+            if c==2: continue
+            A_img=A_img.transpose(t[c])
+            B_img=B_img.transpose(t[c])
+        
+        degree=np.random.randint(-10,10,1)[0]
+        A_img=A_img.rotate(degree)
+        B_img=B_img.rotate(degree)
         
         A_img = A_img.resize((neww, newh),Image.NEAREST)
         B_img = B_img.resize((neww, newh),Image.NEAREST)
