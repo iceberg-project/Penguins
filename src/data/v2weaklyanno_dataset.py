@@ -1,3 +1,8 @@
+"""
+Author: Hieu Le
+License: MIT
+Copyright: 2018-2019
+"""
 import torch
 import sys
 sys.path.insert(0, "./..")

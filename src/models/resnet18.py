@@ -1,3 +1,8 @@
+"""
+Author: Hieu Le
+License: MIT
+Copyright: 2018-2019
+"""
 import torch
 from torch import nn as nn
 import torchvision

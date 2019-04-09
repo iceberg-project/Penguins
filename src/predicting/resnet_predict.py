@@ -1,3 +1,9 @@
+"""
+Wrapper for Segmentation Evaluation. 
+Author: Hieu Le
+License: MIT
+Copyright: 2018-2019
+"""
 import sys
 sys.path.insert(0, "./..")
 import torch

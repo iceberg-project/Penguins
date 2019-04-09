@@ -1,3 +1,9 @@
+"""
+BaseModel class wrapper for defining all models
+Author: Hieu Le
+License: MIT
+Copyright: 2018-2019
+"""
 import os
 import torch
 import numpy as np

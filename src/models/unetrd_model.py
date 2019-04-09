@@ -1,3 +1,8 @@
+"""
+Author: Hieu Le
+License: MIT
+Copyright: 2018-2019
+"""
 import numpy as np
 import torch
 import os
