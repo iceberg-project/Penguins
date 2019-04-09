@@ -15,6 +15,7 @@ import numpy as np
 ###############################################################################
 
 
+
 def weights_init_normal(m):
     classname = m.__class__.__name__
     # print(classname)
@@ -104,6 +105,16 @@ def get_scheduler(optimizer, opt):
     return scheduler
 
 
+def resnet18(output_nc,gpu_ids=[]):
+    use_gpu = len(gpu_ids) > 0
+    from resnet18 import resnet18
+    net = resnet18(output_nc,gpu_ids=[])
+    if len(gpu_ids) > 0:
+        net.cuda(gpu_ids[0])
+    #init_weights(net, init_type=init_type)
+    return net
+
+
 def define_G(input_nc, output_nc, ngf, which_model_netG, norm='batch', use_dropout=False, init_type='normal', gpu_ids=[]):
     netG = None
     use_gpu = len(gpu_ids) > 0
@@ -120,6 +131,8 @@ def define_G(input_nc, output_nc, ngf, which_model_netG, norm='batch', use_dropo
         netG = UnetGenerator(input_nc, output_nc, 7, ngf, norm_layer=norm_layer, use_dropout=use_dropout, gpu_ids=gpu_ids)
     elif which_model_netG == 'unet_256':
         netG = UnetGenerator(input_nc, output_nc, 8, ngf, norm_layer=norm_layer, use_dropout=use_dropout, gpu_ids=gpu_ids)
+    elif which_model_netG == 'unet_regressor':
+        netG = UnetRegressor(input_nc, output_nc, 8, ngf, norm_layer=norm_layer, use_dropout=use_dropout, gpu_ids=gpu_ids)
     else:
         raise NotImplementedError('Generator model name [%s] is not recognized' % which_model_netG)
     if len(gpu_ids) > 0:

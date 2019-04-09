@@ -1,22 +1,17 @@
 import sys
 sys.path.insert(0, "./..")
-sys.path.insert(0, "/nfs/bigbox/hieule/GAN/code/Penguins/src/")
+sys.path.insert(0, "./../..")
 from models import create_model
-import os,gc,datetime,time,socket
 import numpy as np
 from PIL import Image 
 from options.train_options import TrainOptions
-import visdom
 import time
 from data import CreateDataLoader
 from util.visualizer import Visualizer
-hostname=socket.gethostname()
-
 
 opt = TrainOptions().parse()
 
 visualizer = Visualizer(opt)
-vis2 = visdom.Visdom(server = opt.display_host,port = 7007)
 total_steps = 0
 data_loader = CreateDataLoader(opt)
 #dataset = TifDataset(opt)
@@ -37,9 +32,6 @@ for epoch in range(opt.epoch_count,opt.niter+opt.niter_decay+1):
         epoch_iter += opt.batch_size
         model.set_input(data)
         model.optimize_parameters()
-
-        vis2.text(str(opt.display_port)+'  ' + hostname+str(opt.gpu_ids)+'  EPOCH:'+ '   '+str(epoch) + '  ' +opt.name
-                ,win=opt.display_port,opts={'title': str(opt.display_port)+':' + datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')})
         if i% 5 ==0:
             visualizer.display_current_results(model.get_current_visuals(), epoch, False)
             errors = model.get_current_errors()
