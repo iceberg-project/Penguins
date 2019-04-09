@@ -1,3 +1,9 @@
+"""
+Split dataset to testing/training set
+Author: Hieu Le
+License: MIT
+Copyright: 2018-2019
+"""
 from shutil import copyfile
 import argparse
 import os.path

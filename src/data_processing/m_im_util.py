@@ -1,3 +1,9 @@
+"""
+Utility scripts for images
+Author: Hieu Le
+License: MIT
+Copyright: 2018-2019
+"""
 import os
 import numpy as np
 from PIL import Image
@@ -30,6 +36,9 @@ def convertMbandstoRGB(tif,imname):
             return tif[(3,2,1),:,:]
     if "IK" in imname:
         return tif[(3,2,1),:,:]
+    else:
+        return tif[(3,2,1),:,:]
+
 
 def to_rgb3b(im):
     # as 3a, but we add an extra copy to contiguous 'C' order
@@ -43,10 +52,13 @@ def sdsaveim(savetif,name):
         for i in range(0,savetif.shape[2]):
             savetif[:,:,i] =  savetif[:,:,i] / np.max(savetif[:,:,i]) * 255
         savetif = savetif.astype(np.uint8) 
-    if savetif.shape[2] == 3:
+    if savetif.ndim== 2:
+        Image.fromarray(savetif.astype(np.uint8),mode='L').save(name)
+        
+    elif savetif.shape[2] == 3:
         Image.fromarray(savetif.astype(np.uint8)).save(name)
-    if savetif.shape[2] == 1:
-        Image.fromarray(np.squeeze(savetif.astype(np.uint8)),mode='L').save(name)
+    elif savetif.shape[2] == 1:
+        Image.fromarray(savetif[:,:,0:1].astype(np.uint8),mode='L').save(name)
     #plt.imshow(savetif[1,:],cmap=cm.gray)
 
 def sdmkdir(d):

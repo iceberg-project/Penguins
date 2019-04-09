@@ -1,13 +1,15 @@
-
+"""
+Utility scripts for polygon Shape
+Author: Hieu Le
+License: MIT
+Copyright: 2018-2019
+"""
 from shapely.geometry import shape,mapping
 from shapely.geometry.polygon import LinearRing, Polygon
 import fiona 
 from PIL import Image 
 import numpy as np
 import rasterio
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-from descartes import PolygonPatch
 from osgeo import gdal,osr
 
 def FindBoundingBoxWithPadding(bb,padding=(0,0)):

@@ -1,3 +1,10 @@
+"""
+Class for handling reading/writting TIF files
+
+Author: Hieu Le
+License: MIT
+Copyright: 2018-2019
+"""
 import rasterio
 import numpy as np
 import os

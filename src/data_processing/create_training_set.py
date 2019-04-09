@@ -14,7 +14,7 @@ from mfuncshape import BoundingBoxShape,ReadProjection,TransformShape
 from PIL import Image
 from matplotlib import cm
 from baseoption import BaseOptions
-from util import sdmkdir, convertMbandstoRGB,sdsaveim
+from m_util import sdmkdir, convertMbandstoRGB,sdsaveim
 
 opt = BaseOptions().parse()
 opt.padding = 1000
