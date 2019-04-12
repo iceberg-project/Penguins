@@ -1,5 +1,5 @@
 """
-Wrapper for classification Evaluation. 
+Wrapper for Segmentation Evaluation. 
 Author: Hieu Le
 License: MIT
 Copyright: 2018-2019
@@ -15,7 +15,7 @@ from data.png_dataset import PngDataset
 from options.train_options import TrainOptions
 from options.test_options import TestOptions
 from data import CreateDataLoader
-from data_processing.m_util import *
+from data_processing.m_im_util import *
 #from util.misc import crf_refine 
 from data_processing.im_vis import *
 import time
@@ -23,27 +23,23 @@ import numpy as np
 from sklearn.metrics import average_precision_score as ap_score
 from sklearn.metrics import jaccard_similarity_score as iou_score
 class Pipe:
-    def __init__(self,name,epoch,testset,output):
-        self.m_name = name
-        self.epoch = epoch
+    def __init__(self,opt):
+        self.opt = opt
+        self.opt.step = 128
+        self.opt.size = 256
+        self.m_name = opt.name
+        self.epoch = opt.epoch
         self.import_model()
-        self.output = output +'/' + self.m_name+'/' + str(self.opt.which_epoch) + '/' +testset +'/'
-        self.out_eval = os.path.join(self.output,'eval')
+        self.output = opt.output +'/' + self.m_name+'/' + str(self.opt.which_epoch) + '/' +opt.testset +'/'
+        #self.out_eval = os.path.join(self.output,'eval')
         self.out_raw = os.path.join(self.output,'raw')
-        #self.out_crf = os.path.join(self.output,'crf')
         self.out_vis = os.path.join(self.output,'vis')
         sdmkdir(self.output)
         sdmkdir(self.output+'raw')
         sdmkdir(self.output+'vis')
-        sdmkdir(self.output+'eval')
         sdmkdir(self.output+'tmp')
-        #sdmkdir(self.out_crf)
         self.input =  input
     def import_model(self):
-        opt = TestOptions().parse()
-        opt.checkpoints_dir='/nfs/bigdisk/hieule/checkpoints_CVPR19W/'
-        #opt.name='unet_bs96_sampling0.5'
-        #opt.name='unet_bs96_sampling0.5_baseline'
         opt.name = self.m_name
         if 'unetr' in opt.name:
             opt.model='unetr'
@@ -103,10 +99,8 @@ class Pipe:
             print("failed")
     def png_predict(self,im):
         last = time.time()
-        parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-        opt = parser.parse_args()
-        opt.step = 128
-        opt.size = 256
+        opt.step = self.opt.step#128
+        opt.size = self.opt.size#256
         w,h,c = im.shape
         patches = png2patches(im,opt.step,opt.size)
         print(patches.shape)
@@ -134,8 +128,6 @@ class Pipe:
             batch = (batch  - 0.5) * 2
             temp = self.network.get_prediction_tensor(batch)
             out[i:i+bs,:,:,:] = temp['raw_out']
-            
-            #print(temp['raw_out'].shape)
 
         elapsed_time = time.time() - last
         last = time.time()
@@ -188,18 +180,11 @@ class Pipe:
                 labs = misc.imread(os.path.join(GT,name))
                 labs = (labs >0.5)
                 misc.imsave(self.output+'/tmp/'+name,preds.astype(np.uint8)*255)
-#                preds = preds.astype(np.uint8)
                 target= labs.flatten()
                 prediction = preds.flatten()
                 intersection = np.logical_and(target, prediction)
                 union = np.logical_or(target, prediction)
                 iou = np.sum(intersection.astype(np.float)) / np.sum(union.astype(np.float))
-#                k = l+p
-#                union = sum(k>=1)
-#                intersection = sum(k==2)
-#                iou = float(intersection)/float(union)
-#                print(sum(l==1 &p==1))
-#                iou = iou_score(labs.flatten(),preds.flatten(),normalize=True)
                 print(iou)
                 iou_all.append(iou)
                 FILE.write(' %02.2f   %s\n'%(iou,name))
@@ -243,32 +228,17 @@ class Pipe:
             FILE.close()
 
     def testset1(self):
-#        self.dir_png_predict('/nfs/bigbox/hieule/GAN/data/Penguins/Test/A')
-        self.eval_dir_J('/nfs/bigbox/hieule/GAN/data/Penguins/Test/B')
-
-        
+        self.dir_png_predict('/nfs/bigbox/hieule/GAN/data/Penguins/Test/A')
+#        self.eval_dir_J('/nfs/bigbox/hieule/GAN/data/Penguins/Test/B')
+    def test_single_png(self,impath):
+        name = os.path.basename(impath)
+        inpng = misc.imread(impath)
+        outpng = self.png_predict(inpng)
+        outim = show_plainmask_on_image(inpng,outpng)
+        misc.imsave(self.output+'/raw/'+name,outpng)
+        misc.imsave(self.output+'/vis/'+name,outim)
 if __name__=='__main__':
-
-    name = sys.argv[1]        
-    print(sys.argv)
-    if len(sys.argv) ==3:
-        epoch = sys.argv[2] 
-        del sys.argv[2]
-    else:
-        epoch ='best'
-    del sys.argv[1]
-    
-#    a = Pipe(name,epoch,'hope','./Test')
-#    a.dir_png_predict('/nfs/bigbox/hieule/GAN/data/Penguins/WL_Train/shannon5_padding400/RP_hopebay_guanoarea/A')
-#    a.dir_png_predict('/nfs/bigbox/hieule/GAN/data/Penguins/Test_300/A')
-#    a = Pipe(name,epoch,'paulet','./Test')
-#    a.dir_png_predict('/nfs/bigbox/hieule/GAN/data/Penguins/WL_Train/shannon5_padding400/RP_paulet_guanoarea/A')
-#    a = Pipe(name,epoch,'crozier','./Test')
-#    a.dir_png_predict('/nfs/bigbox/hieule/GAN/data/Penguins/WL_Train/shannon5_padding400/RP_crozier_guanoarea/A')
-#    a = Pipe(name,epoch,'arth','./Test')
-#    a.dir_png_predict('/nfs/bigbox/hieule/GAN/data/Penguins/WL_Train/shannon5_padding400/RP_arthurson_guanoarea/A')
-#    a = Pipe(name,epoch,'test300','./Test')
-#    a.dir_png_predict('/nfs/bigbox/hieule/GAN/data/Penguins/Test_300/A')
-#    a.eval_dir_J('/nfs/bigbox/hieule/GAN/data/Penguins/Test_300/B')
-    a = Pipe(name,epoch,'test','./Test')
-    a.testset1()
+    opt = TestOptions().parse()
+    a = Pipe(opt)
+    a.test_single_png(opt.input_im)
+    #a.testset1()

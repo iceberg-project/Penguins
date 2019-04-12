@@ -36,13 +36,24 @@ pip install -r requirements.txt
 ```bash
 git clone https://github.com/iceberg-project/Penguins/
 ```
+### Prediction
 - Download pre-trained model:
 TBD
 
 - The script to run the testing for a single PNG image:
-python whole_image_prediction.py --gpu_ids 0
 
+python predict.py [--params ...]
+params:
+--name: name of the model used for testing
+--gpu_ids: the ids of gpu
+--checkpoints_dir: path to the folder containing the trained models
+--epoch: which epoch we use to test the model
+--input_im: path to the input image
+--output: directory to save the outputs
 
-
+Example script:
+```bash
+python predict.py --gpu-ids 0 --name model_name --epoch 300 --checkpoints_dir '/nfs/bigdisk/hieule/checkpoints_CVPR19W/' --output test --testset GE --input_im /nfs/bigbox/hieule/GAN/data/Penguins/Test/A/GE01_20120308222215_1050410000422100_12MAR08222215-M1BS-054072905140_01_P002_u08rf3031.png
+```
 
 

@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 from scipy import misc
 import os 
-from data_processing.m_util import sdmkdir,to_rgb3b
+from data_processing.m_im_util import sdmkdir,to_rgb3b
 from sklearn import metrics
 #import rasterio
 #from rasterio import mask, features, warp
@@ -28,7 +28,7 @@ def show_plainmask_on_image(oim,mask):
     im = oim.astype(np.float)
     if im.ndim ==2:
         im = to_rgb3b(im)
-    im = im * 0.75
+    im = im 
     im[:,:,1] = im[:,:,1] + mask*200
     im[im>255] = 255
     return im.astype(np.uint8)
