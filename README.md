@@ -43,13 +43,14 @@ TBD
 - The script to run the testing for a single PNG image:
 
 python predict.py [--params ...]
-params:
---name: name of the model used for testing
---gpu_ids: the ids of gpu
---checkpoints_dir: path to the folder containing the trained models
---epoch: which epoch we use to test the model
---input_im: path to the input image
---output: directory to save the outputs
+
+## params:
+- --name: name of the model used for testing
+- --gpu_ids: the ids of gpu
+- --checkpoints_dir: path to the folder containing the trained models
+- --epoch: which epoch we use to test the model
+- --input_im: path to the input image
+- --output: directory to save the outputs
 
 Example script:
 ```bash
