@@ -1,0 +1,48 @@
+language: python
+python: "2.7"
+
+os:
+  - linux
+
+
+env:
+  global:
+    - LOG=`git log -n 1 | grep Merge`
+    - OLD=`echo $LOG | cut -d ' ' -f2`
+    - NEW=`echo $LOG | cut -d ' ' -f3`
+    - DIFF=`git diff --name-only --diff-filter=b $OLD...$NEW`
+    - DIFF=$(echo $DIFF | grep -o -e '\b[^ ]*.py\b')
+#    - CMD_PYTEST="c"
+    - CMD_FLAKE8="if ! test -z \"$DIFF\"; then flake8 --config=.flake8rc $DIFF;else echo 'Nothing to pep8'; fi"
+    - CMD_PYLINT="if ! test -z \"$DIFF\"; then pylint $DIFF; else echo 'Nothing to lint'; fi"
+    - COVERAGE=false
+  matrix:
+#    - MAIN_CMD=$CMD_PYTEST COVERAGE=true
+    - MAIN_CMD=$CMD_FLAKE8
+    - MAIN_CMD=$CMD_PYLINT  
+  
+  
+# command to install dependencies
+install:
+#  - pip install .
+#  - pip install coverage
+  - pip install flake8
+  - pip install pylint
+#  - pip install codecov
+
+before_script:
+  - LOC=/home/travis/virtualenv/python2.7  # Location where VE is created on travis
+
+
+script:
+  - echo $MAIN_CMD
+  - eval $MAIN_CMD
+
+after_success:
+  - |
+    if [[ $COVERAGE == 'true' ]]; then \
+      coverage combine; \
+      coverage xml; \
+      coverage report; \
+      curl -s https://codecov.io/bash | bash
+    fi
