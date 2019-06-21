@@ -22,6 +22,7 @@ import time
 import numpy as np
 from sklearn.metrics import average_precision_score as ap_score
 from sklearn.metrics import jaccard_similarity_score as iou_score
+import imageio
 class Pipe:
     def __init__(self,opt):
         self.opt = opt
@@ -232,11 +233,13 @@ class Pipe:
 #        self.eval_dir_J('/nfs/bigbox/hieule/GAN/data/Penguins/Test/B')
     def test_single_png(self,impath):
         name = os.path.basename(impath)
-        inpng = misc.imread(impath)
+        #inpng = misc.imread(impath)
+        #inpng = misc.imread(impath)
+        inpng = imageio.imread(impath)
         outpng = self.png_predict(inpng)
         outim = show_plainmask_on_image(inpng,outpng)
-        misc.imsave(self.output+'/raw/'+name,outpng)
-        misc.imsave(self.output+'/vis/'+name,outim)
+        imageio.imsave(self.output+'/raw/'+name,outpng)
+        imageio.imsave(self.output+'/vis/'+name,outim)
 if __name__=='__main__':
     opt = TestOptions().parse()
     a = Pipe(opt)

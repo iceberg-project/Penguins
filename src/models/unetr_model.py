@@ -14,7 +14,7 @@ from .base_model import BaseModel
 from . import networks
 from PIL import ImageOps,Image
 
-class UnetRModel(BaseModel):
+class unetrmodel(BaseModel):
     def name(self):
         return 'UnetModelWithRegressionLoss'
     def eval(self):
@@ -53,21 +53,21 @@ class UnetRModel(BaseModel):
         input_A = input['A' if AtoB else 'B']
         input_B = input['B' if AtoB else 'A']
         if len(self.gpu_ids) > 0:
-            input_A = input_A.cuda(self.gpu_ids[0], async=True)
-            input_B = input_B.cuda(self.gpu_ids[0], async=True)
+            input_A = input_A.cuda(self.gpu_ids[0])
+            input_B = input_B.cuda(self.gpu_ids[0])
         self.input = Variable(input_A)
         self.GT  = Variable(input_B)
-        self.count=  Variable(input['counts'].cuda(self.gpu_ids[0], async=True))
+        self.count=  Variable(input['counts'].cuda(self.gpu_ids[0]))
         if 'isweak' in input:
-            self.isweak = Variable(input['isweak'].cuda(self.gpu_ids[0], async=True))
+            self.isweak = Variable(input['isweak'].cuda(self.gpu_ids[0]))
         else:
-            self.isweak = Variable(torch.zeros(self.count.shape).cuda(self.gpu_ids[0],async=True))
+            self.isweak = Variable(torch.zeros(self.count.shape).cuda(self.gpu_ids[0]))
  
  
         if 'isfixed' in input:
-            self.isfixed = Variable(input['isfixed'].cuda(self.gpu_ids[0], async=True))
+            self.isfixed = Variable(input['isfixed'].cuda(self.gpu_ids[0]))
         else:
-            self.isfixed = Variable(torch.zeros(self.count.shape).cuda(self.gpu_ids[0],async=True))
+            self.isfixed = Variable(torch.zeros(self.count.shape).cuda(self.gpu_ids[0]))
 
 
     def forward(self):
@@ -135,14 +135,14 @@ class UnetRModel(BaseModel):
                             ('G_segmentation',self.loss_G_segmentation.detach().cpu())])
     def get_prediction_tensor(self,input_A):
         if len(self.gpu_ids) > 0:
-            input_A = input_A.cuda(self.gpu_ids[0], async=True)
+            input_A = input_A.cuda(self.gpu_ids[0])
         self.input = Variable(input_A)
         self.output = self.netG(self.input)
         raw = self.output.data.cpu().float().numpy()
         return OrderedDict([('input',util.tensor2im(self.input.data)),('output',util.tensor2im(self.output.data)),('raw_out',raw)])
 
     def get_prediction(self,input):
-        self.input = Variable(input['A'].cuda(self.gpu_ids[0], async=True))
+        self.input = Variable(input['A'].cuda(self.gpu_ids[0]))
         self.output = self.netG(self.input)
         raw = self.output.data.cpu().float().numpy()
         raw = np.transpose(raw,(0,2,3,1))
