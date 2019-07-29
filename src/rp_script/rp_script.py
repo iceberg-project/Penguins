@@ -30,8 +30,8 @@ def args_parser():
     parser.add_argument('queue', type=str,
                         help='The queue from which resources are requested.')
     parser.add_argument('runtime', type=int,
-                        help='The amount of time resources are requested in' +
-                        ' minutes')
+                        help='The amount of time resources are requested in'
+                        + ' minutes')
     parser.add_argument('cpus', type=int,
                         help='Number of CPU Cores required to execute')
     parser.add_argument('gpus', type=int,
@@ -133,30 +133,30 @@ if __name__ == '__main__':
                 'module list',
                 'source activate %sanaconda3/envs/penguins2' % args.user_env,
                 'which python',
-                'export PYTHONPATH=%s/Penguins/' +
-                'src:$PYTHONPATH' % args.input_pth,
-                'export PYTHONPATH=%sanaconda3/envs/' +
-                'penguins2/lib/python2.7/site-packages:' +
-                '$PYTHONPATH' % args.user_env,
+                'export PYTHONPATH=%s/Penguins/'
+                + 'src:$PYTHONPATH' % args.input_pth,
+                'export PYTHONPATH=%sanaconda3/envs/'
+                + 'penguins2/lib/python2.7/site-packages:'
+                + '$PYTHONPATH' % args.user_env,
                 'export CUDA_VISIBLE_DEVICES=%d' % gpu_id]
             cud.executable = 'python'
-            cud.arguments = ['%sPenguins/src/predicting/' +
-                             'predict.py' % args.input_pth,
+            cud.arguments = ['%sPenguins/src/predicting/'
+                             + 'predict.py' % args.input_pth,
                              '--gpu_ids', 0, '--name',
                              'v3weakly_unetr_bs96_main_model_ignore_bad',
                              '--epoch', 300, '--checkpoints_dir',
-                             '%sPenguins/checkpoints_dir/' +
-                             'checkpoints_CVPR19W/' % args.input_pth,
+                             '%sPenguins/checkpoints_dir/'
+                             + 'checkpoints_CVPR19W/' % args.input_pth,
                              '--output', 'test', '--testset', 'GE',
                              '--input_im', img]
             cud.input_staging = {
-                'source': '%sPenguins/checkpoints_dir' +
-                          '/checkpoints_CVPR19W/' +
-                          'v3weakly_unetr_bs96_main_model_ignore' +
-                          '_bad/300_net_G.pth' % args.input_pth,
-                'target': 'unit:///Penguins/checkpoints_dir' +
-                          '/checkpoints_CVPR19W/v3weakly_unetr_bs96_' +
-                          'main_model_ignore_bad/300_net_G.pth',
+                'source': '%sPenguins/checkpoints_dir'
+                          + '/checkpoints_CVPR19W/'
+                          + 'v3weakly_unetr_bs96_main_model_ignore'
+                          + '_bad/300_net_G.pth' % args.input_pth,
+                'target': 'unit:///Penguins/checkpoints_dir'
+                          + '/checkpoints_CVPR19W/v3weakly_unetr_bs96_'
+                          + 'main_model_ignore_bad/300_net_G.pth',
                 'action': rp.COPY}
             cud.gpu_processes = 1
             cud.cpu_processes = 1

@@ -6,8 +6,6 @@ import json
 import sys
 import argparse
 
-
-
 def img_parser():
     """
     Traversing over all the files inside the target
@@ -17,7 +15,7 @@ def img_parser():
     parser.add_argument('path', help='Path of the dataset')
     json_dict = {}
     data = []
-    for filename in glob.iglob(sys.argv[1]+'*.png'):
+    for filename in glob.iglob(sys.argv[1] + '*.png'):
         print 'found a PNG Images ' + filename
         tmp_dict = {}
         tmp_dict["img"] = filename
@@ -28,6 +26,7 @@ def img_parser():
 # Writing information to JSON file
     with open("penguins_images.json", "w") as outfile:
         json.dump(json_dict, outfile, indent=4, sort_keys=True)
+
 
 if __name__ == '__main__':
     img_parser()
