@@ -6,6 +6,7 @@ import json
 import sys
 import argparse
 
+
 def img_parser():
     """
     Traversing over all the files inside the target
@@ -16,7 +17,6 @@ def img_parser():
     json_dict = {}
     data = []
     for filename in glob.iglob(sys.argv[1] + '*.png'):
-        print 'found a PNG Images ' + filename
         tmp_dict = {}
         tmp_dict["img"] = filename
         data.append(tmp_dict)
