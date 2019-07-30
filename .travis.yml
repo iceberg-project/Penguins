@@ -28,6 +28,8 @@ install:
 #  - pip install coverage
   - pip install flake8
   - pip install pylint
+  - pip install radical.pilot
+  - pip install radical.utils
 #  - pip install codecov
 
 before_script:
