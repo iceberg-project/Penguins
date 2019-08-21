@@ -42,6 +42,7 @@ def args_parser():
                         help='CUDA device to export')
     parser.add_argument('user_env', type=str, nargs='?',
                         help='path to the User conda or virtual enviroment')
+    print (parser.parse_args())
     return parser.parse_args()
 
 
@@ -132,27 +133,26 @@ if __name__ == '__main__':
                 'module list',
                 'source activate %sanaconda3/envs/penguins2' % args.user_env,
                 'which python',
-                'export PYTHONPATH=%s/Penguins/' +
-                'src:$PYTHONPATH' % args.input_pth,
-                'export PYTHONPATH=%sanaconda3/envs/' +
-                'penguins2/lib/python2.7/site-packages:' +
-                '$PYTHONPATH' % args.user_env,
+                'export PYTHONPATH=%sPenguins/src:$PYTHONPATH' % args.input_pth,
+                'export PYTHONPATH=%sanaconda3/envs' % args.user_env +
+		'/penguins2/lib/python2.7/' +
+		'site-packages:$PYTHONPATH',
                 'export CUDA_VISIBLE_DEVICES=%d' % gpu_id]
             cud.executable = 'python'
-            cud.arguments = ['%sPenguins/src/predicting/' +
-                             'predict.py' % args.input_pth,
+            cud.arguments = ['%sPenguins/src/predicting/' % args.input_pth +
+                             'predict.py',
                              '--gpu_ids', 0, '--name',
                              'v3weakly_unetr_bs96_main_model_ignore_bad',
                              '--epoch', 300, '--checkpoints_dir',
-                             '%sPenguins/checkpoints_dir/' +
-                             'checkpoints_CVPR19W/' % args.input_pth,
+                             '%sPenguins/checkpoints_dir/' % args.input_pth +
+                             'checkpoints_CVPR19W/',
                              '--output', 'test', '--testset', 'GE',
                              '--input_im', img]
             cud.input_staging = {
-                'source': '%sPenguins/checkpoints_dir' +
+                'source': '%sPenguins/checkpoints_dir' % args.input_pth +
                           '/checkpoints_CVPR19W/' +
                           'v3weakly_unetr_bs96_main_model_ignore' +
-                          '_bad/300_net_G.pth' % args.input_pth,
+                          '_bad/300_net_G.pth',
                 'target': 'unit:///Penguins/checkpoints_dir' +
                           '/checkpoints_CVPR19W/v3weakly_unetr_bs96_' +
                           'main_model_ignore_bad/300_net_G.pth',
