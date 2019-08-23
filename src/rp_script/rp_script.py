@@ -41,8 +41,8 @@ def args_parser():
     parser.add_argument('device', type=int,
                         help='CUDA device to export')
     parser.add_argument('user_env', type=str, nargs='?',
-                        help='path to the User conda or virtual enviroment')
-    print (parser.parse_args())
+                        help='Full path to the conda or virtual enviroment' +
+                        '(pytorch 4.0, visdom, dominate) are needed')
     return parser.parse_args()
 
 
@@ -87,8 +87,7 @@ if __name__ == '__main__':
         umgr.add_pilots(pilot)
 
         cud_pars = rp.ComputeUnitDescription()
-        cud_pars.pre_exec = ['module load anaconda2', 'which python',
-                             'conda info --envs']
+        cud_pars.pre_exec = ['module load anaconda2']
         cud_pars.executable = 'python'
         cud_pars.arguments = ['img_parser.py', args.path]
         cud_pars.input_staging = {'source': 'client:///img_parser.py',
@@ -129,14 +128,9 @@ if __name__ == '__main__':
             cud = rp.ComputeUnitDescription()
             cud.pre_exec = [
                 'module load anaconda2',
-                'which python',
-                'module list',
-                'source activate %sanaconda3/envs/penguins2' % args.user_env,
-                'which python',
-                'export PYTHONPATH=%sPenguins/src:$PYTHONPATH' % args.input_pth,
-                'export PYTHONPATH=%sanaconda3/envs' % args.user_env +
-		'/penguins2/lib/python2.7/' +
-		'site-packages:$PYTHONPATH',
+                'source activate %s' % args.user_env,
+                'export PYTHONPATH=%s' % args.input_pth +
+                'Penguins/src:$PYTHONPATH',
                 'export CUDA_VISIBLE_DEVICES=%d' % gpu_id]
             cud.executable = 'python'
             cud.arguments = ['%sPenguins/src/predicting/' % args.input_pth +
