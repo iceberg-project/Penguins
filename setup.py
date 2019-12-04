@@ -206,14 +206,6 @@ setup_args = {
                             'torchvision==0.2.0',
                             'visdom==0.1.8.9'
                            ],
-                            #'torch',
-                            #'scipy',
-                            #'numpy',
-                            #'sklearn',
-                            #'rasterio',
-                            #'PIL',
-                            #'cv2',
-                            #'pydensecrf'
     'zip_safe'          : False,
     'scripts'           : ['bin/iceberg_penguins.detect'
                            ]
