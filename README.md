@@ -25,7 +25,7 @@
 ### PSC Bridges
 From source:
 ```bash
-$ git clone https://github.com/iceberg-project/Seals.git
+$ git clone https://github.com/iceberg-project/Penguins.git
 $ module load cuda
 $ module load python3
 $ virtualenv iceberg_penguins
