@@ -1,6 +1,8 @@
 import importlib
-#from models.base_model import BaseModel
-from base_model import BaseModel
+import sys
+sys.path.insert(0, "./..")
+from models.base_model import BaseModel
+#from base_model import BaseModel
 
 
 def find_model_using_name(model_name):

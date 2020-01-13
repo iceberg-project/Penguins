@@ -1,0 +1,18 @@
+# packages in environment at /home/hieule/anaconda2/envs/penguin:
+#
+# Name                    Version                   Build  Channel
+boost                     1.66.0                   py27_1    conda-forge
+gdal                      2.1.4                    py27_2    conda-forge
+geotiff                   1.4.2                         1    conda-forge
+matplotlib                2.1.0                    py27_0    conda-forge
+opencv                    2.4.13              np113py27_1    conda-forge
+openjpeg                  2.1.2                         3    conda-forge
+pillow                    4.2.1                    py27_0    conda-forge
+python                    2.7.15            h721da81_1008    conda-forge
+pytorch                   0.3.1            py27had95abb_0  
+rasterio                  0.36.0                   py27_2    conda-forge
+scikit-learn              0.19.1           py27h445a80a_0  
+scipy                     1.2.1            py27h921218d_2    conda-forge
+scipy                     0.19.0                    <pip>
+torchvision               0.2.0                    py27_0    conda-forge
+visdom                    0.1.8.9                       0    conda-forge

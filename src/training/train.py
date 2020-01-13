@@ -6,8 +6,9 @@ Copyright: 2018-2019
 """
 
 import sys
-sys.path.insert(0, "./..")
-#sys.path.insert(0, "/nfs/bigbox/hieule/GAN/code/Penguins/src/")
+sys.path.insert(0, "./../")
+sys.path.insert(0,"/nfs/bigbox/hieule/GAN/code/ICEBERG_Penguins/src/")
+sys.path.insert(0,"/nfs/bigbox/hieule/GAN/code/ICEBERG_Penguins/src/model")
 from models import create_model
 import os,gc,datetime,time,socket
 import numpy as np

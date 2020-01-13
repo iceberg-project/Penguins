@@ -23,7 +23,7 @@ def draw(im,ratio):
 def show_plainmask_on_image(oim,mask):
     #mask = np.float32(mask)/255
     mask = np.uint8(mask)
-    mask = (mask>=150).astype(np.float)
+    mask = (mask>=100).astype(np.float)
     #mask[mask>=0.5] =1
     im = oim.astype(np.float)
     if im.ndim ==2:

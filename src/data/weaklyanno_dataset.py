@@ -108,14 +108,15 @@ class WeaklyAnnoDataset(BaseDataset):
             self.opt.s_pos = 0.5
             self.opt.s_strong = 0.5
         #adaptive sampling:
-        if random.random()<self.opt.s_pos:
-            if random.random()<self.opt.s_strong:
+        if random.random()<self.opt.s_strong:
+            if random.random()<self.opt.s_pos:
                 choosen_set='pos_and_strong_only'
             else:
-                choosen_set='pos_and_weak_only'
-        else:
-            if random.random()<self.opt.s_strong:
                 choosen_set='neg_and_strong_only'
+        else:
+            #if random.random()<self.opt.s_pos:
+            if random.random()<0.8:
+                choosen_set='pos_and_weak_only'
             else:
                 choosen_set='neg_and_weak_only'
         r_index = index%(len(getattr(self,choosen_set)))

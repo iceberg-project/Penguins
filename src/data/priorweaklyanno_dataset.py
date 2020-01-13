@@ -16,8 +16,11 @@ from pdb import set_trace as st
 import random
 import numpy as np
 import time
-class v3WeaklyAnnoDataset(BaseDataset):
+import torchvision.transforms as T
+class PriorWeaklyAnnoDataset(BaseDataset):
     def initialize(self, opt):
+        
+        start_time = time.time()
         self.opt = opt
         self.root = opt.dataroot
         self.GTroot = opt.dataroot
@@ -53,18 +56,28 @@ class v3WeaklyAnnoDataset(BaseDataset):
                         self.neg_and_strong_only.append(X)
                     self.all.append(X)
                     self.strong_only.append(X)
-
+        print("--- %s seconds ---" % (time.time() - start_time))
                     
-        if not hasattr(opt,'wdataroot'):
-            opt.wdataroot = '/mnt/train_weakly/PATCHES/256_384/'
 
         self.wA_dir = opt.wdataroot + '/A/'
         self.wB_dir = opt.wdataroot + '/B/'
         self.wC_dir = opt.wdataroot + '/C/'
+        self.classificationscore_file = opt.wdataroot + '/classificationscore.txt'
+        score ={}
+        with open(self.classificationscore_file) as fp:
+            line = fp.readline()
+            cnt = 1
+            while len(line)>1:
+                k = line[:-1].split(' ', 1)
+                score[k[0]]= float(k[1])
+                line = fp.readline()
+                cnt += 1
+        print(cnt)
         self.pos_pos = 0
         self.pos_neg = 0
         self.neg_pos = 0
         self.neg_neg = 0
+        
 
         for root,_,fnames in sorted(os.walk(self.wA_dir)):
             for fname in fnames:
@@ -76,9 +89,9 @@ class v3WeaklyAnnoDataset(BaseDataset):
                     X['isfixed'] = False
                     X['imname'] = fname
                     X['isstrong'] = False
-                    sparam = open(os.path.join(self.wC_dir,fname+'.txt'))
-                    line = sparam.read()
-                    X['classifier_score'] = float(line)
+                    #sparam = open(os.path.join(self.wC_dir,fname+'.txt'))
+                    #line = sparam.read()
+                    X['classifier_score'] = score[fname]
                     if not os.path.isfile(X['mask_path']):
                         X['ispos'] = False
                         X['mask_path'] = 'None'
@@ -106,7 +119,7 @@ class v3WeaklyAnnoDataset(BaseDataset):
                             self.weak_only.append(X)
                             self.all.append(X)
                     
-         
+        print("--- %s seconds ---" % (time.time() - start_time))
         self.nim = len(self.all)
         self.stats()
     def stats(self):
@@ -134,20 +147,20 @@ class v3WeaklyAnnoDataset(BaseDataset):
         return self.nx,self.ny
     def __getitem__(self,index):
         if self.opt.randomSize:
-            self.opt.loadSize = np.random.randint(257,400,1)[0]
+            self.opt.loadSize = np.random.randint(257,280,1)[0]
      
         if not hasattr(self.opt,'s_pos'):
-            self.opt.s_pos = 0.5
-            self.opt.s_strong = 0.7
+            self.opt.s_pos_strong,self.opt.s_pos_weak = 0.5,0.5
+            self.opt.s_strong = 0.5
         #adaptive sampling:
-        if random.random()<self.opt.s_pos:
-            if random.random()<self.opt.s_strong:
+        if random.random()<self.opt.s_strong:
+            if random.random()<self.opt.s_pos_strong:
                 choosen_set='pos_and_strong_only'
             else:
-                choosen_set='pos_and_weak_only'
-        else:
-            if random.random()<self.opt.s_strong:
                 choosen_set='neg_and_strong_only'
+        else:
+            if random.random()<self.opt.s_pos_weak:
+                choosen_set='pos_and_weak_only'
             else:
                 choosen_set='neg_and_weak_only'
         '''
@@ -167,7 +180,6 @@ class v3WeaklyAnnoDataset(BaseDataset):
             t = A_img.size
             B_img = Image.fromarray(np.zeros((A_img.size[0],A_img.size[1])))
         imname = data_point['imname']
-        
         
         ow = A_img.size[0]
         oh = A_img.size[1]
@@ -192,7 +204,7 @@ class v3WeaklyAnnoDataset(BaseDataset):
             if c==2: continue
             A_img=A_img.transpose(t[c])
             B_img=B_img.transpose(t[c])
-        
+
         degree=np.random.randint(-10,10,1)[0]
         A_img=A_img.rotate(degree)
         B_img=B_img.rotate(degree)
@@ -200,34 +212,57 @@ class v3WeaklyAnnoDataset(BaseDataset):
         
         A_img = A_img.resize((neww, newh),Image.NEAREST)
         B_img = B_img.resize((neww, newh),Image.NEAREST)
+        #augmenting B to get prior mask
+        prior_img = B_img
+        
+        prior_img= prior_img.rotate(degree)
+        if data_point['isstrong']: 
+            translating_= np.random.uniform(0,0.05,1)
+            rotating_ = np.random.randint(0,10,1)[0]
+            Tdegree = np.random.randint(-10,10,1)[0]
+            affine = T.Compose([
+                     T.RandomAffine(rotating_, translate=[translating_[0],translating_[0]], scale=[0.95,1.05], shear=True, resample=False, fillcolor=0)
+                                ])
+#            prior_img = affine(prior_img)
+
+            clor = T.Compose([
+                    T.ColorJitter(brightness=0.3, contrast=0.2, saturation=0.2, hue=0.2)])
+            A_img = clor(A_img)
         
         A_img = np.asarray(A_img)
         B_img = np.asarray(B_img)
-        A_img = A_img[:,:,0:3]
+        prior_img = np.asarray(prior_img)
 
+        A_img = A_img[:,:,0:3]
         B_img.setflags(write=1)
-        B_img[B_img==2] = 255
+        B_img[B_img>=2] = 255
         B_img[B_img!=255] = 0
         A_img = np.transpose(A_img,(2,0,1))
         B_img = np.expand_dims(B_img, axis=0)
+        prior_img = np.expand_dims(prior_img,axis=0)
         z,w,h = A_img.shape
         w_offset = random.randint(0,max(0,w-self.opt.fineSize-1))
         h_offset = random.randint(0,max(0,h-self.opt.fineSize-1))
         A_img = A_img[:, w_offset:w_offset + self.opt.fineSize, h_offset:h_offset + self.opt.fineSize] 
         B_img = B_img[:,w_offset:w_offset + self.opt.fineSize, h_offset:h_offset + self.opt.fineSize]
+        prior_img = prior_img[:,w_offset:w_offset + self.opt.fineSize, h_offset:h_offset + self.opt.fineSize]
+
         A_img = torch.from_numpy(A_img).float().div(255)
         B_img = torch.from_numpy(B_img).float().div(255)
+        prior_img = torch.from_numpy(prior_img).float().div(255)
         A_img = A_img - 0.5
         A_img = A_img * 2
 
         counts = torch.mean(B_img.view(-1,1))
         B_img = B_img - 0.5
         B_img = B_img * 2
+        prior_img = prior_img *2 -1
         isweak = 0 if data_point['isstrong'] else 1
         isfixed = 0 if data_point['isfixed'] else 1
+        ispos = 1 if data_point['ispos'] else 0
 #        print("unique B")
 #        print(np.unique(B_img.cpu().numpy()))
-        return  {'A': A_img, 'B': B_img,'imname':imname,'counts':counts, 'isweak':isweak,'isfixed':isfixed}
+        return  {'A': A_img, 'B': B_img,'prior': prior_img,'imname':imname,'counts':counts, 'isweak':isweak,'isfixed':isfixed,'ispos':ispos}
 def main():
     import argparse
     opt = argparse.ArgumentParser()

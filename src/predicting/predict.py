@@ -38,18 +38,27 @@ class Pipe:
         sdmkdir(self.output+'raw')
         sdmkdir(self.output+'vis')
         sdmkdir(self.output+'tmp')
+        sdmkdir(self.output+'all')
         self.input =  input
     def import_model(self):
         opt.name = self.m_name
         if 'unetr' in opt.name:
             opt.model='unetr'
+        elif 'unetprior' in opt.name:
+            opt.model='unetprior'
+            opt.inject_depth = 5
+            opt.prior_depth = 2
+            opt.prior_nf = 12
         elif 'unet' in opt.name:
             opt.model = 'unet'
         opt.which_epoch=self.epoch
         opt.serial_batches = True  # no shuffle
         opt.no_flip = True  # no flip
         opt.no_dropout = True
+        opt.checkpoints_dir ='/nfs/biglens/add_disk0/hieule/checkpoints_RS2020/'
+        
         opt.gpu_ids = [0]
+        print(opt)
         self.network = create_model(opt)
         self.network.eval()
         self.opt = opt 
@@ -97,10 +106,114 @@ class Pipe:
                         dst.write(outpng.astype(rasterio.uint8), 1)
         except:
             print("failed")
+
+    def dir_png_predict_with_prior(self,fold,prior_fold,names=[]):
+        self.input = fold
+        self.input_prior=prior_fold
+        imlist =[]
+        imnamelist =[]
+        for root,_,fnames in sorted(os.walk(fold)):
+            for fname in fnames:
+                if fname.endswith('.png') and 'M1BS' in fname and not fname.startswith('.'):
+                    if len(names)==0:
+                        path = os.path.join(root,fname)
+                        path2 = os.path.join(prior_fold,fname)
+                        imlist.append((path,path2,fname))
+                        imnamelist.append(fname)
+                    else:
+                        for name in names:
+                            if "_"+name+"_" in fname:
+                                path = os.path.join(root,fname)
+                                path2 = os.path.join(prior_fold,fname)
+                                imlist.append((path,path2,fname))
+                                imnamelist.append(fname)
+                                break
+
+        print(imnamelist)
+        for path,prior_path,name in imlist :
+            print(path)
+            try:
+                inpng = misc.imread(path)
+                if inpng.shape[0] * inpng.shape[1] // 128 //128 > 2000: continue
+                prior = misc.imread(prior_path)
+                if len(prior.shape) ==2:
+                    prior = np.expand_dims(prior,axis=2)
+                outpng = self.png_predict_with_prior(inpng,prior)
+                out_vis = show_plainmask_on_image(inpng,outpng)
+                prior_vis = show_plainmask_on_image(inpng,prior[:,:,0])
+                misc.imsave(self.output+'/raw/'+name,outpng)
+                misc.imsave(self.output+'/vis/'+name,out_vis)
+                #print(inpng.shape,outpng.shape,out_vis.shape,prior_vis.shape)
+                misc.imsave(self.output+'/all/'+name,np.hstack([inpng,out_vis,prior_vis]))
+            except:
+                print('failed')
+
+    def png_predict_with_prior(self,im,prior):
+        last = time.time()
+        opt.step = self.opt.step#128
+        opt.size = self.opt.size#256
+        w,h,c = im.shape
+        patches = png2patches(im,opt.step,opt.size)
+        prior_patches = png2patches(prior,opt.step,opt.size)
+
+        print(patches.shape,prior_patches.shape)
+        elapsed_time = time.time() - last
+        last = time.time()
+        print('im 2 patches: %0.4f'%(elapsed_time))
+
+        orishape = np.asarray(patches.shape)
+        orishape[-1] = 1
+
+        patches = np.reshape(patches, (-1,256,256,3))
+        prior_patches = np.reshape(prior_patches, (-1,256,256,1))
+        outshape  = np.asarray(patches.shape)
+        outshape[3] = 1
+        patches = np.transpose(patches,(0,3,1,2))
+        prior_patches = np.transpose(prior_patches,(0,3,1,2))
+        s = np.asarray(patches.shape)
+        s[1] = 1
+        bs = 32
+        n_patches = patches.shape[0]
+        out = np.zeros(s) 
+        print('numbers of patches %d'%(n_patches))
+        print('Processing all patches')
+        for i in range(0,n_patches,bs):
+            batch  = patches[i:i+bs,:,:,:]
+            prior_batch = prior_patches[i:i+bs,:,:,:]
+            batch = torch.from_numpy(batch).float().div(255)
+            batch = (batch  - 0.5) * 2
+
+            prior_batch = torch.from_numpy(prior_batch).float().div(255)
+            prior_batch[prior_batch>0] = 1
+            prior_batch[prior_batch!=1] = 0
+            prior_batch = (prior_batch  - 0.5) * 2
+            temp = self.network.get_prediction_tensor(batch,prior_batch)
+            out[i:i+bs,:,:,:] = temp['raw_out']
+
+        elapsed_time = time.time() - last
+        last = time.time()
+        print('patches 2 prediction: %0.4f'%(elapsed_time))
+        out = np.reshape(out,outshape)
+        out = np.reshape(out,(orishape[0],orishape[1],outshape[3],outshape[1],outshape[2]))
+
+        outpng = patches2png_legacy(out,w,h,opt.step,opt.size)
+        print('merging')
+        outpng = np.transpose(outpng,(1,2,0))
+        outpng = np.squeeze(outpng) 
+        outpng = (outpng + 1)/2
+        out = outpng
+        outpng = outpng*255
+        return outpng
     def png_predict(self,im):
         last = time.time()
         opt.step = self.opt.step#128
         opt.size = self.opt.size#256
+        ow,oh,oc = im.shape
+        if ow<256 or oh<256:
+            temp = np.zeros((max(256,ow),max(256,oh),3))
+            temp[:ow,:oh,:] = im
+            im = temp
+
         w,h,c = im.shape
         patches = png2patches(im,opt.step,opt.size)
         print(patches.shape)
@@ -142,6 +255,8 @@ class Pipe:
         outpng = (outpng + 1)/2
         out = outpng
         outpng = outpng*255
+        if ow!=w or oh!=h:
+            outpng = outpng[:ow,:oh]
         return outpng
     
     def dir_png_predict(self,fold):
@@ -156,12 +271,15 @@ class Pipe:
                     imnamelist.append(fname)
         print(imnamelist)
         for path,name in imlist :
-            print(path)
-            inpng = misc.imread(path)
-            outpng = self.png_predict(inpng)
-            outim = show_plainmask_on_image(inpng,outpng)
-            misc.imsave(self.output+'/raw/'+name,outpng)
-            misc.imsave(self.output+'/vis/'+name,outim)
+            try:
+                print(path)
+                inpng = misc.imread(path)
+                outpng = self.png_predict(inpng)
+                out_vis = show_plainmask_on_image(inpng,outpng)
+                misc.imsave(self.output+'/raw/'+name,outpng)
+                misc.imsave(self.output+'/vis/'+name,out_vis)
+            except:
+                print('cant handle ' + name)
     def eval_dir_J(self,GT):
         imlist =[]
         imnamelist =[]
@@ -227,18 +345,31 @@ class Pipe:
                 FILE.write(' %02.2f  |  %02.2f  |   %02.2f |  %s \n'%(AP,Prec,Recall,name))
             FILE.close()
 
+    def subset_prior(self):
+        self.dir_png_predict_with_prior('/nfs/bigbox/hieule/GAN/data/Penguins/WL_Train/merged/A',
+                '/nfs/bigbox/hieule/GAN/data/Penguins/WL_Train/merged/B',
+                names=["arthurson","adare","hopebay2006","paulet","crozier","colbeckarch","comb","duke","gibbney","hallett","heroina","hopebay2011","inexpressible","sims","mtriiserlarsen","vortex","ambush","beagle","beaufort","beaufortnorth","blownbluff","capebatterbee","coulmannorth","franklin_pansh","hero2","royds","ufs"])
+    def testset2_prior(self):
+        self.dir_png_predict_with_prior('/nfs/bigbox/hieule/GAN/data/Penguins/WL_Train/merged/A','/nfs/bigbox/hieule/GAN/data/Penguins/WL_Train/merged/B')
+    def testset1_prior(self):
+        self.dir_png_predict_with_prior('/nfs/bigbox/hieule/GAN/data/Penguins/Test_100/A','/nfs/bigbox/hieule/GAN/data/Penguins/Test_100/B')
+    def testset2(self):
+        self.dir_png_predict('/nfs/bigbox/hieule/GAN/data/Penguins/WL_Train/merged/A')
     def testset1(self):
-        self.dir_png_predict('/nfs/bigbox/hieule/GAN/data/Penguins/Test/A')
+        self.dir_png_predict('/nfs/bigbox/hieule/GAN/data/Penguins/Test_100/A')
 #        self.eval_dir_J('/nfs/bigbox/hieule/GAN/data/Penguins/Test/B')
     def test_single_png(self,impath):
         name = os.path.basename(impath)
         inpng = misc.imread(impath)
         outpng = self.png_predict(inpng)
-        outim = show_plainmask_on_image(inpng,outpng)
+        out_vis = show_plainmask_on_image(inpng,outpng)
         misc.imsave(self.output+'/raw/'+name,outpng)
-        misc.imsave(self.output+'/vis/'+name,outim)
+        misc.imsave(self.output+'/vis/'+name,out_vis)
 if __name__=='__main__':
     opt = TestOptions().parse()
+    opt.testset = 'subset'
+    opt.output= './out_all/'
     a = Pipe(opt)
-    a.test_single_png(opt.input_im)
-    #a.testset1()
+    #a.test_single_png(opt.input_im)
+    #a.testset1_prior()
+    a.subset_prior()

@@ -115,7 +115,7 @@ def resnet18(output_nc,gpu_ids=[]):
     return net
 
 
-def define_G(input_nc, output_nc, ngf, which_model_netG, norm='batch', use_dropout=False, init_type='normal', gpu_ids=[]):
+def define_G(input_nc, output_nc, ngf, which_model_netG, norm='batch', use_dropout=False, init_type='normal', gpu_ids=[],opt=None):
     netG = None
     use_gpu = len(gpu_ids) > 0
     norm_layer = get_norm_layer(norm_type=norm)
@@ -131,6 +131,9 @@ def define_G(input_nc, output_nc, ngf, which_model_netG, norm='batch', use_dropo
         netG = UnetGenerator(input_nc, output_nc, 7, ngf, norm_layer=norm_layer, use_dropout=use_dropout, gpu_ids=gpu_ids)
     elif which_model_netG == 'unet_256':
         netG = UnetGenerator(input_nc, output_nc, 8, ngf, norm_layer=norm_layer, use_dropout=use_dropout, gpu_ids=gpu_ids)
+    elif which_model_netG == 'unet_prior':
+        from models.priorunet import PriorUnetGenerator
+        netG = PriorUnetGenerator(input_nc, output_nc, num_downs=8, ngf=ngf, norm_layer=norm_layer, use_dropout=use_dropout, gpu_ids=gpu_ids,inject_layer=opt.inject_depth,prior_nf=opt.prior_nf,num_downs_prior=opt.prior_depth)
     elif which_model_netG == 'unet_regressor':
         netG = UnetRegressor(input_nc, output_nc, 8, ngf, norm_layer=norm_layer, use_dropout=use_dropout, gpu_ids=gpu_ids)
     else:

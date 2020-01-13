@@ -2,7 +2,7 @@ import argparse
 import os
 from util import util
 import torch
-
+import os.path
 
 class BaseOptions():
     def __init__(self):
@@ -50,6 +50,15 @@ class BaseOptions():
         self.parser.add_argument('--keep_ratio', action='store_true', help='if specified, do not flip the images for data augmentation')
         self.parser.add_argument('--tsize', action='store_true', help='if specified, do not flip the images for data augmentation')
         self.parser.add_argument('--init_type', type=str, default='normal', help='network initialization [normal|xavier|kaiming|orthogonal]')
+        self.parser.add_argument('--inject_depth', type=int, default=6)
+        self.parser.add_argument('--prior_depth', type=int, default=6)
+        self.parser.add_argument('--lambda_segmentation', type=float, default=100)
+        self.parser.add_argument('--lambda_regression', type=float, default=10)
+        self.parser.add_argument('--lambda_entropy', type=float, default=10)
+        self.parser.add_argument('--s_strong', type=float, default=0.5)
+        self.parser.add_argument('--s_pos_strong', type=float, default=0.5)
+        self.parser.add_argument('--s_pos_weak', type=float, default=0.5)
+        self.parser.add_argument('--prior_nf', type=int, default=12)
 
         self.initialized = True
 
@@ -82,9 +91,10 @@ class BaseOptions():
         print(expr_dir)
         util.mkdirs(expr_dir)
         file_name = os.path.join(expr_dir, 'opt.txt')
-        with open(file_name, 'wt') as opt_file:
-            opt_file.write('------------ Options -------------\n')
-            for k, v in sorted(args.items()):
-                opt_file.write('%s: %s\n' % (str(k), str(v)))
-            opt_file.write('-------------- End ----------------\n')
+        if not os.path.exists(file_name):
+            with open(file_name, 'wt') as opt_file:
+                opt_file.write('------------ Options -------------\n')
+                for k, v in sorted(args.items()):
+                    opt_file.write('%s: %s\n' % (str(k), str(v)))
+                opt_file.write('-------------- End ----------------\n')
         return self.opt
