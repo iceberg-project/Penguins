@@ -47,11 +47,11 @@ class Discovery(object):
                     dataframe. Default value: False
         """
 
-        filepaths = glob(self._path + '/*.png')
+        filepaths = glob(self._path + '/*.tif.png')
         if filesize:
             dataset_df = pd.DataFrame(columns=['Filename', 'Size'])
             for filepath in filepaths:
-                filesize = 0 
+                filesize = 0  # int(math.ceil(os.path.getsize(filepath)/1024/1024))
                 dataset_df.loc[len(dataset_df)] = [filepath, filesize]
         else:
             dataset_df = pd.DataFrame(columns=['Filename'])
