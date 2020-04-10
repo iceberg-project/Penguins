@@ -129,7 +129,7 @@ def get_version(mod_root):
 
 # ------------------------------------------------------------------------------
 # check python version. we need >= 2.7, <3.x
-if  sys.hexversion < 0x03050000:
+if  sys.hexversion < 0x02070000:
     raise RuntimeError("%s requires Python 3.x (3.5 or higher)" % name)
 
 
@@ -190,22 +190,23 @@ setup_args = {
 
     'package_data'      :  {'': ['VERSION', 'SDIST', sdist_name]},
 
-    'install_requires'  :  ['boost',
-                            'gdal',
+    'install_requires'  :  ['numpy',
+                            'scipy==1.2.1',
+                            #'pygdal',
+                            #'boost==1.66.0', C++ library from conda-forge
                             #'geotiff',
-                            'georasters',
-                            'matplotlib',
+                            #'georasters',
+                            'gisrastertools',
                             'opencv-python',
                             #'openjpeg',
-                            'glymur',
-                            'Pillow',
-                            'python',
-                            'pytorch',
-                            'rasterio',
-                            'scikit-learn',
-                            'scipy',
-                            'torchvision',
-                            'visdom'
+                            #'Glymur',
+                            'Pillow==4.3.0', # scikit-image 0.15.0 has requirement pillow>=4.3.0
+                            #'python==2.7.15',
+                            #'torch==0.3.1',
+                            'torch',
+                            'rasterio==0.36.0',
+                            'scikit-learn==0.19.1',
+                            'torchvision==0.2.0',
                            ],
     'zip_safe'          : False,
     'scripts'           : ['bin/iceberg_penguins.detect'
