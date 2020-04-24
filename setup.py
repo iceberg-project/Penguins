@@ -190,23 +190,13 @@ setup_args = {
 
     'package_data'      :  {'': ['VERSION', 'SDIST', sdist_name]},
 
-    'install_requires'  :  ['numpy',
-                            'scipy==1.2.1',
-                            #'pygdal',
-                            #'boost==1.66.0', C++ library from conda-forge
-                            #'geotiff',
-                            #'georasters',
-                            'gisrastertools',
-                            'opencv-python',
-                            #'openjpeg',
-                            #'Glymur',
+    'install_requires'  :  ['scipy==1.2.1',
                             'Pillow==4.3.0', # scikit-image 0.15.0 has requirement pillow>=4.3.0
-                            #'python==2.7.15',
-                            #'torch==0.3.1',
                             'torch',
-                            'rasterio==0.36.0',
                             'scikit-learn==0.19.1',
                             'torchvision==0.2.0',
+                            'opencv-python',
+                            'rasterio'
                            ],
     'zip_safe'          : False,
     'scripts'           : ['bin/iceberg_penguins.detect'
