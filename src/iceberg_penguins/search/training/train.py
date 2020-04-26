@@ -13,7 +13,7 @@ import os,gc,datetime,time,socket
 import numpy as np
 from PIL import Image 
 from options.train_options import TrainOptions
-import visdom
+#import visdom
 import time
 from data import CreateDataLoader
 #from util.visualizer import Visualizer
