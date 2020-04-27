@@ -197,6 +197,7 @@ setup_args = {
                             'torchvision==0.2.0',
                             'opencv-python',
                             'rasterio'
+                            'future'
                            ],
     'zip_safe'          : False,
     'scripts'           : ['bin/iceberg_penguins.detect'
