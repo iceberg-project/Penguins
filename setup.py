@@ -196,7 +196,7 @@ setup_args = {
                             'scikit-learn==0.19.1',
                             'torchvision==0.2.0',
                             'opencv-python',
-                            'rasterio'
+                            'rasterio',
                             'future'
                            ],
     'zip_safe'          : False,
