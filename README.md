@@ -2,23 +2,20 @@
 
 [![Build Status](https://travis-ci.com/iceberg-project/Penguins.svg?branch=devel)](https://travis-ci.com/iceberg-project/Penguins)
 
-## Software Dependencies
+## Prerequisites
+- Linux
+- Python 3
+- CPU or NVIDIA GPU + CUDA CuDNN
 
-- boost==1.66.0
-- gdal==2.1.4
-- geotiff==1.4.2
-- matplotlib==2.1.0
-- opencv==2.4.13
-- openjpeg==2.1.2
-- pillow==4.2.1
-- python==2.7.15
-- pytorch==0.3.1
-- rasterio==0.36.0
-- scikit-learn==0.19.1
+## Software Dependencies
 - scipy==1.2.1
-- scipy==0.19.0
-- torchvision==0.2.0
-- visdom==0.1.8.9
+- Pillow==4.3.0
+- torch
+- scikit-learn==0.19.1
+- torchvision==0.2.0'
+- opencv-python
+- rasterio
+- future
 
 ## Installation
 
