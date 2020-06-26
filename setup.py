@@ -197,6 +197,7 @@ setup_args = {
                             'torchvision==0.2.0',
                             'opencv-python',
                             'rasterio',
+                            'imageio',
                             'future'
                            ],
     'zip_safe'          : False,

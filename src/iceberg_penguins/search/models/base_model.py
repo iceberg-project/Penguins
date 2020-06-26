@@ -7,7 +7,7 @@ Copyright: 2018-2019
 import os
 import torch
 import numpy as np
-import ..util.util as util
+from ..util import util
 from ..util.image_pool import ImagePool
 from collections import OrderedDict
 
