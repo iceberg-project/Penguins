@@ -8,8 +8,8 @@ import torch
 import os
 from collections import OrderedDict
 from torch.autograd import Variable
-import util.util as util
-from util.image_pool import ImagePool
+from ..util import util
+from ..util.image_pool import ImagePool
 from .base_model import BaseModel
 from . import networks
 from PIL import ImageOps,Image

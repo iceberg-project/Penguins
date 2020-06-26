@@ -42,6 +42,7 @@ class Pipe:
         sdmkdir(self.output+'tmp')
         self.input =  input
     def import_model(self):
+        opt = self.opt
         opt.name = self.m_name
         if 'unetr' in opt.name:
             opt.model='unetr'
