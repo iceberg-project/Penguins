@@ -57,7 +57,8 @@ The one provided here is at the epoch 300 of the model named "v3weakly_unetr_bs9
 
 - The script to run the testing for a single PNG image:
 
-iceberg_penguins.detect [--params ...]
+iceberg_penguins.detect [--params ...]  
+iceberg_penguins.detect --gpu-ids 0 --name v3weakly_unetr_bs96_main_model_ignore_bad --epoch 300 --checkpoints_dir '../checkpoints_CVPR19W/' --output test --input_im ../data/Penguins/Test/A/GE01_20120308222215_1050410000422100_12MAR08222215-M1BS-054072905140_01_P002_u08rf3031.png
 
 ## params:
 - --name: name of the model used for testing
