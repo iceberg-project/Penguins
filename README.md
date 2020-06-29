@@ -2,12 +2,12 @@
 
 [![Build Status](https://travis-ci.com/iceberg-project/Penguins.svg?branch=devel)](https://travis-ci.com/iceberg-project/Penguins)
 
-## Prerequisites
+## Prerequisites - all available on bridges via the commands below
 - Linux
 - Python 3
 - CPU or NVIDIA GPU + CUDA CuDNN
 
-## Software Dependencies
+## Software Dependencies - these will be installed automatically with the installation below.
 - scipy==1.2.1
 - Pillow==4.3.0
 - torch
@@ -18,8 +18,24 @@
 - future
 
 ## Installation
+Preliminaries:
+Login to bridges via ssh using a Unix or Mac command line terminal.  Login is available to bridges directly or through the XSEDE portal. Please see the [Bridges User's Guide][https://portal.xsede.org/psc-bridges]
+For Windows Users:
+Many tools are available for ssh access to bridges.  Please see [Ubuntu][https://ubuntu.com/tutorials/tutorial-ubuntu-on-windows#1-overview], [MobaXterm][https://mobaxterm.mobatek.net/], or [PuTTY][https://www.chiark.greenend.org.uk/~sgtatham/putty/]
 
 ### PSC Bridges
+Recommended installation:
+From PyPi:
+```bash
+$ module load cuda
+$ module load python3
+$ virtualenv iceberg_penguins
+$ source iceberg_penguins/bin/activate
+[iceberg_penguins] $ export PYTHONPATH=<path>/iceberg_penguins/lib/python3.5/site-packages
+[iceberg_penguins] $ pip install iceberg_penguins.search
+```
+
+Alternate installation (for developers):
 From source:
 ```bash
 $ git clone https://github.com/iceberg-project/Penguins.git
@@ -29,16 +45,6 @@ $ virtualenv iceberg_penguins
 $ source iceberg_penguins/bin/activate
 [iceberg_penguins] $ export PYTHONPATH=<path>/iceberg_penguins/lib/python3.5/site-packages
 [iceberg_penguins] $ pip install . --upgrade
-```
-
-From PyPi:
-```bash
-$ module load cuda
-$ module load python3
-$ virtualenv iceberg_penguins
-$ source iceberg_penguins/bin/activate
-[iceberg_penguins] $ export PYTHONPATH=<path>/iceberg_penguins/lib/python3.5/site-packages
-[iceberg_penguins] $ pip install iceberg_penguins.search
 ```
 
 To test
