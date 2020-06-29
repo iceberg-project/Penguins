@@ -19,7 +19,7 @@
 
 ## Installation
 Preliminaries:
-Login to bridges via ssh using a Unix or Mac command line terminal.  Login is available to bridges directly or through the XSEDE portal. Please see the [[Bridges User's Guide|https://portal.xsede.org/psc-bridges]]  
+Login to bridges via ssh using a Unix or Mac command line terminal.  Login is available to bridges directly or through the XSEDE portal. Please see the <a href="https://portal.xsede.org/psc-bridges">Bridges User's Guide</a>.  
 For Windows Users:  
 Many tools are available for ssh access to bridges.  Please see [[Ubuntu|https://ubuntu.com/tutorials/tutorial-ubuntu-on-windows#1-overview]], [[MobaXterm|https://mobaxterm.mobatek.net/]], or [[PuTTY|https://www.chiark.greenend.org.uk/~sgtatham/putty/]]
 
