@@ -31,17 +31,17 @@ Note: The lines below starting with '$' are commands to type into your terminal.
 ```bash
 $ pwd
 /home/username
-$ cd $SCRATCH # switch to your working space
-$ mkdir Penguins # create a directory to work in
-$ cd Penguins # move into your working directory
-$ module load cuda # load parallel computing architecture
-$ module load python3 # load correct python version
-$ virtualenv penguins_env # create a vitual environment to isolate your work from the default system
+$ cd $SCRATCH # switch to your working space.
+$ mkdir Penguins # create a directory to work in.
+$ cd Penguins # move into your working directory.
+$ module load cuda # load parallel computing architecture.
+$ module load python3 # load correct python version.
+$ virtualenv penguins_env # create a vitual environment to isolate your work from the default system.
 $ source penguins_env/bin/activate # activate your environment. Notice the command line prompt changes to show your environment on the next line.
 [penguins_env] $ pwd
 /pylon5/group/username/Penguins
 [penguins_env] $ export PYTHONPATH=<path>/penguins_env/lib/python3.5/site-packages # set a system variable to point python to your specific code. (Replace <path> with the results of pwd command above.
-[penguins_env] $ pip install iceberg_penguins.search # pip is a python tool to extract the requested software (iceberg_penguins.search in this case) from a repository.
+[penguins_env] $ pip install iceberg_penguins.search # pip is a python tool to extract the requested software (iceberg_penguins.search in this case) from a repository. (this may take several minutes).
 ```
 
 Alternate installation (for developers):
@@ -58,7 +58,13 @@ $ source penguins_env/bin/activate
 
 To test
 ```bash
-[iceberg_penguins] $ iceberg_penguins.detect
+[iceberg_penguins] $ deactivate # exit your virtual environment.
+$ interact -p GPU-small # request a compute node (this may take a minute or two or more).
+$ cd $SCRATCH/Penguins # make sure you are in the same directory where everything was set up before.
+$ module load cuda # load parallel computing architecture, as before.
+$ module load python3 # load correct python version, as before.
+$ source penguins_env/bin/activate # activate your environment, no need to create a new environment because the Penguins tools are installed and isolated here.
+[iceberg_penguins] $ iceberg_penguins.detect --help # this will display a help screen of available usage and parameters.
 ```
 
 ### Prediction
