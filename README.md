@@ -58,8 +58,10 @@ $ module load cuda
 $ module load python3
 $ virtualenv penguins_env
 $ source penguins_env/bin/activate
-[penguins_env] $ export PYTHONPATH=<path>/penguins_env/lib/python3.5/site-packages
-[penguins_env] $ pip install . --upgrade
+[penguins_env] 
+$ export PYTHONPATH=<path>/penguins_env/lib/python3.5/site-packages
+[penguins_env] 
+$ pip install . --upgrade
 ```
 
 To test
@@ -70,7 +72,8 @@ $ cd $SCRATCH/Penguins # make sure you are in the same directory where everythin
 $ module load cuda # load parallel computing architecture, as before.
 $ module load python3 # load correct python version, as before.
 $ source penguins_env/bin/activate # activate your environment, no need to create a new environment because the Penguins tools are installed and isolated here.
-[iceberg_penguins] $ iceberg_penguins.detect --help # this will display a help screen of available usage and parameters.
+[iceberg_penguins] 
+$ iceberg_penguins.detect --help # this will display a help screen of available usage and parameters.
 ```
 
 ### Prediction
