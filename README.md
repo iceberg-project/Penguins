@@ -61,10 +61,10 @@ iceberg_penguins.detect [--params ...]
 iceberg_penguins.detect --gpu-ids 0 --name v3weakly_unetr_bs96_main_model_ignore_bad --epoch 300 --checkpoints_dir '../checkpoints_CVPR19W/' --output test --input_im ../data/Penguins/Test/A/GE01_20120308222215_1050410000422100_12MAR08222215-M1BS-054072905140_01_P002_u08rf3031.png
 
 ## params:
-- --name: name of the model used for testing
 - --gpu_ids: the gpu used for testing
-- --checkpoints_dir: path to the folder containing the trained models
+- --name: name of the model used for testing
 - --epoch: which epoch we use to test the model
-- --input_im: path to the input image
+- --checkpoints_dir: path to the folder containing the trained models
 - --output: directory to save the outputs
+- --input_im: path to the input image
 
