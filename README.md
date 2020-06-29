@@ -25,14 +25,23 @@ Many tools are available for ssh access to bridges.  Please see [Ubuntu][https:/
 
 ### PSC Bridges
 Recommended installation:
+When you are logged into bridges:
 From PyPi:
+Note: The lines below starting with '$' are commands to type into your terminal.  Everything following '#' are comments to explain the reason for the command and should not be included in what you type.  Lines that do not start with '$' or '[penguins_env] $' are output you should expect to see.
 ```bash
-$ module load cuda
-$ module load python3
-$ virtualenv iceberg_penguins
-$ source iceberg_penguins/bin/activate
-[iceberg_penguins] $ export PYTHONPATH=<path>/iceberg_penguins/lib/python3.5/site-packages
-[iceberg_penguins] $ pip install iceberg_penguins.search
+$ pwd
+/home/username
+$ cd $SCRATCH # switch to your working space
+$ mkdir Penguins # create a directory to work in
+$ cd Penguins # move into your working directory
+$ module load cuda # load parallel computing architecture
+$ module load python3 # load correct python version
+$ virtualenv penguins_env # create a vitual environment to isolate your work from the default system
+$ source penguins_env/bin/activate # activate your environment. Notice the command line prompt changes to show your environment on the next line.
+[penguins_env] $ pwd
+/pylon5/group/username/Penguins
+[penguins_env] $ export PYTHONPATH=<path>/penguins_env/lib/python3.5/site-packages # set a system variable to point python to your specific code. (Replace <path> with the results of pwd command above.
+[penguins_env] $ pip install iceberg_penguins.search # pip is a python tool to extract the requested software (iceberg_penguins.search in this case) from a repository.
 ```
 
 Alternate installation (for developers):
@@ -41,10 +50,10 @@ From source:
 $ git clone https://github.com/iceberg-project/Penguins.git
 $ module load cuda
 $ module load python3
-$ virtualenv iceberg_penguins
-$ source iceberg_penguins/bin/activate
-[iceberg_penguins] $ export PYTHONPATH=<path>/iceberg_penguins/lib/python3.5/site-packages
-[iceberg_penguins] $ pip install . --upgrade
+$ virtualenv penguins_env
+$ source penguins_env/bin/activate
+[penguins_env] $ export PYTHONPATH=<path>/penguins_env/lib/python3.5/site-packages
+[penguins_env] $ pip install . --upgrade
 ```
 
 To test
