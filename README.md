@@ -76,14 +76,14 @@ $ source penguins_env/bin/activate # activate your environment, no need to creat
 https://drive.google.com/file/d/149j5rlynkO1jQTLOMpL5lextHY0ozw6N/view?usp=sharing
 You download to your local machine and use scp, ftp, rsync, or Globus to transfer to bridges.
 
-Please put the model file to: <checkpoints_dir>/<model_name>/
+The one provided here is at the epoch 300 of the model we will call "MY_MODEL".
 
-The one provided here is at the epoch 300 of the model named "v3weakly_unetr_bs96_main_model_ignore_bad"
+Please put the model file here: <checkpoints_dir>/MY_MODEL/
 
 - The script to run the testing for a single PNG image:
 
 iceberg_penguins.detect [--params ...]  
-iceberg_penguins.detect --gpu-ids 0 --name v3weakly_unetr_bs96_main_model_ignore_bad --epoch 300 --checkpoints_dir '../model_path/' --output test --input_im ../data/MY_IMG_TILE.png
+iceberg_penguins.detect --gpu-ids 0 --name MY_MODEL --epoch 300 --checkpoints_dir '../model_path/' --output test --input_im ../data/MY_IMG_TILE.png
 
 ## params:
 - --gpu_ids: the gpu used for testing
