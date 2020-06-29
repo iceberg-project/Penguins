@@ -79,7 +79,7 @@ The one provided here is at the epoch 300 of the model we will call "MY_MODEL".
 
 Please put the model file here: <checkpoints_dir>/MY_MODEL/
 
-- The script to run the testing for a single PNG image:
+- The script to run the testing for a single PNG image tile:
 
 iceberg_penguins.detect [--params ...]  
 iceberg_penguins.detect --gpu-ids 0 --name MY_MODEL --epoch 300 --checkpoints_dir '../model_path/' --output test --input_im ../data/MY_IMG_TILE.png
