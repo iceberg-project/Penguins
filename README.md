@@ -71,9 +71,8 @@ $ source penguins_env/bin/activate # activate your environment, no need to creat
 ```
 
 ### Prediction
-- Download a pre-trained model at:
+- Download a pre-trained model at: https://bit.ly/3eLSMuz
 
-https://drive.google.com/file/d/149j5rlynkO1jQTLOMpL5lextHY0ozw6N/view?usp=sharing
 You download to your local machine and use scp, ftp, rsync, or Globus to transfer to bridges.
 
 The one provided here is at the epoch 300 of the model we will call "MY_MODEL".
