@@ -39,7 +39,7 @@ $ mkdir Penguins # create a directory to work in.
 $ cd Penguins # move into your working directory.
 $ module load cuda # load parallel computing architecture.
 $ module load python3 # load correct python version.
-$ virtualenv penguins_env # create a vitual environment to isolate your work from the default system.
+$ virtualenv penguins_env # create a virtual environment to isolate your work from the default system.
 $ source penguins_env/bin/activate # activate your environment. Notice the command line prompt changes to show your environment on the next line.
 [penguins_env] 
 $ pwd
