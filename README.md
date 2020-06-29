@@ -41,10 +41,13 @@ $ module load cuda # load parallel computing architecture.
 $ module load python3 # load correct python version.
 $ virtualenv penguins_env # create a vitual environment to isolate your work from the default system.
 $ source penguins_env/bin/activate # activate your environment. Notice the command line prompt changes to show your environment on the next line.
-[penguins_env] $ pwd
+[penguins_env] 
+$ pwd
 /pylon5/group/username/Penguins
-[penguins_env] $ export PYTHONPATH=<path>/penguins_env/lib/python3.5/site-packages # set a system variable to point python to your specific code. (Replace <path> with the results of pwd command above.
-[penguins_env] $ pip install iceberg_penguins.search # pip is a python tool to extract the requested software (iceberg_penguins.search in this case) from a repository. (this may take several minutes).
+[penguins_env] 
+$ export PYTHONPATH=<path>/penguins_env/lib/python3.5/site-packages # set a system variable to point python to your specific code. (Replace <path> with the results of pwd command above.
+[penguins_env] 
+$ pip install iceberg_penguins.search # pip is a python tool to extract the requested software (iceberg_penguins.search in this case) from a repository. (this may take several minutes).
 ```
 
 Method #2 (Installing from source; recommended for developers only): 
