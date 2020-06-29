@@ -19,14 +19,14 @@
 
 ## Installation
 Preliminaries:
-Login to bridges via ssh using a Unix or Mac command line terminal.  Login is available to bridges directly or through the XSEDE portal. Please see the [Bridges User's Guide][https://portal.xsede.org/psc-bridges]
-For Windows Users:
-Many tools are available for ssh access to bridges.  Please see [Ubuntu][https://ubuntu.com/tutorials/tutorial-ubuntu-on-windows#1-overview], [MobaXterm][https://mobaxterm.mobatek.net/], or [PuTTY][https://www.chiark.greenend.org.uk/~sgtatham/putty/]
+Login to bridges via ssh using a Unix or Mac command line terminal.  Login is available to bridges directly or through the XSEDE portal. Please see the [[Bridges User's Guide|https://portal.xsede.org/psc-bridges]]  
+For Windows Users:  
+Many tools are available for ssh access to bridges.  Please see [[Ubuntu|https://ubuntu.com/tutorials/tutorial-ubuntu-on-windows#1-overview]], [[MobaXterm|https://mobaxterm.mobatek.net/]], or [[PuTTY|https://www.chiark.greenend.org.uk/~sgtatham/putty/]]
 
 ### PSC Bridges
-Recommended installation:
-When you are logged into bridges:
-From PyPi:
+Recommended installation:  
+When you are logged into bridges:  
+From PyPi:  
 Note: The lines below starting with '$' are commands to type into your terminal.  Everything following '#' are comments to explain the reason for the command and should not be included in what you type.  Lines that do not start with '$' or '[penguins_env] $' are output you should expect to see.
 ```bash
 $ pwd
