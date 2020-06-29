@@ -25,10 +25,12 @@ For Windows Users:
 Many tools are available for ssh access to Bridges.  Please see [[Ubuntu|https://ubuntu.com/tutorials/tutorial-ubuntu-on-windows#1-overview]], [[MobaXterm|https://mobaxterm.mobatek.net/]], or [[PuTTY|https://www.chiark.greenend.org.uk/~sgtatham/putty/]]
 
 ### PSC Bridges
-Recommended installation:  
-When you are logged into Bridges:  
-From PyPi:  
-Note: The lines below starting with '$' are commands to type into your terminal.  Everything following '#' are comments to explain the reason for the command and should not be included in what you type.  Lines that do not start with '$' or '[penguins_env] $' are output you should expect to see.
+Once you have logged into Bridges, you can follow one of two methods for installing iceberg-penguins.
+
+Method #1 (Recommended):  
+
+(Note: The lines below starting with '$' are commands to type into your terminal.  Everything following '#' are comments to explain the reason for the command and should not be included in what you type.  Lines that do not start with '$' or '[penguins_env] $' are output you should expect to see.)
+
 ```bash
 $ pwd
 /home/username
@@ -45,8 +47,8 @@ $ source penguins_env/bin/activate # activate your environment. Notice the comma
 [penguins_env] $ pip install iceberg_penguins.search # pip is a python tool to extract the requested software (iceberg_penguins.search in this case) from a repository. (this may take several minutes).
 ```
 
-Alternate installation (for developers):
-From source:
+Method #2 (Installing from source; recommended for developers only): 
+
 ```bash
 $ git clone https://github.com/iceberg-project/Penguins.git
 $ module load cuda
