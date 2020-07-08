@@ -191,7 +191,7 @@ setup_args = {
     'package_data'      :  {'': ['VERSION', 'SDIST', sdist_name]},
 
     'install_requires'  :  ['scipy==1.2.1',
-                            'Pillow==4.3.0', # scikit-image 0.15.0 has requirement pillow>=4.3.0
+                            'Pillow>=6.2.2', # scikit-image 0.15.0 has requirement pillow>=4.3.0, there is a security hole (memory leak) prior to 6.2.2
                             'torch',
                             'scikit-learn==0.19.1',
                             'torchvision==0.2.0',
