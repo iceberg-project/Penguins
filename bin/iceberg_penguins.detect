@@ -1,0 +1,34 @@
+#!/usr/bin/env python
+
+"""
+Wrapper for Segmentation Evaluation. 
+Author: Hieu Le, Brad Spitzbart
+License: MIT
+Copyright: 2018-2019
+"""
+import sys
+sys.path.insert(0, "./..")
+import torch
+import os.path
+import argparse
+from scipy import misc
+from iceberg_penguins.search.models import create_model
+from iceberg_penguins.search.data.png_dataset import PngDataset
+from iceberg_penguins.search.options.train_options import TrainOptions
+from iceberg_penguins.search.options.test_options import TestOptions
+from iceberg_penguins.search.data import CreateDataLoader
+from iceberg_penguins.search.data_processing.m_im_util import *
+#from util.misc import crf_refine 
+from iceberg_penguins.search.data_processing.im_vis import *
+import time
+import numpy as np
+from sklearn.metrics import average_precision_score as ap_score
+from sklearn.metrics import jaccard_similarity_score as iou_score
+import imageio
+from iceberg_penguins.search.predicting.predict import Pipe
+
+if __name__=='__main__':
+    opt = TestOptions().parse()
+    a = Pipe(opt)
+    a.test_single_png(opt.input_im)
+    #a.testset1()
