@@ -9,10 +9,10 @@
 
 ## Software Dependencies - these will be installed automatically with the installation below.
 - scipy==1.2.1
-- Pillow==4.3.0
+- Pillow>=6.2.2
 - torch
 - scikit-learn==0.19.1
-- torchvision==0.2.0'
+- torchvision==0.2.0
 - opencv-python
 - rasterio
 - future
