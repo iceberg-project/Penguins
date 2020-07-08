@@ -102,6 +102,7 @@ class Pipe:
             print("failed")
     def png_predict(self,im):
         last = time.time()
+        opt = self.opt
         opt.step = self.opt.step#128
         opt.size = self.opt.size#256
         w,h,c = im.shape
