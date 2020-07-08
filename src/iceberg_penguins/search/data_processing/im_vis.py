@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 from scipy import misc
 import os 
-from data_processing.m_im_util import sdmkdir,to_rgb3b
+from .m_im_util import sdmkdir,to_rgb3b
 from sklearn import metrics
 #import rasterio
 #from rasterio import mask, features, warp

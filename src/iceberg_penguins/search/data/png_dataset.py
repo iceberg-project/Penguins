@@ -1,8 +1,8 @@
 import torch
 import os.path
 from scipy import misc
-from data.base_dataset import BaseDataset, get_transform
-from data.image_folder import make_dataset
+from .base_dataset import BaseDataset, get_transform
+from .image_folder import make_dataset
 from PIL import Image
 from PIL import ImageFilter
 from pdb import set_trace as st
