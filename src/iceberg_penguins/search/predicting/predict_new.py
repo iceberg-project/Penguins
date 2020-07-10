@@ -60,54 +60,6 @@ class Pipe:
         self.network.eval()
         self.opt = opt
 
-    def tiles_predict(self, im_dir, batch_size=32, patch_size=256, step=128):
-
-        # read tiles
-        imgs = []
-        for root, _, fnames in os.walk(im_dir):
-            for fname in fnames:
-                if fname.endswith('.tif'):
-                    imgs.append(root + '/' + fname)
-
-        # get number of patches
-        n_patches = len(imgs)
-
-        # find scene width and height and tiles indices
-        scn_width = max([int(img.split('_')[-2]) for img in imgs]) + 1
-        scn_height = max([int(img.split('_')[-3]) for img in imgs]) + 1
-        tile_cols = np.int32(np.floor((scn_width - patch_size) / step) + 2)
-        tile_rows = np.int32(np.floor((scn_height - patch_size) / step) + 2)
-        orishape = np.array([tile_cols, tile_rows, patch_size, patch_size, 1])
-
-        # initiate output
-        out = np.zeros([n_patches, 1, patch_size, patch_size])
-
-        # process tiles and write to output vector
-        for i in range(0, n_patches, batch_size):
-            batch = np.array([misc.imread(imgs[idx]) for idx in range(i, i + batch_size)])
-            batch = np.transpose(batch, (0, 3, 1, 2))
-            batch = torch.from_numpy(batch).float().div(255)
-            batch = (batch - 0.5) * 2
-            temp = self.network.get_prediction_tensor(batch)
-            out[i:i + bs, :, :, :] = temp['raw_out']
-
-        last = time.time()
-        elapsed_time = time.time() - last
-        print('patches 2 prediction: %0.4f' % (elapsed_time))
-
-        # reshape output for merging
-        out = np.transpose(out, (0, 2, 3, 1))
-        out = np.reshape(out, (orishape[0], orishape[1], outshape[3], outshape[1], outshape[2]))
-
-        # merge tiles
-        outpng = patches2png_legacy(out, w, h, opt.step, opt.size)
-        print('merging')
-        outpng = np.transpose(outpng, (1, 2, 0))
-        outpng = np.squeeze(outpng)
-        outpng = (outpng + 1) / 2
-        outpng = outpng * 255
-        return outpng
-
     def list_tif_predict(self, file):
         import rasterio
         from data_processing.tif_handle import TIF_H
