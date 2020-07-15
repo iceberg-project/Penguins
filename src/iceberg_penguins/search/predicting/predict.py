@@ -80,6 +80,7 @@ class Pipe:
         orishape = np.array([tile_cols, tile_rows, patch_size, patch_size, 1])
 
         # initiate output
+        outshape = [n_patches, patch_size, patch_size, 1]
         out = np.zeros([n_patches, 1, patch_size, patch_size])
 
         # process tiles and write to output vector
@@ -89,7 +90,7 @@ class Pipe:
             batch = torch.from_numpy(batch).float().div(255)
             batch = (batch - 0.5) * 2
             temp = self.network.get_prediction_tensor(batch)
-            out[i:i + bs, :, :, :] = temp['raw_out']
+            out[i:i + batch_size, :, :, :] = temp['raw_out']
 
         last = time.time()
         elapsed_time = time.time() - last
@@ -100,7 +101,7 @@ class Pipe:
         out = np.reshape(out, (orishape[0], orishape[1], outshape[3], outshape[1], outshape[2]))
 
         # merge tiles
-        outpng = patches2png_legacy(out, w, h, opt.step, opt.size)
+        outpng = patches2png_legacy(out, scn_width, scn_height, opt.step, opt.size)
         print('merging')
         outpng = np.transpose(outpng, (1, 2, 0))
         outpng = np.squeeze(outpng)
